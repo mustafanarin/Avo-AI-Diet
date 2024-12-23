@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   fake_async:
     dependency: transitive
     description:
@@ -62,14 +70,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_lints:
-    dependency: "direct dev"
+  flutter_screenutil:
+    dependency: "direct main"
     description:
-      name: flutter_lints
-      sha256: "3f41d009ba7172d5ff9be5f6e6e6abb4300e263aab8866d2a0842ed2a70f8f0c"
+      name: flutter_screenutil
+      sha256: "8239210dd68bee6b0577aa4a090890342d04a136ce1c81f98ee513fc0ce891de"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "5.9.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -99,14 +107,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  lints:
-    dependency: transitive
-    description:
-      name: lints
-      sha256: "976c774dd944a42e83e2467f4cc670daef7eed6295b10b36ae8c85bcbf828235"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   matcher:
     dependency: transitive
     description:
@@ -200,6 +200,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  very_good_analysis:
+    dependency: "direct dev"
+    description:
+      name: very_good_analysis
+      sha256: "62d2b86d183fb81b2edc22913d9f155d26eb5cf3855173adb1f59fac85035c63"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   vm_service:
     dependency: transitive
     description:
