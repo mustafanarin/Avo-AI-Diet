@@ -1,4 +1,7 @@
+import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
+import 'package:avo_ai_diet/product/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() => runApp(const MyApp());
 
@@ -7,16 +10,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Material App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(393, 808),
+      builder: (context, child) {
+        return  MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.getLightTheme,
+          title: 'Material App',
+          home: WelcomeView(),
+        );
+      },
     );
   }
 }

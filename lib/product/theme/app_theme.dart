@@ -1,9 +1,24 @@
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract final class AppTheme {
   static ThemeData get getLightTheme => ThemeData.light().copyWith(
-
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: ProjectColors.primary,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: ProjectColors.mainAvocado),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: 40.w,
+              vertical: 15.h,
+            ),
+            elevation: 0,
+          ),
+        ),
         textTheme: const TextTheme(
           displayLarge: _ProjectTextStyle.heading1,
           displayMedium: _ProjectTextStyle.heading2,
@@ -19,7 +34,7 @@ class _ProjectTextStyle {
   static const heading1 = TextStyle(
     // for welcome view title
     fontFamily: 'Inter',
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: FontWeight.w700,
     color: ProjectColors.darkAvocado,
     letterSpacing: -0.5,
