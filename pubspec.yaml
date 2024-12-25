@@ -11,6 +11,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
 
+  # Animation
+  lottie: ^3.2.0
+
   # Core
   equatable: ^2.0.7
   flutter_screenutil: ^5.9.3
@@ -27,13 +30,11 @@ flutter:
 
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/png/
-  
+    - assets/json/
 
- 
-  # example:
+
   fonts:
     - family: Poppins
       fonts:

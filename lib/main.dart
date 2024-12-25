@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
 import 'package:avo_ai_diet/product/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         return  MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getLightTheme,
-          title: 'Material App',
+          title: 'Avo AI Diyet',
           home: WelcomeView(),
         );
       },
