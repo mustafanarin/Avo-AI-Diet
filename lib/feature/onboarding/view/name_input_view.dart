@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
 import 'package:avo_ai_diet/product/constants/enum/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/json_name.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
@@ -126,7 +127,9 @@ class _ContinueButton extends StatelessWidget {
       padding: AppPadding.smallHorizontal(),
       child: ProjectButton(
         text: ProjectStrings.nameInputButton,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  CalorieCalculatorPage()));
+        },
         isEnabled: isButtonEnabled.value,
       ),
     );

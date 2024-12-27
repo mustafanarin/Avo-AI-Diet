@@ -9,14 +9,15 @@ class ProjectTextField extends StatelessWidget {
   const ProjectTextField({
     required this.controller,
     required this.focusNode,
-    required this.hintText,
     super.key,
+    this.hintText,
+    this.labelText,
   });
 
   final TextEditingController controller;
   final FocusNode focusNode;
-  final String hintText;
-
+  final String? hintText;
+  final String? labelText;
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -28,6 +29,11 @@ class ProjectTextField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         hintText: hintText,
+        labelText: labelText,
+        labelStyle: TextStyle(
+          color: Colors.grey.shade600,
+          fontSize: 16.sp,
+        ),
         hintStyle: TextStyle(
           color: Colors.grey.shade600,
           fontSize: 16.sp,
