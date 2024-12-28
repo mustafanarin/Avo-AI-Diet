@@ -1,7 +1,7 @@
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
-import 'package:avo_ai_diet/product/constants/enum/app_durations.dart';
-import 'package:avo_ai_diet/product/constants/enum/app_radius.dart';
-import 'package:avo_ai_diet/product/constants/enum/png_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/extensions/context_extension.dart';

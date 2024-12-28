@@ -1,67 +1,53 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:avo_ai_diet/product/constants/enum/app_radius.dart';
-import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// TODO:clean textfield
 class ProjectTextField extends StatelessWidget {
   const ProjectTextField({
     required this.controller,
-    required this.focusNode,
+    this.focusNode,
     super.key,
     this.hintText,
     this.labelText,
+    this.helperText,
+    this.validator,
+    this.keyboardType,
+    this.onChanged,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.maxLines = 1,
+    this.maxLength,
   });
 
   final TextEditingController controller;
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
   final String? hintText;
   final String? labelText;
+  final String? helperText;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final void Function(String)? onChanged;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final int? maxLines;
+  final int? maxLength;
+
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      autovalidateMode: AutovalidateMode.onUnfocus,
       controller: controller,
       focusNode: focusNode,
-      style: TextStyle(
-        fontSize: 16.sp,
-        color: ProjectColors.forestGreen,
-      ),
+      validator: validator,
+      keyboardType: keyboardType,
+      onChanged: onChanged,
+      obscureText: obscureText,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      style: Theme.of(context).inputDecorationTheme.suffixStyle,
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
-        labelStyle: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 16.sp,
-        ),
-        hintStyle: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 16.sp,
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: AppRadius.circularSmall(),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: AppRadius.circularSmall(),
-          borderSide: const BorderSide(
-            color: ProjectColors.grey200,
-            width: 1.5,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: AppRadius.circularSmall(),
-          borderSide: const BorderSide(
-            color: ProjectColors.forestGreen,
-            width: 1.5,
-          ),
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 20.w,
-          vertical: 16.h,
-        ),
+        helperText: helperText,
+        suffixIcon: suffixIcon,
       ),
     );
   }

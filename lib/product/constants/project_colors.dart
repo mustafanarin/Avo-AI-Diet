@@ -29,5 +29,7 @@ abstract final class ProjectColors {
   static const Color grey200 = Color.fromRGBO(238, 238, 238, 1);
   static const Color grey400 = Color.fromRGBO(189, 189, 189, 1);
   static const Color grey500 = Color.fromRGBO(158, 158, 158, 1);
+  static const Color grey600 = Color.fromRGBO(117, 117, 117, 1);
+  static const Color red = Colors.red;
   static const Color forestGreen = Color(0xFF2D5A27);
 }

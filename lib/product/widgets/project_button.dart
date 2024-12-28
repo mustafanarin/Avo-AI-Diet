@@ -1,4 +1,4 @@
-import 'package:avo_ai_diet/product/constants/enum/app_radius.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/extensions/context_extension.dart';
 import 'package:flutter/material.dart';

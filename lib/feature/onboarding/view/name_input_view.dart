@@ -1,6 +1,6 @@
 import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
-import 'package:avo_ai_diet/product/constants/enum/app_padding.dart';
-import 'package:avo_ai_diet/product/constants/enum/json_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/extensions/context_extension.dart';
@@ -128,7 +128,7 @@ class _ContinueButton extends StatelessWidget {
       child: ProjectButton(
         text: ProjectStrings.nameInputButton,
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  CalorieCalculatorPage()));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalorieCalculatorPage()));
         },
         isEnabled: isButtonEnabled.value,
       ),

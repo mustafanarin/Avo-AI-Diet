@@ -1,4 +1,4 @@
-import 'package:avo_ai_diet/product/constants/enum/png_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 
 extension PngNameExtension on PngName {
   String _path() {

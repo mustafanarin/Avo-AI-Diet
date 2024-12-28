@@ -13,4 +13,18 @@ abstract final class ProjectStrings {
   static const String nameInputDescription = 'Sana daha iyi hizmet verebilmem için\nadını öğrenebilir miyim?';
   static const String nameInputButton = 'Devam Et';
   static const String nameInputHintText = 'Adını yazar mısın?';
+
+  // User Info Page
+  static const String userInfoAppbar = 'Kalori Hesaplayıcı';
+  static const String continueButton = 'Devam et';
+  static const String calculatButton = 'Hesapla';
+  static const String personelInfoTitle = 'Kişisel Bilgiler';
+  static const String activityLevel = 'Aktivite Seviyesi';
+  static const String target = 'Hedef';
+  static const String budget = 'Bütçe';
+  static const String male = 'Erkek';
+  static const String female = 'Kadın';
+  static const String age = 'Yaş';
+  static const String size = 'Boy (cm)';
+  static const String weight = 'Kilo (kg)';
 }
