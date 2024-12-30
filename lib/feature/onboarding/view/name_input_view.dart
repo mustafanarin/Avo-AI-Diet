@@ -128,7 +128,7 @@ class _ContinueButton extends StatelessWidget {
       child: ProjectButton(
         text: ProjectStrings.nameInputButton,
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalorieCalculatorPage()));
+          Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => CalorieCalculatorPage()));
         },
         isEnabled: isButtonEnabled.value,
       ),

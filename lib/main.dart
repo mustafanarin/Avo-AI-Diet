@@ -1,5 +1,6 @@
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
+import 'package:avo_ai_diet/feature/tabbar/tabbar_view.dart';
 import 'package:avo_ai_diet/product/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.getLightTheme,
           title: 'Avo AI Diyet',
-          home: WelcomeView(),
+          home: CustomTabBarView(),
         );
       },
     );

@@ -139,7 +139,7 @@ class _LetsStartButton extends StatelessWidget {
     return ProjectButton(
       text: ProjectStrings.welcomeButton,
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NameInputPage()));
+        Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => const NameInputPage()));
       },
     );
   }
