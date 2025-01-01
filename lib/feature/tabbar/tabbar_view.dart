@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -14,7 +15,10 @@ class CustomTabBarView extends HookWidget {
       body: PageView(
         controller: pageController,
         children: const [
-          HomePage(),
+          HomeView(
+            targetCal: 2400,
+            userName: 'Serkan',
+          ),
           SearchPage(),
           SizedBox.shrink(),
           FavoritesPage(),
@@ -27,7 +31,7 @@ class CustomTabBarView extends HookWidget {
         margin: const EdgeInsets.only(top: 30),
         child: FloatingActionButton(
           elevation: 0,
-          backgroundColor: Colors.green,
+          backgroundColor: ProjectColors.green,
           child: const Icon(Icons.add, color: ProjectColors.white, size: 30),
           onPressed: () {
             Navigator.of(context).push(
@@ -94,11 +98,6 @@ class CustomTabBarView extends HookWidget {
       ),
     );
   }
-}
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Ana Sayfa'));
 }
 
 class SearchPage extends StatelessWidget {

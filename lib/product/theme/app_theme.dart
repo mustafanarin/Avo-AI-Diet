@@ -8,6 +8,7 @@ abstract final class AppTheme {
         appBarTheme: const AppBarTheme(
           titleTextStyle: _ProjectTextStyle.titlelarge,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: false,
         ),
@@ -79,7 +80,6 @@ class _ProjectTextStyle {
     color: ProjectColors.forestGreen,
     letterSpacing: 0.5,
   );
-  // TODOAPPBAR TEXTSTLYA
 
   static const bodyLarge = TextStyle(
     // large texts
