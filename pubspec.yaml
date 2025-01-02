@@ -18,6 +18,9 @@ dependencies:
   equatable: ^2.0.7
   flutter_screenutil: ^5.9.3
 
+  # Navigation
+  go_router: ^14.6.2
+
   # State Managment
   flutter_hooks: ^0.20.5
 

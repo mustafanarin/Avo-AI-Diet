@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ProjectTextField extends StatelessWidget {
+final class ProjectTextField extends StatelessWidget {
   const ProjectTextField({
     required this.controller,
     this.focusNode,
