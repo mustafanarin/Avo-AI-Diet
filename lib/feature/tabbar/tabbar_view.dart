@@ -16,7 +16,7 @@ final class CustomTabBarView extends HookWidget {
         controller: pageController,
         children: const [
           HomeView(
-            targetCal: 2400,
+            targetCal: 2453,
             userName: 'Serkan',
           ),
           SearchPage(),

@@ -1,5 +1,9 @@
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -22,14 +26,11 @@ class _HomeViewState extends State<HomeView> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Merhaba ${widget.userName}'),
-            // Image.asset(
-            //   height: 60,
-            //   'assets/png/justAvo.png'),
+            Text('${ProjectStrings.hello} ${widget.userName}'),
             Lottie.asset(
               fit: BoxFit.cover,
-              height: 70,
-              'assets/json/avoWalk.json',
+              height: 70.h,
+              JsonName.avoWalk.path,
             ),
           ],
         ),
@@ -43,34 +44,19 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _CalorieCounterPage(maxCalories: widget.targetCal),
+                  _CalorieFollowSlider(maxCalories: widget.targetCal),
                   SizedBox(height: 30.h),
-                  Text('Diyet Listelerim', style: context.textTheme().bodyLarge),
+                  Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
                 ],
               ),
             ),
             SizedBox(
               height: 8.h,
             ),
-            Expanded(
-              child: CardCarousel(
-                items: [
-                  DietCardItem(
-                    title: 'Günlük Beslenme Planı',
-                    aiResponse: 'Sucuklu yumurta',
-                    date: '2 Ocak 2025',
-                  ),
-                  DietCardItem(
-                    title: 'Günlük Beslenme Planı',
-                    aiResponse: 'Sucuklu yumurta',
-                    date: '2 Ocak 2025',
-                  ),
-                  DietCardItem(
-                    title: 'Günlük Beslenme Planı',
-                    aiResponse: 'Sucuklu yumurta',
-                    date: '2 Ocak 2025',
-                  ),
-                ],
+            const Expanded(
+              child: ModernDietCard(
+                date: '3 Ocak 2025',
+                suggestion: 'Sucuklu yumurta',
               ),
             ),
           ],
@@ -80,87 +66,84 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class CardCarousel extends StatelessWidget {
-  const CardCarousel({
-    required this.items,
+class ModernDietCard extends StatelessWidget {
+  const ModernDietCard({
+    required this.date,
+    required this.suggestion,
     super.key,
   });
-  final List<DietCardItem> items;
+  final String date;
+  final String suggestion;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.6,
-      child: PageView.builder(
-        controller: PageController(
-          viewportFraction: 0.9,
-        ),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      items[index].title,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: ProjectColors.darkAvocado,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      items[index].date,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: ProjectColors.grey600,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Text(
-                          items[index].aiResponse,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    return Container(
+      margin: AppPadding.customSymmetricMediumSmall(),
+      decoration: BoxDecoration(
+        color: ProjectColors.white.withOpacity(0.6),
+        borderRadius: AppRadius.circularSmall(),
+        border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: AppPadding.customSymmetricMediumNormal(),
+            decoration: BoxDecoration(
+              color: ProjectColors.backgroundCream,
+              borderRadius: AppRadius.onlyTopSmall(),
             ),
-          );
-        },
+            child: Row(
+              children: [
+                Container(
+                  padding: AppPadding.smallAll(),
+                  decoration: BoxDecoration(
+                    color: ProjectColors.primary.withOpacity(0.1),
+                    borderRadius: AppRadius.circularxSmall(),
+                  ),
+                  child: Icon(
+                    Icons.restaurant_rounded,
+                    color: ProjectColors.primary,
+                    size: 18.r,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ProjectStrings.dietListTitle,
+                        style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
+                      ),
+                      Text(
+                        date,
+                        style: context.textTheme().bodySmall?.copyWith(
+                              fontSize: 13,
+                              color: ProjectColors.grey,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: AppPadding.mediumAll(),
+            child: Text(
+              suggestion,
+              style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class DietCardItem {
-  DietCardItem({
-    required this.title,
-    required this.aiResponse,
-    required this.date,
-  });
-  final String title;
-  final String aiResponse;
-  final String date;
-}
-
-class _CalorieCounterPage extends HookWidget {
-  const _CalorieCounterPage({required this.maxCalories});
+class _CalorieFollowSlider extends HookWidget {
+  const _CalorieFollowSlider({required this.maxCalories});
 
   final double maxCalories;
 
@@ -195,6 +178,7 @@ class _CalorieCounterPage extends HookWidget {
             child: Slider(
               value: currentCalories.value.toDouble(),
               max: maxCalories,
+              divisions: (maxCalories / 10).round(),
               onChanged: (value) {
                 currentCalories.value = value.toInt();
               },

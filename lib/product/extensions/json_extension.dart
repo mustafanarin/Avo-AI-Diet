@@ -5,6 +5,8 @@ extension PngNameExtension on JsonName {
     switch (this) {
       case JsonName.avoAnimation:
         return 'avoAnimation';
+      case JsonName.avoWalk:
+        return 'avoWalk';
     }
   }
 
