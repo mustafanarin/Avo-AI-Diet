@@ -14,7 +14,7 @@ final class AppRouter {
   static final GoRouter router = GoRouter(
     // navigatorKey: _rootNavigatorKey,
     routes: _routes,
-    initialLocation: RouteNames.tabbar,
+    initialLocation: RouteNames.welcome,
     errorBuilder: (context, state) => const _ErrorPage(),
   );
 

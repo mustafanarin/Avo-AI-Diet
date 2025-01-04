@@ -36,7 +36,7 @@ final class CustomTabBarView extends HookWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (_) => const ChatScreen()),
-            );
+            ); // TODO: flutter_chat_ui, go router
           },
         ),
       ),

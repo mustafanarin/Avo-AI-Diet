@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 abstract final class AppTheme {
   static ThemeData get getLightTheme => ThemeData.light().copyWith(
         scaffoldBackgroundColor: ProjectColors.backgroundCream,
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           titleTextStyle: _ProjectTextStyle.titlelarge,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+            statusBarColor: Colors.transparent,
+          ),
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: false,

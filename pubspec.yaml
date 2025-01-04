@@ -17,9 +17,17 @@ dependencies:
   # Core
   equatable: ^2.0.7
   flutter_screenutil: ^5.9.3
+  get_it: ^8.0.3
 
   # Navigation
   go_router: ^14.6.2
+
+  # Private Key
+  flutter_dotenv: ^5.2.1
+  flutter_secure_storage: ^9.2.3
+
+  # Service
+  google_generative_ai: ^0.4.6
 
   # State Managment
   flutter_hooks: ^0.20.5
@@ -34,6 +42,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/png/
     - assets/json/
 

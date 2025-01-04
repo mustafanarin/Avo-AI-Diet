@@ -7,7 +7,7 @@ import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
-import 'package:avo_ai_diet/service/calori_calculator_service.dart';
+import 'package:avo_ai_diet/services/calori_calculator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

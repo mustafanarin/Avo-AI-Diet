@@ -50,9 +50,7 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 8.h,
-            ),
+            SizedBox(height: 8.h),
             const Expanded(
               child: ModernDietCard(
                 date: '3 Ocak 2025',

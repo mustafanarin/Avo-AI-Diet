@@ -1,6 +1,5 @@
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
-import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/json_extension.dart';
@@ -43,14 +42,6 @@ final class NameInputView extends HookWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: ProjectColors.forestGreen,
-                  ),
-                  padding: EdgeInsets.zero,
-                ),
                 const _AvoMascotLottie(),
                 SizedBox(height: 32.h),
                 const _TitleText(),
