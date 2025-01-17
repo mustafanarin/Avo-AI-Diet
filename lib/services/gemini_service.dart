@@ -2,8 +2,10 @@ import 'package:avo_ai_diet/product/utility/exceptions/secure_storage_exception.
 import 'package:avo_ai_diet/services/secure_storage_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:injectable/injectable.dart';
 
-class GeminiService {
+@singleton
+final class GeminiService {
   GeminiService(this._secureStorage) {
     _initialize();
   }

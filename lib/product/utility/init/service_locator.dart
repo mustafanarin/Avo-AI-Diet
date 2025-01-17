@@ -1,12 +1,12 @@
-import 'package:avo_ai_diet/services/gemini_service.dart';
-import 'package:avo_ai_diet/services/secure_storage_service.dart';
+import 'package:avo_ai_diet/product/utility/init/service_locator.config.dart';
 import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
 
 final getIt = GetIt.instance;
 
-Future<void> setupServiceLocator() async {
-  // Services
-  getIt
-    ..registerLazySingleton<SecureStorageService>(SecureStorageService.new)
-    ..registerLazySingleton(() => GeminiService(getIt<SecureStorageService>()));
-}
+@InjectableInit(
+  initializerName: r'$initGetIt',
+  preferRelativeImports: true,
+  asExtension: false,
+)
+Future<void> setupServiceLocator() async => $initGetIt(getIt);

@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/chat/view/chat_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
@@ -14,7 +15,7 @@ final class AppRouter {
   static final GoRouter router = GoRouter(
     // navigatorKey: _rootNavigatorKey,
     routes: _routes,
-    initialLocation: RouteNames.welcome,
+    initialLocation: RouteNames.tabbar,
     errorBuilder: (context, state) => const _ErrorPage(),
   );
 
@@ -41,6 +42,10 @@ final class AppRouter {
             userName: state.pathParameters['userName'] ?? '',
             targetCal: double.tryParse(state.pathParameters['targetCal'] ?? '0') ?? 0.0,
           ),
+        ),
+        GoRoute(
+          path: RouteNames.chat,
+          builder: (context, state) => const ChatView(),
         ),
       ];
 
