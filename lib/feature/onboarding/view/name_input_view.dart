@@ -54,7 +54,10 @@ final class NameInputView extends HookWidget {
                   hintText: ProjectStrings.nameInputHintText,
                 ),
                 SizedBox(height: 32.h),
-                _ContinueButton(isButtonEnabled: isButtonEnabled),
+                _ContinueButton(
+                  isButtonEnabled: isButtonEnabled,
+                  nameController: nameController,
+                ),
               ],
             ),
           ),
@@ -109,8 +112,10 @@ class _DescriptionText extends StatelessWidget {
 class _ContinueButton extends StatelessWidget {
   const _ContinueButton({
     required this.isButtonEnabled,
+    required this.nameController,
   });
 
+  final TextEditingController nameController;
   final ValueNotifier<bool> isButtonEnabled;
 
   @override
@@ -120,7 +125,9 @@ class _ContinueButton extends StatelessWidget {
       child: ProjectButton(
         text: ProjectStrings.nameInputButton,
         onPressed: () {
-          context.push(RouteNames.userInfo);
+          context.push(
+            RouteNames.userInfoPath(nameController.text),
+          );
         },
         isEnabled: isButtonEnabled.value,
       ),

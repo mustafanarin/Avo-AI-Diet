@@ -11,6 +11,7 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../services/gemini_service.dart' as _i709;
 import '../../../services/secure_storage_service.dart' as _i976;
 
@@ -28,5 +29,7 @@ _i174.GetIt $initGetIt(
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
   gh.singleton<_i709.GeminiService>(
       () => _i709.GeminiService(gh<_i976.SecureStorageService>()));
+  gh.factory<_i250.UserInfoCubit>(
+      () => _i250.UserInfoCubit(gh<_i709.GeminiService>()));
   return getIt;
 }

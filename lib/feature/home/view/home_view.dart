@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
@@ -6,14 +10,20 @@ import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 final class HomeView extends StatefulWidget {
-  const HomeView({required this.userName, required this.targetCal, super.key});
+  const HomeView({
+    required this.userName,
+    required this.targetCal,
+    super.key,
+  });
   final String userName;
   final double targetCal;
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -54,7 +64,6 @@ class _HomeViewState extends State<HomeView> {
             const Expanded(
               child: ModernDietCard(
                 date: '3 Ocak 2025',
-                suggestion: 'Sucuklu yumurta',
               ),
             ),
           ],
@@ -67,74 +76,80 @@ class _HomeViewState extends State<HomeView> {
 class ModernDietCard extends StatelessWidget {
   const ModernDietCard({
     required this.date,
-    required this.suggestion,
     super.key,
   });
   final String date;
-  final String suggestion;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: AppPadding.customSymmetricMediumSmall(),
-      decoration: BoxDecoration(
-        color: ProjectColors.white.withOpacity(0.6),
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: AppPadding.customSymmetricMediumNormal(),
-            decoration: BoxDecoration(
-              color: ProjectColors.backgroundCream,
-              borderRadius: AppRadius.onlyTopSmall(),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: AppPadding.smallAll(),
-                  decoration: BoxDecoration(
-                    color: ProjectColors.primary.withOpacity(0.1),
-                    borderRadius: AppRadius.circularxSmall(),
+    return SingleChildScrollView(
+      child: Container(
+        margin: AppPadding.customSymmetricMediumSmall(),
+        decoration: BoxDecoration(
+          color: ProjectColors.white.withOpacity(0.6),
+          borderRadius: AppRadius.circularSmall(),
+          border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: AppPadding.customSymmetricMediumNormal(),
+              decoration: BoxDecoration(
+                color: ProjectColors.backgroundCream,
+                borderRadius: AppRadius.onlyTopSmall(),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: AppPadding.smallAll(),
+                    decoration: BoxDecoration(
+                      color: ProjectColors.primary.withOpacity(0.1),
+                      borderRadius: AppRadius.circularxSmall(),
+                    ),
+                    child: Icon(
+                      Icons.restaurant_rounded,
+                      color: ProjectColors.primary,
+                      size: 18.r,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.restaurant_rounded,
-                    color: ProjectColors.primary,
-                    size: 18.r,
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          ProjectStrings.dietListTitle,
+                          style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
+                        ),
+                        Text(
+                          date,
+                          style: context.textTheme().bodySmall?.copyWith(
+                                fontSize: 13,
+                                color: ProjectColors.grey,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        ProjectStrings.dietListTitle,
-                        style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
-                      ),
-                      Text(
-                        date,
-                        style: context.textTheme().bodySmall?.copyWith(
-                              fontSize: 13,
-                              color: ProjectColors.grey,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            padding: AppPadding.mediumAll(),
-            child: Text(
-              suggestion,
-              style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
+            Container(
+              width: double.infinity,
+              padding: AppPadding.mediumAll(),
+              child: BlocBuilder<UserInfoCubit, UserInfoState>(
+                builder: (context, state) {
+                  log('$state');
+                  final response = state.response;
+                  return Text(
+                    response ?? 'Sanırım bir Hata oluştu...',
+                    style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -145,10 +160,15 @@ class _CalorieFollowSlider extends HookWidget {
 
   final double maxCalories;
 
+  int _calculateDivisions() {
+    // Calculates the number of divisions for a slider based on maxCalories, ensuring a minimum of 100 if the result is non-positive.
+    final calculatedDivisions = (maxCalories / 10).round();
+    return calculatedDivisions > 0 ? calculatedDivisions : 100;
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentCalories = useState(0);
-
     final caloriesLeft = maxCalories - currentCalories.value;
 
     return Center(
@@ -176,7 +196,7 @@ class _CalorieFollowSlider extends HookWidget {
             child: Slider(
               value: currentCalories.value.toDouble(),
               max: maxCalories,
-              divisions: (maxCalories / 10).round(),
+              divisions: _calculateDivisions(),
               onChanged: (value) {
                 currentCalories.value = value.toInt();
               },
@@ -188,6 +208,15 @@ class _CalorieFollowSlider extends HookWidget {
   }
 
   SliderThemeData _customSliderTheme(ValueNotifier<int> currentCalories) {
+    // Keep the Lightness value between 0.0 - 1.0
+    double calculateLightness() {
+      final ratio = currentCalories.value / maxCalories;
+      // 0.2 minimum lightness, 0.8 maximum lightness
+      return 0.8 - (ratio * 0.6).clamp(0.0, 0.6);
+    }
+
+    final lightness = calculateLightness();
+
     return SliderThemeData(
       trackHeight: 20,
       thumbShape: const RoundSliderThumbShape(
@@ -198,17 +227,13 @@ class _CalorieFollowSlider extends HookWidget {
       overlayShape: const RoundSliderOverlayShape(overlayRadius: 0),
 
       // The color gets darker as the calories consumed increase
-      activeTrackColor: HSLColor.fromColor(ProjectColors.forestGreen)
-          .withLightness(1 - (currentCalories.value * 0.75 / maxCalories))
-          .toColor(),
+      activeTrackColor: HSLColor.fromColor(ProjectColors.forestGreen).withLightness(lightness).toColor(),
       inactiveTrackColor: ProjectColors.grey400,
 
       // Green color until about half of maximum calories and then activeTrackColor
       thumbColor: currentCalories.value <= maxCalories * 2 / 3
           ? ProjectColors.green
-          : HSLColor.fromColor(ProjectColors.forestGreen)
-              .withLightness(1 - (currentCalories.value * 0.75 / maxCalories))
-              .toColor(),
+          : HSLColor.fromColor(ProjectColors.forestGreen).withLightness(lightness).toColor(),
     );
   }
 }
