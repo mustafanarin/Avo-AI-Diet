@@ -14,6 +14,11 @@ dependencies:
   # Animation
   lottie: ^3.2.0
 
+  # Cache
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+
   # Core
   equatable: ^2.0.7
   flutter_screenutil: ^5.9.3
@@ -40,6 +45,7 @@ dev_dependencies:
   very_good_analysis: ^7.0.0
   build_runner: ^2.4.8  
   injectable_generator: ^2.1.0
+  hive_generator: ^2.0.1
 
 flutter:
 

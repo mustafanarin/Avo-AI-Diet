@@ -1,7 +1,4 @@
-import 'dart:developer';
-
-import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
-import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_state.dart';
+import 'package:avo_ai_diet/product/cache/ai_response_manager.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
@@ -9,8 +6,9 @@ import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/model/ai_response.dart';
+import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -29,6 +27,23 @@ final class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  AiResponse? _response;
+  late final AiResponseManager _manager;
+
+  @override
+  void initState() {
+    super.initState();
+    _manager = getIt<AiResponseManager>();
+    _loadDietPlan();
+  }
+
+  Future<void> _loadDietPlan() async {
+    final result = await _manager.getDietPlan();
+    setState(() {
+      _response = result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,10 +52,14 @@ class _HomeViewState extends State<HomeView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('${ProjectStrings.hello} ${widget.userName}'),
-            Lottie.asset(
-              fit: BoxFit.cover,
-              height: 70.h,
-              JsonName.avoWalk.path,
+            Hero(
+              // TODO hero animation
+              tag: 'avoLottie',
+              child: Lottie.asset(
+                fit: BoxFit.cover,
+                height: 70.h,
+                JsonName.avoWalk.path,
+              ),
             ),
           ],
         ),
@@ -61,9 +80,9 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
             SizedBox(height: 8.h),
-            const Expanded(
+            Expanded(
               child: ModernDietCard(
-                date: '3 Ocak 2025',
+                response: _response,
               ),
             ),
           ],
@@ -74,11 +93,9 @@ class _HomeViewState extends State<HomeView> {
 }
 
 class ModernDietCard extends StatelessWidget {
-  const ModernDietCard({
-    required this.date,
-    super.key,
-  });
-  final String date;
+  const ModernDietCard({required this.response, super.key});
+
+  final AiResponse? response;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +139,7 @@ class ModernDietCard extends StatelessWidget {
                           style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
                         ),
                         Text(
-                          date,
+                          '${response?.createdAt}',
                           style: context.textTheme().bodySmall?.copyWith(
                                 fontSize: 13,
                                 color: ProjectColors.grey,
@@ -137,16 +154,12 @@ class ModernDietCard extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: AppPadding.mediumAll(),
-              child: BlocBuilder<UserInfoCubit, UserInfoState>(
-                builder: (context, state) {
-                  log('$state');
-                  final response = state.response;
-                  return Text(
-                    response ?? 'Sanırım bir Hata oluştu...',
-                    style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
-                  );
-                },
-              ),
+              child: response == null
+                  ? const CircularProgressIndicator()
+                  : Text(
+                      response!.dietPlan,
+                      style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
+                    ),
             ),
           ],
         ),

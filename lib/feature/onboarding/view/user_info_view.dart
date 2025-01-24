@@ -1,13 +1,17 @@
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_state.dart';
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
+import 'package:avo_ai_diet/product/cache/ai_response_manager.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/activity_level_extension.dart';
+import 'package:avo_ai_diet/product/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/model/ai_response.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
@@ -17,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class UserInfoView extends StatefulWidget {
   const UserInfoView({required this.userName, super.key});
@@ -134,7 +139,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                   SnackBar(content: Text(state.error!)),
                 );
               }
-
+              if (state.isLoading) {}
               if (state.response != null) {
                 final weight = double.parse(_weightController.text);
                 final height = double.parse(_heightController.text);
@@ -164,108 +169,124 @@ class _UserInfoViewState extends State<UserInfoView> {
             },
             builder: (context, state) {
               final cubit = context.read<UserInfoCubit>();
-              return Scaffold(
-                appBar: const _CustomAppbar(),
-                body: Form(
-                  key: _formKey,
-                  child: Stepper(
-                    currentStep: _currentStep,
-                    elevation: 0,
-                    onStepTapped: (step) {
-                      if (step < _currentStep) {
-                        setState(() => _currentStep = step);
-                      }
-                    },
-                    controlsBuilder: (context, details) {
-                      return Padding(
-                        padding: AppPadding.onlyTopXmedium(),
+              return state.isLoading
+                  ? Scaffold(
+                      body: Center(
                         child: Column(
                           children: [
-                            ProjectButton(
-                              text: _currentStep == 3 ? ProjectStrings.calculatButton : ProjectStrings.continueButton,
-                              onPressed: !_validateCurrentStep() || state.isLoading
-                                  ? null
-                                  : () {
-                                      if (_currentStep < 3) {
-                                        setState(() => _currentStep += 1);
-                                      } else {
-                                        _submitForm(context, cubit);
-                                      }
-                                    },
-                              isEnabled: _validateCurrentStep() && !state.isLoading,
+                            Hero(
+                              tag: 'avoLottie',
+                              child: Lottie.asset(JsonName.avoWalk.path),
                             ),
-                            if (_currentStep > 0) ...[
-                              SizedBox(height: 12.h),
-                              BackButton(
-                                onPressed: () {
-                                  setState(() => _currentStep -= 1);
-                                },
-                              ),
-                            ],
+                            const Text('Senin için en uygun diyet planını hazırlıyorum :)'),
                           ],
                         ),
-                      );
-                    },
-                    steps: [
-                      Step(
-                        state: _getStepState(0),
-                        title: Text(
-                          ProjectStrings.personelInfoTitle,
-                          style: context.textTheme().titleMedium,
-                        ),
-                        content: _PersonelInfoStep(
-                          gender: _gender,
-                          onGenderChanged: (value) => setState(() => _gender = value),
-                          ageController: _ageController,
-                          validators: _validators,
-                          heightController: _heightController,
-                          weightController: _weightController,
-                        ),
-                        isActive: _currentStep >= 0,
                       ),
-                      Step(
-                        state: _getStepState(1),
-                        title: Text(
-                          ProjectStrings.activityLevel,
-                          style: context.textTheme().titleMedium,
+                    )
+                  : Scaffold(
+                      appBar: const _CustomAppbar(),
+                      body: Form(
+                        key: _formKey,
+                        child: Stepper(
+                          currentStep: _currentStep,
+                          elevation: 0,
+                          onStepTapped: (step) {
+                            if (step < _currentStep) {
+                              setState(() => _currentStep = step);
+                            }
+                          },
+                          controlsBuilder: (context, details) {
+                            return Padding(
+                              padding: AppPadding.onlyTopXmedium(),
+                              child: Column(
+                                children: [
+                                  ProjectButton(
+                                    text: _currentStep == 3
+                                        ? ProjectStrings.calculatButton
+                                        : ProjectStrings.continueButton,
+                                    onPressed: !_validateCurrentStep() || state.isLoading
+                                        ? null
+                                        : () {
+                                            if (_currentStep < 3) {
+                                              setState(() => _currentStep += 1);
+                                            } else {
+                                              _submitForm(context, cubit);
+                                            }
+                                          },
+                                    isEnabled: _validateCurrentStep() && !state.isLoading,
+                                  ),
+                                  if (_currentStep > 0) ...[
+                                    SizedBox(height: 12.h),
+                                    BackButton(
+                                      onPressed: () {
+                                        setState(() => _currentStep -= 1);
+                                      },
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          },
+                          steps: [
+                            Step(
+                              state: _getStepState(0),
+                              title: Text(
+                                ProjectStrings.personelInfoTitle,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _PersonelInfoStep(
+                                gender: _gender,
+                                onGenderChanged: (value) => setState(() => _gender = value),
+                                ageController: _ageController,
+                                validators: _validators,
+                                heightController: _heightController,
+                                weightController: _weightController,
+                              ),
+                              isActive: _currentStep >= 0,
+                            ),
+                            Step(
+                              state: _getStepState(1),
+                              title: Text(
+                                ProjectStrings.activityLevel,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _ActivityLevelStep(
+                                activityLevels: activityLevels,
+                                activityLevel: _activityLevel,
+                                onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
+                              ),
+                              isActive: _currentStep >= 1,
+                            ),
+                            Step(
+                              state: _getStepState(2),
+                              title: Text(
+                                ProjectStrings.target,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _CaloriTargetStep(
+                                goals: goals,
+                                goal: _goal,
+                                onGoalChanged: (value) => setState(() => _goal = value),
+                              ),
+                              isActive: _currentStep >= 2,
+                            ),
+                            Step(
+                              state: _getStepState(3),
+                              title: Text(
+                                ProjectStrings.budget,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _BudgetStep(
+                                budgets: budgets,
+                                budget: _budget,
+                                onBudgetChanged: (value) => setState(() => _budget = value),
+                              ),
+                              isActive: _currentStep >= 3,
+                            ),
+                          ],
                         ),
-                        content: _ActivityLevelStep(
-                          activityLevels: activityLevels,
-                          activityLevel: _activityLevel,
-                          onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
-                        ),
-                        isActive: _currentStep >= 1,
                       ),
-                      Step(
-                        state: _getStepState(2),
-                        title: Text(
-                          ProjectStrings.target,
-                          style: context.textTheme().titleMedium,
-                        ),
-                        content: _CaloriTargetStep(
-                          goals: goals,
-                          goal: _goal,
-                          onGoalChanged: (value) => setState(() => _goal = value),
-                        ),
-                        isActive: _currentStep >= 2,
-                      ),
-                      Step(
-                        state: _getStepState(3),
-                        title: Text(
-                          ProjectStrings.budget,
-                          style: context.textTheme().titleMedium,
-                        ),
-                        content: _BudgetStep(
-                          budgets: budgets,
-                          budget: _budget,
-                          onBudgetChanged: (value) => setState(() => _budget = value),
-                        ),
-                        isActive: _currentStep >= 3,
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                    );
             },
           );
         },

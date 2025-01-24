@@ -14,6 +14,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../services/gemini_service.dart' as _i709;
 import '../../../services/secure_storage_service.dart' as _i976;
+import '../../cache/ai_response_manager.dart' as _i199;
 
 // initializes the registration of main-scope dependencies inside of GetIt
 _i174.GetIt $initGetIt(
@@ -26,10 +27,13 @@ _i174.GetIt $initGetIt(
     environment,
     environmentFilter,
   );
+  gh.factory<_i199.AiResponseManager>(() => _i199.AiResponseManager());
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
   gh.singleton<_i709.GeminiService>(
       () => _i709.GeminiService(gh<_i976.SecureStorageService>()));
-  gh.factory<_i250.UserInfoCubit>(
-      () => _i250.UserInfoCubit(gh<_i709.GeminiService>()));
+  gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
+        gh<_i709.GeminiService>(),
+        gh<_i199.AiResponseManager>(),
+      ));
   return getIt;
 }
