@@ -1,35 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ai_response.dart';
+part of 'name_and_cal.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class AiResponseAdapter extends TypeAdapter<AiResponse> {
+class NameAndCalModelAdapter extends TypeAdapter<NameAndCalModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  AiResponse read(BinaryReader reader) {
+  NameAndCalModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AiResponse(
-      dietPlan: fields[0] as String,
-      createdAt: fields[1] as DateTime,
+    return NameAndCalModel(
+      userName: fields[0] as String,
+      targetCal: fields[1] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, AiResponse obj) {
+  void write(BinaryWriter writer, NameAndCalModel obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.dietPlan)
+      ..write(obj.userName)
       ..writeByte(1)
-      ..write(obj.createdAt);
+      ..write(obj.targetCal);
   }
 
   @override
@@ -38,7 +38,7 @@ class AiResponseAdapter extends TypeAdapter<AiResponse> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AiResponseAdapter &&
+      other is NameAndCalModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

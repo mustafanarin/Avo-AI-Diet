@@ -1,4 +1,6 @@
-import 'package:avo_ai_diet/product/cache/ai_response_manager.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
+import 'package:avo_ai_diet/product/cache/reponse_manager/ai_response_manager.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
@@ -6,21 +8,18 @@ import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
-import 'package:avo_ai_diet/product/model/ai_response.dart';
+import 'package:avo_ai_diet/product/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 final class HomeView extends StatefulWidget {
   const HomeView({
-    required this.userName,
-    required this.targetCal,
     super.key,
   });
-  final String userName;
-  final double targetCal;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -46,48 +45,54 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('${ProjectStrings.hello} ${widget.userName}'),
-            Hero(
-              // TODO hero animation
-              tag: 'avoLottie',
-              child: Lottie.asset(
-                fit: BoxFit.cover,
-                height: 70.h,
-                JsonName.avoWalk.path,
-              ),
+    return BlocBuilder<NameAndCalCubit, NameAndCalState>(
+      builder: (context, nameCalState) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  nameCalState.name != null ? '${ProjectStrings.hello} ${nameCalState.name}' : ProjectStrings.hello,
+                ),
+                Hero(
+                  // TODOhero animation
+                  tag: 'avoLottie',
+                  child: Lottie.asset(
+                    fit: BoxFit.cover,
+                    height: 70.h,
+                    JsonName.avoWalk.path,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: AppPadding.mediumHorizontal(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _CalorieFollowSlider(maxCalories: widget.targetCal),
-                  SizedBox(height: 30.h),
-                  Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
-                ],
-              ),
+          ),
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: AppPadding.mediumHorizontal(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _CalorieFollowSlider(maxCalories: nameCalState.targetCal ?? 2500),
+                      SizedBox(height: 30.h),
+                      Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Expanded(
+                  child: ModernDietCard(
+                    response: _response,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 8.h),
-            Expanded(
-              child: ModernDietCard(
-                response: _response,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -139,7 +144,7 @@ class ModernDietCard extends StatelessWidget {
                           style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
                         ),
                         Text(
-                          '${response?.createdAt}',
+                          '${response?.formattedDayMonthYear}',
                           style: context.textTheme().bodySmall?.copyWith(
                                 fontSize: 13,
                                 color: ProjectColors.grey,

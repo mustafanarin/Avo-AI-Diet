@@ -45,10 +45,7 @@ final class AppRouter {
           path: RouteNames.home,
           builder: (context, state) => BlocProvider.value(
             value: getIt<UserInfoCubit>(),
-            child: HomeView(
-              userName: state.pathParameters['userName'] ?? '',
-              targetCal: double.tryParse(state.pathParameters['targetCal'] ?? '0') ?? 0.0,
-            ),
+            child: const HomeView(),
           ),
         ),
         GoRoute(

@@ -1,7 +1,7 @@
+import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
-import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_state.dart';
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
-import 'package:avo_ai_diet/product/cache/ai_response_manager.dart';
+import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
@@ -11,7 +11,7 @@ import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/activity_level_extension.dart';
 import 'package:avo_ai_diet/product/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
-import 'package:avo_ai_diet/product/model/ai_response.dart';
+import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
@@ -121,7 +121,12 @@ class _UserInfoViewState extends State<UserInfoView> {
   }) {
     if (!mounted) return;
 
-    final path = RouteNames.homePath(userName, targetCal.round());
+    final cubit = context.read<NameAndCalCubit>();
+    final nameAndCal = NameAndCalModel(userName: userName, targetCal: targetCal);
+
+    cubit.submitNameAndCal(nameAndCal);
+
+    const path = RouteNames.tabbar;
     print('Navigating to: $path');
     context.go(path);
   }
@@ -348,6 +353,7 @@ class _PersonelInfoStep extends StatelessWidget {
           labelText: ProjectStrings.age,
           validator: validators.validateAge,
           keyboardType: TextInputType.number,
+          onChanged: (_) => onGenderChanged(gender), // To trigger validation
         ),
         SizedBox(height: 16.h),
         ProjectTextField(
@@ -355,6 +361,7 @@ class _PersonelInfoStep extends StatelessWidget {
           labelText: ProjectStrings.size,
           validator: validators.validateHeight,
           keyboardType: TextInputType.number,
+          onChanged: (_) => onGenderChanged(gender),
         ),
         SizedBox(height: 16.h),
         ProjectTextField(
@@ -362,6 +369,7 @@ class _PersonelInfoStep extends StatelessWidget {
           labelText: ProjectStrings.weight,
           validator: validators.validateWeight,
           keyboardType: TextInputType.number,
+          onChanged: (_) => onGenderChanged(gender),
         ),
       ],
     );

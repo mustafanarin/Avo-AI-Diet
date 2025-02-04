@@ -33,7 +33,7 @@ final class ProjectTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      autovalidateMode: AutovalidateMode.onUnfocus,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
       focusNode: focusNode,
       validator: validator,

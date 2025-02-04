@@ -17,10 +17,7 @@ final class CustomTabBarView extends HookWidget {
       body: PageView(
         controller: pageController,
         children: const [
-          HomeView(
-            targetCal: 2453,
-            userName: 'Serkan',
-          ),
+          HomeView(),
           SearchPage(),
           SizedBox.shrink(),
           FavoritesPage(),
@@ -36,7 +33,7 @@ final class CustomTabBarView extends HookWidget {
           backgroundColor: ProjectColors.green,
           child: const Icon(Icons.add, color: ProjectColors.white, size: 30),
           onPressed: () {
-            context.push(RouteNames.chat); 
+            context.push(RouteNames.chat);
           },
         ),
       ),
