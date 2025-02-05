@@ -11,6 +11,7 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../../feature/chat/cubit/chat_cubit.dart' as _i648;
 import '../../../feature/onboarding/cubit/name_and_cal_cubit.dart' as _i784;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../services/gemini_service.dart' as _i709;
@@ -40,5 +41,6 @@ _i174.GetIt $initGetIt(
         gh<_i709.GeminiService>(),
         gh<_i288.AiResponseManager>(),
       ));
+  gh.factory<_i648.ChatCubit>(() => _i648.ChatCubit(gh<_i709.GeminiService>()));
   return getIt;
 }

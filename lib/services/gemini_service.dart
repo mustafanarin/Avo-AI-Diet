@@ -1,4 +1,5 @@
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
+import 'package:avo_ai_diet/product/utility/exceptions/gemini_exception.dart';
 import 'package:avo_ai_diet/product/utility/exceptions/secure_storage_exception.dart';
 import 'package:avo_ai_diet/services/secure_storage_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -55,11 +56,44 @@ final class GeminiService {
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
       if (response.text == null) {
-        throw Exception('Gemini API response error');
+        throw GeminiException(message: 'Gemini API response error');
       }
       return response.text!;
     } catch (e) {
-      throw Exception('Gemini error: $e');
+      throw GeminiException(message: 'Gemini error: $e');
+    }
+  }
+
+  Future<String> aiChat(String text, String conversationHistory) async {
+    try {
+      final prompt = '''
+        Ben Avo, sağlıklı beslenme konusunda size yol gösteren bir dijital asistanım.
+
+        Uzmanlık alanlarım:
+        - Yemek tarifleri ve pişirme yöntemleri
+        - Besinlerin değerleri ve faydaları 
+        - Dengeli beslenme önerileri
+        - Sağlıklı yaşam tavsiyeleri
+        - Besinlerin yaklaşık kalori değerleri
+
+        Önceki konuşma:
+        $conversationHistory
+
+        Kullanıcı: $text
+
+        Not1: Yalnızca bu alanlarda yanıt veririm. Farklı konularda "Üzgünüm, yalnızca beslenme ve sağlıklı yaşam konularında yardımcı olabilirim." şeklinde yanıt veririm.
+        Not2: Teşekkür mesajlarına: "Rica ederim! Size başka hangi konuda yardımcı olabilirim?" şeklinde yanıt veririm.
+        ''';
+
+      final content = [Content.text(prompt)];
+      final response = await _model.generateContent(content);
+
+      if (response.text == null) {
+        throw GeminiException(message: 'Gemini API response error');
+      }
+      return response.text!;
+    } catch (e) {
+      throw GeminiException(message: 'Gemini error: $e');
     }
   }
 }

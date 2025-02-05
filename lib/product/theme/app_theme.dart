@@ -13,6 +13,7 @@ abstract final class AppTheme {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: false,
+          scrolledUnderElevation: 0
         ),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelStyle: _ProjectTextStyle.bodyMedium.copyWith(
