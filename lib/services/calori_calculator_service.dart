@@ -2,7 +2,7 @@ import 'package:avo_ai_diet/product/constants/enum/general/activity_level.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/extensions/activity_level_extension.dart';
 
-class CalorieCalculatorService {
+final class CalorieCalculatorService {
   static double calculateBMR({
     required String gender,
     required double weight,

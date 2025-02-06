@@ -1,17 +1,18 @@
-import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
-import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/extensions/context_extension.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/png_extension.dart';
+import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
-class WelcomeView extends HookWidget {
+final class WelcomeView extends HookWidget {
   const WelcomeView({super.key});
 
   @override
@@ -139,7 +140,7 @@ class _LetsStartButton extends StatelessWidget {
     return ProjectButton(
       text: ProjectStrings.welcomeButton,
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => const NameInputPage()));
+        context.go(RouteNames.nameInput);
       },
     );
   }

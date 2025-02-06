@@ -1,19 +1,19 @@
-import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
-import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/extensions/context_extension.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/json_extension.dart';
+import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class NameInputPage extends HookWidget {
-  const NameInputPage({super.key});
+final class NameInputView extends HookWidget {
+  const NameInputView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +42,6 @@ class NameInputPage extends HookWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: ProjectColors.forestGreen,
-                  ),
-                  padding: EdgeInsets.zero,
-                ),
                 const _AvoMascotLottie(),
                 SizedBox(height: 32.h),
                 const _TitleText(),
@@ -62,7 +54,10 @@ class NameInputPage extends HookWidget {
                   hintText: ProjectStrings.nameInputHintText,
                 ),
                 SizedBox(height: 32.h),
-                _ContinueButton(isButtonEnabled: isButtonEnabled),
+                _ContinueButton(
+                  isButtonEnabled: isButtonEnabled,
+                  nameController: nameController,
+                ),
               ],
             ),
           ),
@@ -117,8 +112,10 @@ class _DescriptionText extends StatelessWidget {
 class _ContinueButton extends StatelessWidget {
   const _ContinueButton({
     required this.isButtonEnabled,
+    required this.nameController,
   });
 
+  final TextEditingController nameController;
   final ValueNotifier<bool> isButtonEnabled;
 
   @override
@@ -128,7 +125,9 @@ class _ContinueButton extends StatelessWidget {
       child: ProjectButton(
         text: ProjectStrings.nameInputButton,
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => CalorieCalculatorPage()));
+          context.push(
+            RouteNames.userInfoPath(nameController.text),
+          );
         },
         isEnabled: isButtonEnabled.value,
       ),

@@ -1,10 +1,12 @@
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 
-extension PngNameExtension on JsonName {
+extension JsonNameExtension on JsonName {
   String _path() {
     switch (this) {
       case JsonName.avoAnimation:
         return 'avoAnimation';
+      case JsonName.avoWalk:
+        return 'avoWalk';
     }
   }
 

@@ -18,6 +18,9 @@ abstract final class ProjectColors {
 
   static const Color white = Colors.white;
   static const Color black = Colors.black;
+  static const Color red = Colors.red;
+  static const Color grey = Colors.grey;
+  static const Color green = Colors.green;
 
   static const Color backgroundCream = Color(0xFFFDF6F0);
   static const Color primary = Color(0xFF557C55);
@@ -25,11 +28,9 @@ abstract final class ProjectColors {
   static const Color textColor = Color(0xFF2C2C2C);
   static const Color lightGreen = Color(0xFF7CB342);
   static const Color darkGreen = Color(0xFF558B2F);
-  static const Color grey = Colors.grey;
   static const Color grey200 = Color.fromRGBO(238, 238, 238, 1);
   static const Color grey400 = Color.fromRGBO(189, 189, 189, 1);
   static const Color grey500 = Color.fromRGBO(158, 158, 158, 1);
   static const Color grey600 = Color.fromRGBO(117, 117, 117, 1);
-  static const Color red = Colors.red;
   static const Color forestGreen = Color(0xFF2D5A27);
 }

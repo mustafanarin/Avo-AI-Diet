@@ -27,4 +27,9 @@ abstract final class ProjectStrings {
   static const String age = 'Yaş';
   static const String size = 'Boy (cm)';
   static const String weight = 'Kilo (kg)';
+
+  // Home Page
+  static const String dietListTitle = 'Günlük Beslenme Planı';
+  static const String hello = 'Merhaba';
+  static const String myDietList = 'Diyet Listelerim';
 }

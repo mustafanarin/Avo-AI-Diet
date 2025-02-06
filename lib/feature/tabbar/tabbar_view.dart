@@ -1,8 +1,11 @@
+import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
-class CustomTabBarView extends HookWidget {
+final class CustomTabBarView extends HookWidget {
   const CustomTabBarView({super.key});
 
   @override
@@ -14,7 +17,7 @@ class CustomTabBarView extends HookWidget {
       body: PageView(
         controller: pageController,
         children: const [
-          HomePage(),
+          HomeView(),
           SearchPage(),
           SizedBox.shrink(),
           FavoritesPage(),
@@ -27,12 +30,10 @@ class CustomTabBarView extends HookWidget {
         margin: const EdgeInsets.only(top: 30),
         child: FloatingActionButton(
           elevation: 0,
-          backgroundColor: Colors.green,
+          backgroundColor: ProjectColors.green,
           child: const Icon(Icons.add, color: ProjectColors.white, size: 30),
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const ChatScreen()),
-            );
+            context.push(RouteNames.chat);
           },
         ),
       ),
@@ -94,11 +95,6 @@ class CustomTabBarView extends HookWidget {
       ),
     );
   }
-}
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Ana Sayfa'));
 }
 
 class SearchPage extends StatelessWidget {

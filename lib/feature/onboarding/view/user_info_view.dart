@@ -1,21 +1,48 @@
+import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
+import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/activity_level_extension.dart';
-import 'package:avo_ai_diet/product/extensions/context_extension.dart';
+import 'package:avo_ai_diet/product/extensions/json_extension.dart';
+import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
+import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
-import 'package:avo_ai_diet/service/calori_calculator_service.dart';
+import 'package:avo_ai_diet/services/calori_calculator_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
-class CalorieCalculatorPage extends HookWidget {
-  CalorieCalculatorPage({super.key});
+class UserInfoView extends StatefulWidget {
+  const UserInfoView({required this.userName, super.key});
+  final String userName;
+  @override
+  State<UserInfoView> createState() => _UserInfoViewState();
+}
 
+class _UserInfoViewState extends State<UserInfoView> {
+  final _formKey = GlobalKey<FormState>();
   final _validators = CalorieValidators();
+  int _currentStep = 0;
+
+  final _ageController = TextEditingController();
+  final _heightController = TextEditingController();
+  final _weightController = TextEditingController();
+
+  String? _gender;
+  String? _activityLevel;
+  String? _goal;
+  String? _budget;
 
   final List<String> activityLevels = [
     'Sedanter (hareketsiz yaşam)',
@@ -38,213 +65,444 @@ class CalorieCalculatorPage extends HookWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final formKey = useMemoized(GlobalKey<FormState>.new);
-    final currentStep = useState(0);
+  void dispose() {
+    _ageController.dispose();
+    _heightController.dispose();
+    _weightController.dispose();
+    super.dispose();
+  }
 
-    // Form state hooks
-    final gender = useState<String?>(null);
-    final activityLevel = useState<String?>(null);
-    final goal = useState<String?>(null);
-    final budget = useState<String?>(null);
-    final forceUpdate = useState(false);
+  // Check validation of each step
+  bool _validateCurrentStep() {
+    switch (_currentStep) {
+      case 0:
+        return _gender != null &&
+            _validators.validateAge(_ageController.text) == null &&
+            _validators.validateHeight(_heightController.text) == null &&
+            _validators.validateWeight(_weightController.text) == null;
+      case 1:
+        return _activityLevel != null;
+      case 2:
+        return _goal != null;
+      case 3:
+        return _budget != null;
+      default:
+        return false;
+    }
+  }
 
-    // TextEditing controllers
-    final ageController = useTextEditingController();
-    final heightController = useTextEditingController();
-    final weightController = useTextEditingController();
+  // Check the status of the stepper
+  StepState _getStepState(int step) {
+    if (_currentStep > step) return StepState.complete;
+    if (_currentStep == step) return StepState.editing;
+    return StepState.disabled;
+  }
 
-    // Add listeners to trigger rebuild when text changes
-    useEffect(
-      () {
-        void listener() => forceUpdate.value = !forceUpdate.value;
+  Future<void> _submitForm(BuildContext context, UserInfoCubit cubit) async {
+    if (!_validateCurrentStep()) return;
 
-        ageController.addListener(listener);
-        heightController.addListener(listener);
-        weightController.addListener(listener);
-
-        return () {
-          ageController.removeListener(listener);
-          heightController.removeListener(listener);
-          weightController.removeListener(listener);
-        };
-      },
-      [],
+    final userInfo = UserInfoModel(
+      height: double.parse(_heightController.text),
+      weight: double.parse(_weightController.text),
+      age: double.parse(_ageController.text),
+      gender: _gender!,
+      activityLevel: _activityLevel!,
+      target: _goal!,
+      budget: _budget!,
     );
 
-    // Form validation
-    bool validateCurrentStep() {
-      switch (currentStep.value) {
-        case 0:
-          return gender.value != null &&
-              _validators.validateAge(ageController.text) == null &&
-              _validators.validateHeight(heightController.text) == null &&
-              _validators.validateWeight(weightController.text) == null;
-        case 1:
-          return activityLevel.value != null;
-        case 2:
-          return goal.value != null;
-        case 3:
-          return budget.value != null;
-        default:
-          return false;
-      }
-    }
+    await cubit.submitUserInfo(userInfo);
+  }
 
-    StepState getStepState(int step) {
-      if (currentStep.value > step) {
-        return StepState.complete;
-      }
-      if (currentStep.value == step) {
-        return StepState.editing;
-      }
-      return StepState.disabled;
-    }
+  void _navigateToHome(
+    BuildContext context, {
+    required String userName,
+    required double targetCal,
+  }) {
+    if (!mounted) return;
 
-    void calculateCalories() {
-      final weight = double.parse(weightController.text);
-      final height = double.parse(heightController.text);
-      final age = double.parse(ageController.text);
+    final cubit = context.read<NameAndCalCubit>();
+    final nameAndCal = NameAndCalModel(userName: userName, targetCal: targetCal);
 
-      final bmr = CalorieCalculatorService.calculateBMR(
-        gender: gender.value!,
-        weight: weight,
-        height: height,
-        age: age,
-      );
+    cubit.submitNameAndCal(nameAndCal);
 
-      final selectedActivity = ActivityLevelExtension.fromDisplayName(activityLevel.value!);
+    const path = RouteNames.tabbar;
+    print('Navigating to: $path');
+    context.go(path);
+  }
 
-      final totalCalories = CalorieCalculatorService.calculateTotalCalories(
-        bmr: bmr,
-        activityLevel: selectedActivity,
-        goal: goal.value!,
-      );
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<UserInfoCubit>(),
+      child: Builder(
+        builder: (context) {
+          return BlocConsumer<UserInfoCubit, UserInfoState>(
+            listener: (context, state) {
+              if (state.error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.error!)),
+                );
+              }
+              if (state.isLoading) {}
+              if (state.response != null) {
+                final weight = double.parse(_weightController.text);
+                final height = double.parse(_heightController.text);
+                final age = double.parse(_ageController.text);
 
-      // ignore: inference_failure_on_function_invocation
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (context) => Container(
-          padding: EdgeInsets.all(20.w),
+                final bmr = CalorieCalculatorService.calculateBMR(
+                  gender: _gender!,
+                  weight: weight,
+                  height: height,
+                  age: age,
+                );
+
+                final selectedActivity = ActivityLevelExtension.fromDisplayName(_activityLevel!);
+
+                final totalCalories = CalorieCalculatorService.calculateTotalCalories(
+                  bmr: bmr,
+                  activityLevel: selectedActivity,
+                  goal: _goal!,
+                );
+
+                _navigateToHome(
+                  context,
+                  userName: widget.userName,
+                  targetCal: totalCalories,
+                );
+              }
+            },
+            builder: (context, state) {
+              final cubit = context.read<UserInfoCubit>();
+              return state.isLoading
+                  ? Scaffold(
+                      body: Center(
+                        child: Column(
+                          children: [
+                            Hero(
+                              tag: 'avoLottie',
+                              child: Lottie.asset(JsonName.avoWalk.path),
+                            ),
+                            const Text('Senin için en uygun diyet planını hazırlıyorum :)'),
+                          ],
+                        ),
+                      ),
+                    )
+                  : Scaffold(
+                      appBar: const _CustomAppbar(),
+                      body: Form(
+                        key: _formKey,
+                        child: Stepper(
+                          currentStep: _currentStep,
+                          elevation: 0,
+                          onStepTapped: (step) {
+                            if (step < _currentStep) {
+                              setState(() => _currentStep = step);
+                            }
+                          },
+                          controlsBuilder: (context, details) {
+                            return Padding(
+                              padding: AppPadding.onlyTopXmedium(),
+                              child: Column(
+                                children: [
+                                  ProjectButton(
+                                    text: _currentStep == 3
+                                        ? ProjectStrings.calculatButton
+                                        : ProjectStrings.continueButton,
+                                    onPressed: !_validateCurrentStep() || state.isLoading
+                                        ? null
+                                        : () {
+                                            if (_currentStep < 3) {
+                                              setState(() => _currentStep += 1);
+                                            } else {
+                                              _submitForm(context, cubit);
+                                            }
+                                          },
+                                    isEnabled: _validateCurrentStep() && !state.isLoading,
+                                  ),
+                                  if (_currentStep > 0) ...[
+                                    SizedBox(height: 12.h),
+                                    BackButton(
+                                      onPressed: () {
+                                        setState(() => _currentStep -= 1);
+                                      },
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          },
+                          steps: [
+                            Step(
+                              state: _getStepState(0),
+                              title: Text(
+                                ProjectStrings.personelInfoTitle,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _PersonelInfoStep(
+                                gender: _gender,
+                                onGenderChanged: (value) => setState(() => _gender = value),
+                                ageController: _ageController,
+                                validators: _validators,
+                                heightController: _heightController,
+                                weightController: _weightController,
+                              ),
+                              isActive: _currentStep >= 0,
+                            ),
+                            Step(
+                              state: _getStepState(1),
+                              title: Text(
+                                ProjectStrings.activityLevel,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _ActivityLevelStep(
+                                activityLevels: activityLevels,
+                                activityLevel: _activityLevel,
+                                onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
+                              ),
+                              isActive: _currentStep >= 1,
+                            ),
+                            Step(
+                              state: _getStepState(2),
+                              title: Text(
+                                ProjectStrings.target,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _CaloriTargetStep(
+                                goals: goals,
+                                goal: _goal,
+                                onGoalChanged: (value) => setState(() => _goal = value),
+                              ),
+                              isActive: _currentStep >= 2,
+                            ),
+                            Step(
+                              state: _getStepState(3),
+                              title: Text(
+                                ProjectStrings.budget,
+                                style: context.textTheme().titleMedium,
+                              ),
+                              content: _BudgetStep(
+                                budgets: budgets,
+                                budget: _budget,
+                                onBudgetChanged: (value) => setState(() => _budget = value),
+                              ),
+                              isActive: _currentStep >= 3,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _PersonelInfoStep extends StatelessWidget {
+  const _PersonelInfoStep({
+    required this.gender,
+    required this.onGenderChanged,
+    required this.ageController,
+    required this.validators,
+    required this.heightController,
+    required this.weightController,
+  });
+
+  final String? gender;
+  final Function(String?) onGenderChanged;
+  final TextEditingController ageController;
+  final CalorieValidators validators;
+  final TextEditingController heightController;
+  final TextEditingController weightController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
           decoration: BoxDecoration(
             color: ProjectColors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20.r),
-            ),
+            borderRadius: AppRadius.circularSmall(),
+            border: Border.all(color: ProjectColors.grey200),
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 40.w,
-                height: 4.h,
-                margin: EdgeInsets.only(bottom: 20.h),
-                decoration: BoxDecoration(
-                  color: ProjectColors.grey200,
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
+              RadioListTile<String>(
+                title: const Text(ProjectStrings.male),
+                value: ProjectStrings.male,
+                groupValue: gender,
+                activeColor: ProjectColors.forestGreen,
+                onChanged: onGenderChanged,
               ),
-              Text(
-                'Günlük Kalori İhtiyacınız',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: ProjectColors.forestGreen,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              _ResultRow(
-                label: 'Bazal Metabolizma Hızı (BMR):',
-                value: '${bmr.round()} kcal',
-              ),
-              SizedBox(height: 12.h),
-              _ResultRow(
-                label: 'Günlük Kalori İhtiyacı:',
-                value: '${totalCalories.round()} kcal',
-              ),
-              SizedBox(height: 12.h),
-              _ResultRow(
-                label: 'Seçilen Bütçe:',
-                value: budget.value ?? '',
-              ),
-              SizedBox(height: 20.h),
-              ProjectButton(
-                text: 'TAMAM',
-                onPressed: () => Navigator.pop(context),
+              const Divider(height: 1),
+              RadioListTile<String>(
+                title: const Text(ProjectStrings.female),
+                value: ProjectStrings.female,
+                groupValue: gender,
+                activeColor: ProjectColors.forestGreen,
+                onChanged: onGenderChanged,
               ),
             ],
           ),
         ),
-      );
-    }
-
-    return Scaffold(
-      appBar: const _CustomAppbar(),
-      body: Form(
-        key: formKey,
-        child: Stepper(
-          currentStep: currentStep.value,
-          elevation: 0,
-          onStepTapped: (step) {
-            if (step < currentStep.value) {
-              currentStep.value = step;
-            }
-          },
-          controlsBuilder: (context, details) {
-            final isCurrentStepValid = validateCurrentStep();
-
-            return _StepControls(
-              currentStep: currentStep,
-              isCurrentStepValid: isCurrentStepValid,
-              calculateCalori: calculateCalories,
-            );
-          },
-          steps: [
-            Step(
-              state: getStepState(0),
-              title: Text(
-                ProjectStrings.personelInfoTitle,
-                style: context.textTheme().titleMedium,
-              ),
-              content: _PersonelInfoStep(
-                gender: gender,
-                ageController: ageController,
-                validators: _validators,
-                heightController: heightController,
-                weightController: weightController,
-              ),
-              isActive: currentStep.value >= 0,
-            ),
-            Step(
-              state: getStepState(1),
-              title: Text(
-                ProjectStrings.activityLevel,
-                style: context.textTheme().titleMedium,
-              ),
-              content: _ActivityLevelStep(activityLevels: activityLevels, activityLevel: activityLevel),
-              isActive: currentStep.value >= 1,
-            ),
-            Step(
-              state: getStepState(2),
-              title: Text(
-                ProjectStrings.target,
-                style: context.textTheme().titleMedium,
-              ),
-              content: _CaloriTargetStep(goals: goals, goal: goal),
-              isActive: currentStep.value >= 2,
-            ),
-            Step(
-              state: getStepState(3),
-              title: Text(
-                ProjectStrings.budget,
-                style: context.textTheme().titleMedium,
-              ),
-              content: _BudgetStep(budgets: budgets, budget: budget),
-              isActive: currentStep.value >= 3,
-            ),
-          ],
+        SizedBox(height: 16.h),
+        ProjectTextField(
+          controller: ageController,
+          labelText: ProjectStrings.age,
+          validator: validators.validateAge,
+          keyboardType: TextInputType.number,
+          onChanged: (_) => onGenderChanged(gender), // To trigger validation
         ),
+        SizedBox(height: 16.h),
+        ProjectTextField(
+          controller: heightController,
+          labelText: ProjectStrings.size,
+          validator: validators.validateHeight,
+          keyboardType: TextInputType.number,
+          onChanged: (_) => onGenderChanged(gender),
+        ),
+        SizedBox(height: 16.h),
+        ProjectTextField(
+          controller: weightController,
+          labelText: ProjectStrings.weight,
+          validator: validators.validateWeight,
+          keyboardType: TextInputType.number,
+          onChanged: (_) => onGenderChanged(gender),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActivityLevelStep extends StatelessWidget {
+  const _ActivityLevelStep({
+    required this.activityLevels,
+    required this.activityLevel,
+    required this.onActivityLevelChanged,
+  });
+
+  final List<String> activityLevels;
+  final String? activityLevel;
+  final Function(String?) onActivityLevelChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: ProjectColors.white,
+        borderRadius: AppRadius.circularSmall(),
+        border: Border.all(color: ProjectColors.grey200),
+      ),
+      child: Column(
+        children: activityLevels.map((level) {
+          return Column(
+            children: [
+              RadioListTile<String>(
+                title: Text(
+                  level,
+                  style: context.textTheme().bodyLarge?.copyWith(
+                        color: ProjectColors.black,
+                      ),
+                ),
+                value: level,
+                groupValue: activityLevel,
+                activeColor: ProjectColors.forestGreen,
+                onChanged: onActivityLevelChanged,
+              ),
+              if (level != activityLevels.last) const Divider(height: 1),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _CaloriTargetStep extends StatelessWidget {
+  const _CaloriTargetStep({
+    required this.goals,
+    required this.goal,
+    required this.onGoalChanged,
+  });
+
+  final List<String> goals;
+  final String? goal;
+  final Function(String?) onGoalChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: ProjectColors.white,
+        borderRadius: AppRadius.circularSmall(),
+        border: Border.all(color: ProjectColors.grey200),
+      ),
+      child: Column(
+        children: goals.map((g) {
+          return Column(
+            children: [
+              RadioListTile<String>(
+                title: Text(
+                  g,
+                  style: context.textTheme().bodyLarge?.copyWith(
+                        color: ProjectColors.black,
+                      ),
+                ),
+                value: g,
+                groupValue: goal,
+                activeColor: ProjectColors.forestGreen,
+                onChanged: onGoalChanged,
+              ),
+              if (g != goals.last) const Divider(height: 1),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _BudgetStep extends StatelessWidget {
+  const _BudgetStep({
+    required this.budgets,
+    required this.budget,
+    required this.onBudgetChanged,
+  });
+
+  final List<String> budgets;
+  final String? budget;
+  final Function(String?) onBudgetChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: ProjectColors.white,
+        borderRadius: AppRadius.circularSmall(),
+        border: Border.all(color: ProjectColors.grey200),
+      ),
+      child: Column(
+        children: budgets.map((b) {
+          return Column(
+            children: [
+              RadioListTile<String>(
+                title: Text(
+                  b,
+                  style: context.textTheme().bodyLarge?.copyWith(
+                        color: ProjectColors.black,
+                      ),
+                ),
+                value: b,
+                groupValue: budget,
+                activeColor: ProjectColors.forestGreen,
+                onChanged: onBudgetChanged,
+              ),
+              if (b != budgets.last) const Divider(height: 1),
+            ],
+          );
+        }).toList(),
       ),
     );
   }
@@ -269,264 +527,4 @@ class _CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
-
-class _StepControls extends StatelessWidget {
-  const _StepControls({
-    required this.currentStep,
-    required this.isCurrentStepValid,
-    required this.calculateCalori,
-  });
-
-  final ValueNotifier<int> currentStep;
-  final bool isCurrentStepValid;
-  final void Function() calculateCalori;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: AppPadding.onlyTopXmedium(),
-      child: Column(
-        children: [
-          ProjectButton(
-            text: currentStep.value == 3 ? ProjectStrings.calculatButton : ProjectStrings.continueButton,
-            onPressed: isCurrentStepValid
-                ? () {
-                    if (currentStep.value < 3) {
-                      currentStep.value += 1;
-                    } else {
-                      calculateCalori();
-                    }
-                  }
-                : null,
-            isEnabled: isCurrentStepValid,
-          ),
-          if (currentStep.value > 0) ...[
-            SizedBox(height: 12.h),
-            BackButton(
-              onPressed: () {
-                currentStep.value -= 1;
-              },
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _PersonelInfoStep extends StatelessWidget {
-  const _PersonelInfoStep({
-    required this.gender,
-    required this.ageController,
-    required CalorieValidators validators,
-    required this.heightController,
-    required this.weightController,
-  }) : _validators = validators;
-
-  final ValueNotifier<String?> gender;
-  final TextEditingController ageController;
-  final CalorieValidators _validators;
-  final TextEditingController heightController;
-  final TextEditingController weightController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: ProjectColors.white,
-            borderRadius: AppRadius.circularSmall(),
-            border: Border.all(color: ProjectColors.grey200),
-          ),
-          child: Column(
-            children: [
-              RadioListTile<String>(
-                title: const Text(ProjectStrings.male),
-                value: ProjectStrings.male,
-                groupValue: gender.value,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: (value) => gender.value = value,
-              ),
-              const Divider(height: 1),
-              RadioListTile<String>(
-                title: const Text(ProjectStrings.female),
-                value: ProjectStrings.female,
-                groupValue: gender.value,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: (value) => gender.value = value,
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 16.h),
-        ProjectTextField(
-          controller: ageController,
-          labelText: ProjectStrings.age,
-          validator: _validators.validateAge,
-          keyboardType: TextInputType.number,
-        ),
-        SizedBox(height: 16.h),
-        ProjectTextField(
-          controller: heightController,
-          labelText: ProjectStrings.size,
-          validator: _validators.validateHeight,
-          keyboardType: TextInputType.number,
-        ),
-        SizedBox(height: 16.h),
-        ProjectTextField(
-          controller: weightController,
-          labelText: ProjectStrings.weight,
-          validator: _validators.validateWeight,
-          keyboardType: TextInputType.number,
-        ),
-      ],
-    );
-  }
-}
-
-class _ActivityLevelStep extends StatelessWidget {
-  const _ActivityLevelStep({
-    required this.activityLevels,
-    required this.activityLevel,
-  });
-
-  final List<String> activityLevels;
-  final ValueNotifier<String?> activityLevel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.grey200),
-      ),
-      child: Column(
-        children: activityLevels.map((level) {
-          return Column(
-            children: [
-              RadioListTile<String>(
-                title: Text(level, style: context.textTheme().bodyLarge?.copyWith(color: ProjectColors.black)),
-                value: level,
-                groupValue: activityLevel.value,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: (value) => activityLevel.value = value,
-              ),
-              if (level != activityLevels.last) const Divider(height: 1),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _CaloriTargetStep extends StatelessWidget {
-  const _CaloriTargetStep({
-    required this.goals,
-    required this.goal,
-  });
-
-  final List<String> goals;
-  final ValueNotifier<String?> goal;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.grey200),
-      ),
-      child: Column(
-        children: goals.map((g) {
-          return Column(
-            children: [
-              RadioListTile<String>(
-                title: Text(g, style: context.textTheme().bodyLarge?.copyWith(color: ProjectColors.black)),
-                value: g,
-                groupValue: goal.value,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: (value) => goal.value = value,
-              ),
-              if (g != goals.last) const Divider(height: 1),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _BudgetStep extends StatelessWidget {
-  const _BudgetStep({
-    required this.budgets,
-    required this.budget,
-  });
-
-  final List<String> budgets;
-  final ValueNotifier<String?> budget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.grey200),
-      ),
-      child: Column(
-        children: budgets.map((b) {
-          return Column(
-            children: [
-              RadioListTile<String>(
-                title: Text(
-                  b,
-                  style: context.textTheme().bodyLarge?.copyWith(color: ProjectColors.black),
-                ),
-                value: b,
-                groupValue: budget.value,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: (value) => budget.value = value,
-              ),
-              if (b != budgets.last) const Divider(height: 1),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _ResultRow extends StatelessWidget {
-  const _ResultRow({
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 16.sp),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: ProjectColors.black,
-          ),
-        ),
-      ],
-    );
-  }
 }

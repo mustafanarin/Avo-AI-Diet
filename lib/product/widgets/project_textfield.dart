@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ProjectTextField extends StatelessWidget {
+final class ProjectTextField extends StatelessWidget {
   const ProjectTextField({
     required this.controller,
     this.focusNode,
@@ -33,7 +33,7 @@ class ProjectTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      autovalidateMode: AutovalidateMode.onUnfocus,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
       focusNode: focusNode,
       validator: validator,
