@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/favorites/favorite_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
@@ -20,7 +21,7 @@ final class CustomTabBarView extends HookWidget {
           HomeView(),
           SearchPage(),
           SizedBox.shrink(),
-          FavoritesPage(),
+          FavoriteView(),
           ProfilePage(),
         ],
       ),
@@ -31,7 +32,7 @@ final class CustomTabBarView extends HookWidget {
         child: FloatingActionButton(
           elevation: 0,
           backgroundColor: ProjectColors.green,
-          child: const Icon(Icons.add, color: ProjectColors.white, size: 30),
+          child: const Icon(Icons.eco, color: ProjectColors.white, size: 30),
           onPressed: () {
             context.push(RouteNames.chat);
           },
@@ -101,12 +102,6 @@ class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
   @override
   Widget build(BuildContext context) => const Center(child: Text('Arama'));
-}
-
-class FavoritesPage extends StatelessWidget {
-  const FavoritesPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Favoriler'));
 }
 
 class ProfilePage extends StatelessWidget {

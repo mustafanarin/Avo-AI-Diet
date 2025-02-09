@@ -127,7 +127,6 @@ class _UserInfoViewState extends State<UserInfoView> {
     cubit.submitNameAndCal(nameAndCal);
 
     const path = RouteNames.tabbar;
-    print('Navigating to: $path');
     context.go(path);
   }
 
@@ -311,7 +310,7 @@ class _PersonelInfoStep extends StatelessWidget {
   });
 
   final String? gender;
-  final Function(String?) onGenderChanged;
+  final void Function(String?) onGenderChanged;
   final TextEditingController ageController;
   final CalorieValidators validators;
   final TextEditingController heightController;
@@ -385,7 +384,7 @@ class _ActivityLevelStep extends StatelessWidget {
 
   final List<String> activityLevels;
   final String? activityLevel;
-  final Function(String?) onActivityLevelChanged;
+  final void Function(String?) onActivityLevelChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +428,7 @@ class _CaloriTargetStep extends StatelessWidget {
 
   final List<String> goals;
   final String? goal;
-  final Function(String?) onGoalChanged;
+  final void Function(String?) onGoalChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -473,7 +472,7 @@ class _BudgetStep extends StatelessWidget {
 
   final List<String> budgets;
   final String? budget;
-  final Function(String?) onBudgetChanged;
+  final void Function(String?) onBudgetChanged;
 
   @override
   Widget build(BuildContext context) {

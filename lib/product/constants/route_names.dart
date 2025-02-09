@@ -9,6 +9,7 @@ abstract final class RouteNames {
   static const String tabbar = '/tabbar';
   static const String home = '/home';
   static const String chat = '/chat';
+  static const String favorite = '/favorite';
 
   static String userInfoPath(String userName) => '/user/$userName';
 }

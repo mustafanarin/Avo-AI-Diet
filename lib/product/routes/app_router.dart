@@ -1,4 +1,5 @@
 import 'package:avo_ai_diet/feature/chat/view/chat_view.dart';
+import 'package:avo_ai_diet/feature/favorites/favorite_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
@@ -18,7 +19,7 @@ final class AppRouter {
   static final GoRouter router = GoRouter(
     // navigatorKey: _rootNavigatorKey,
     routes: _routes,
-    initialLocation: RouteNames.welcome,
+    initialLocation: RouteNames.favorite,
     errorBuilder: (context, state) => const _ErrorPage(),
   );
 
@@ -51,6 +52,10 @@ final class AppRouter {
         GoRoute(
           path: RouteNames.chat,
           builder: (context, state) => const ChatView(),
+        ),
+        GoRoute(
+          path: RouteNames.favorite,
+          builder: (context, state) => const FavoriteView(),
         ),
       ];
 
