@@ -12,9 +12,9 @@ class ChatCubit extends Cubit<ChatState> {
   final GeminiService _service;
 
   Future<void> chatWithAi(String text, String conversationHistory) async {
+    emit(state.copyWith(isLoading: true));
     try {
-      emit(state.copyWith(isLoading: true));
-      final response = await _service.aiChat(text,conversationHistory);
+      final response = await _service.aiChat(text, conversationHistory);
       log(response);
       emit(state.copyWith(isLoading: false, response: response));
     } on Exception catch (e) {

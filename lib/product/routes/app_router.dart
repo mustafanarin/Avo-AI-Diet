@@ -1,5 +1,5 @@
 import 'package:avo_ai_diet/feature/chat/view/chat_view.dart';
-import 'package:avo_ai_diet/feature/favorites/favorite_view.dart';
+import 'package:avo_ai_diet/feature/favorites/view/favorite_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';

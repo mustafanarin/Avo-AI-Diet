@@ -1,4 +1,5 @@
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -98,7 +99,7 @@ class _FavoriteViewState extends State<FavoriteView> {
               itemBuilder: (context, index) {
                 final favoriteDiet = _favoriteDiets[index];
                 return InkWell(
-                  onTap: () => _showFullText(context, favoriteDiet),
+                  onTap: () => _showFullText(context, favoriteDiet *5),
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -132,11 +133,11 @@ class _FavoriteViewState extends State<FavoriteView> {
                           Expanded(
                             child: Text(
                               favoriteDiet * 10,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: context.textTheme().bodyMedium?.copyWith(
                                     color: ProjectColors.white,
                                   ),
                               overflow: TextOverflow.ellipsis,
-                              maxLines: 9,
+                              maxLines: 8,
                             ),
                           ),
                         ],
