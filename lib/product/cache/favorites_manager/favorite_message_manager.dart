@@ -1,6 +1,8 @@
 import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class FavoriteMessageManager {
   LazyBox<FavoriteMessageModel>? _box;
 
@@ -13,10 +15,10 @@ class FavoriteMessageManager {
   Future<void> toggleFavorite(FavoriteMessageModel model) async {
     final box = await _getBox();
 
-    if (box!.containsKey(model.content)) {
-      await box.delete(model.content);
+    if (box!.containsKey(model.savedAt)) {
+      await box.delete(model.savedAt);
     } else {
-      await box.put(model.content, model);
+      await box.put(model.savedAt, model);
     }
   }
 

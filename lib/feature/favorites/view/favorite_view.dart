@@ -1,6 +1,9 @@
+import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
+import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FavoriteView extends StatefulWidget {
@@ -12,17 +15,6 @@ class FavoriteView extends StatefulWidget {
 
 class _FavoriteViewState extends State<FavoriteView> {
   final List<String> _favoriteDiets = [
-    'merhaba mustafa ',
-    'beşiktaş fener ',
-    'diyet listesi ',
-    'flutter list ',
-    'merhaba mustafa ',
-    'beşiktaş fener ',
-    'diyet listesi ',
-    'flutter list ',
-    'merhaba mustafa ',
-    'beşiktaş fener ',
-    'diyet listesi ',
     'flutter list ',
   ];
 
@@ -51,7 +43,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                 constraints: BoxConstraints(maxHeight: 400.h),
                 child: SingleChildScrollView(
                   child: Text(
-                    text * 5,
+                    text,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
@@ -81,69 +73,106 @@ class _FavoriteViewState extends State<FavoriteView> {
       appBar: AppBar(
         title: Text(
           'Favorilerim',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: context.textTheme().titleLarge,
         ),
       ),
       body: Padding(
         padding: EdgeInsets.all(12.w),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: constraints.maxWidth / 2,
-                mainAxisExtent: 250.h,
-                crossAxisSpacing: 12.w,
-                mainAxisSpacing: 12.h,
-              ),
-              itemCount: _favoriteDiets.length,
-              itemBuilder: (context, index) {
-                final favoriteDiet = _favoriteDiets[index];
-                return InkWell(
-                  onTap: () => _showFullText(context, favoriteDiet *5),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          ProjectColors.lightAvocado.withOpacity(0.9),
-                          ProjectColors.accentCoral.withOpacity(0.8),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: ProjectColors.darkAvocado.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(12.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.favorite,
-                            color: ProjectColors.white,
-                            size: 24.w,
-                          ),
-                          SizedBox(height: 8.h),
-                          Expanded(
-                            child: Text(
-                              favoriteDiet * 10,
-                              style: context.textTheme().bodyMedium?.copyWith(
-                                    color: ProjectColors.white,
-                                  ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 8,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+        child: BlocBuilder<FavoritesCubit, FavoritesState>(
+          builder: (context, state) {
+            if (state.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (state.favorites == null || state.favorites!.isEmpty) {
+              return const Center(
+                child: Text('Henüz favori mesajlarınız bulunmuyor'),
+              );
+            }
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: constraints.maxWidth / 2,
+                    mainAxisExtent: 250.h,
+                    crossAxisSpacing: 12.w,
+                    mainAxisSpacing: 12.h,
                   ),
+                  itemCount: state.favorites!.length,
+                  itemBuilder: (context, index) {
+                    final favoriteMessage = state.favorites![index];
+                    return InkWell(
+                      onTap: () => _showFullText(context, favoriteMessage.content),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              ProjectColors.lightAvocado.withOpacity(0.9),
+                              ProjectColors.accentCoral.withOpacity(0.8),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: ProjectColors.darkAvocado.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  BlocBuilder<FavoritesCubit, FavoritesState>(
+                                    builder: (context, state) {
+                                      return SizedBox(
+                                        height: 20.h,
+                                        width: 20.w,
+                                        child: IconButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            context.read<FavoritesCubit>().toogleFavorite(favoriteMessage);
+                                          },
+                                          icon: Icon(
+                                            Icons.favorite,
+                                            color: ProjectColors.red,
+                                            size: 24.w,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Text(
+                                    favoriteMessage.savedAt,
+                                    style: context.textTheme().bodySmall,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8.h),
+                              Expanded(
+                                child: Text(
+                                  favoriteMessage.content,
+                                  style: context.textTheme().bodyMedium?.copyWith(
+                                        color: ProjectColors.white,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 8,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             );

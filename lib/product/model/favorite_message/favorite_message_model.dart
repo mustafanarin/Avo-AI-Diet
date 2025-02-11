@@ -11,7 +11,10 @@ class FavoriteMessageModel extends Equatable {
   final String content;
 
   @HiveField(1)
-  final DateTime savedAt;
+  final String savedAt;
+
+  // return only date part 
+  String get displayDate => savedAt.split('_')[0];
 
   @override
   List<Object?> get props => [content, savedAt];

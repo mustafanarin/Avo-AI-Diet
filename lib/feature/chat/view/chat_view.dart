@@ -1,12 +1,16 @@
 import 'package:avo_ai_diet/feature/chat/cubit/chat_cubit.dart';
 import 'package:avo_ai_diet/feature/chat/state/chat_state.dart';
+import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
+import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -191,6 +195,7 @@ class _ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final favoritesCubit = context.read<FavoritesCubit>();
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Row(
@@ -213,43 +218,63 @@ class _ChatMessage extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: isMe ? ProjectColors.darkGreen : ProjectColors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.circularSmall(),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: ProjectColors.black.withOpacity(0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: isLoading
-                  ? SizedBox(
-                      width: 24.w,
-                      height: 24.h,
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: ProjectColors.darkGreen,
-                      ),
-                    )
-                  : Text(
-                      text,
-                      style: TextStyle(
-                        color: isMe ? ProjectColors.white : ProjectColors.black,
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: isLoading
+                        ? SizedBox(
+                            width: 24.w,
+                            height: 24.h,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: ProjectColors.darkGreen,
+                            ),
+                          )
+                        : Text(
+                            text,
+                            style: TextStyle(
+                              color: isMe ? ProjectColors.white : ProjectColors.black,
+                            ),
+                          ),
+                  ),
+                  if (!isLoading && !isMe) ...[
+                    BlocBuilder<FavoritesCubit, FavoritesState>(
+                      builder: (context, state) {
+                        final isFavorited = state.favorites?.any(
+                              (favorite) => favorite.content == text,
+                            ) ??
+                            false;
+                        return IconButton(
+                          onPressed: () {
+                            final now = DateTime.now();
+                            final model = FavoriteMessageModel(
+                              text,
+                              "${DateFormat('d MMMM yyyy', 'tr_TR').format(now)}_${now.millisecondsSinceEpoch}",
+                            );
+                            favoritesCubit.toogleFavorite(model);
+                          },
+                          icon: Icon(
+                            isFavorited ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorited ? ProjectColors.red : ProjectColors.grey,
+                          ),
+                        );
+                      },
                     ),
+                  ],
+                ],
+              ),
             ),
           ),
-          // if (isMe)
-          //   Container(
-          //     margin: const EdgeInsets.only(left: 16),
-          //     child: const CircleAvatar(
-          //       backgroundColor: ProjectColors.darkGreen,
-          //       child: Icon(
-          //         Icons.person,
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //   ),
         ],
       ),
     );

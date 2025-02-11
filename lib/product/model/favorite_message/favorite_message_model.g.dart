@@ -18,7 +18,7 @@ class FavoriteMessageModelAdapter extends TypeAdapter<FavoriteMessageModel> {
     };
     return FavoriteMessageModel(
       fields[0] as String,
-      fields[1] as DateTime,
+      fields[1] as String,
     );
   }
 
