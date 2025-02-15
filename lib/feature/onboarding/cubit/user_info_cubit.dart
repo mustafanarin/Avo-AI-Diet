@@ -24,7 +24,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
       await _manager.saveDietPlan(AiResponse(
           dietPlan: response, formattedDayMonthYear: DateFormat('d MMMM yyyy', 'tr_TR').format(DateTime.now())));
 
-      emit(state.copyWith(response: response));
+      emit(state.copyWith(response: response,isLoading: true));
     } on Exception catch (e) {
       emit(state.copyWith(isLoading: false, error: 'Cevap yüklenirken bir hata oluştu: $e'));
     }

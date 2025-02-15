@@ -2,10 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'favorite_message_model.g.dart';
-// TODO equtable
+
+// TODOequtable
 @HiveType(typeId: 2)
 class FavoriteMessageModel extends Equatable {
-  const FavoriteMessageModel(this.content, this.savedAt);
+  const FavoriteMessageModel(this.content, this.savedAt, this.messageId);
 
   @HiveField(0)
   final String content;
@@ -13,9 +14,9 @@ class FavoriteMessageModel extends Equatable {
   @HiveField(1)
   final String savedAt;
 
-  // return only date part 
-  String get displayDate => savedAt.split('_')[0];
+  @HiveField(2)
+  final String messageId;
 
   @override
-  List<Object?> get props => [content, savedAt];
+  List<Object?> get props => [messageId, content, savedAt];
 }

@@ -143,7 +143,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                   SnackBar(content: Text(state.error!)),
                 );
               }
-              if (state.isLoading) {}
+              
               if (state.response != null) {
                 final weight = double.parse(_weightController.text);
                 final height = double.parse(_heightController.text);

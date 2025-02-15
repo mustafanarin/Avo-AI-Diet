@@ -2,21 +2,28 @@
 import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
 
 class FavoritesState {
-  FavoritesState({this.favorites, this.savedAt, this.isLoading = false});
+  FavoritesState({this.favorites, this.messageId, this.savedAt, this.isLoading = false});
 
   final List<FavoriteMessageModel>? favorites;
-  final DateTime? savedAt;
+  final String? savedAt;
+  final String? messageId;
   final bool isLoading;
+
+  
+
+  
 
   FavoritesState copyWith({
     List<FavoriteMessageModel>? favorites,
-    DateTime? savedAt,
+    String? savedAt,
+    String? messageId,
     bool? isLoading,
   }) {
     return FavoritesState(
       favorites: favorites ?? this.favorites,
       savedAt: savedAt ?? this.savedAt,
-      isLoading: isLoading ?? false,
+      messageId: messageId ?? this.messageId,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }

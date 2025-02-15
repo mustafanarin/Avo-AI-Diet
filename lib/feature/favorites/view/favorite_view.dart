@@ -2,6 +2,7 @@ import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
 import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,10 +15,6 @@ class FavoriteView extends StatefulWidget {
 }
 
 class _FavoriteViewState extends State<FavoriteView> {
-  final List<String> _favoriteDiets = [
-    'flutter list ',
-  ];
-
   void _showFullText(BuildContext context, String text) {
     showDialog(
       context: context,
@@ -49,16 +46,15 @@ class _FavoriteViewState extends State<FavoriteView> {
                 ),
               ),
               SizedBox(height: 16.h),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ProjectColors.mainAvocado,
-                  foregroundColor: ProjectColors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              SizedBox(
+                width: 100.h,
+                height: 50.w,
+                child: ProjectButton(
+                  text: 'Kapat',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Kapat'),
               ),
             ],
           ),
@@ -165,6 +161,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                                       ),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 8,
+                                  
                                 ),
                               ),
                             ],

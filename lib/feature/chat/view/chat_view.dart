@@ -228,44 +228,53 @@ class _ChatMessage extends StatelessWidget {
                 ],
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Flexible(
-                    child: isLoading
-                        ? SizedBox(
-                            width: 24.w,
-                            height: 24.h,
-                            child: const CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: ProjectColors.darkGreen,
-                            ),
-                          )
-                        : Text(
-                            text,
-                            style: TextStyle(
-                              color: isMe ? ProjectColors.white : ProjectColors.black,
-                            ),
-                          ),
-                  ),
+                  if (isLoading)
+                    SizedBox(
+                      width: 24.w,
+                      height: 24.h,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: ProjectColors.darkGreen,
+                      ),
+                    )
+                  else
+                    Text(
+                      text,
+                      style: TextStyle(
+                        color: isMe ? ProjectColors.white : ProjectColors.black,
+                      ),
+                    ),
                   if (!isLoading && !isMe) ...[
+                    const SizedBox(height: 4),
                     BlocBuilder<FavoritesCubit, FavoritesState>(
                       builder: (context, state) {
+                        final messageId = text.hashCode.toString();
                         final isFavorited = state.favorites?.any(
-                              (favorite) => favorite.content == text,
-                            ) ??
-                            false;
-                        return IconButton(
-                          onPressed: () {
-                            final now = DateTime.now();
-                            final model = FavoriteMessageModel(
-                              text,
-                              "${DateFormat('d MMMM yyyy', 'tr_TR').format(now)}_${now.millisecondsSinceEpoch}",
-                            );
-                            favoritesCubit.toogleFavorite(model);
-                          },
-                          icon: Icon(
-                            isFavorited ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorited ? ProjectColors.red : ProjectColors.grey,
+                          (favorite) => favorite.messageId == messageId,
+                        ) ?? false;
+                        
+                        return SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              final now = DateTime.now();
+                              final model = FavoriteMessageModel(
+                                text,
+                                DateFormat('d MMMM yyyy', 'tr_TR').format(now),
+                                messageId,
+                              );
+                              favoritesCubit.toogleFavorite(model);
+                            },
+                            icon: Icon(
+                              isFavorited ? Icons.favorite : Icons.favorite_border,
+                              color: isFavorited ? ProjectColors.red : ProjectColors.grey,
+                              size: 20,
+                            ),
                           ),
                         );
                       },
@@ -280,3 +289,4 @@ class _ChatMessage extends StatelessWidget {
     );
   }
 }
+

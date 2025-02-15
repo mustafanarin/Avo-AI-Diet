@@ -15,10 +15,10 @@ class FavoriteMessageManager {
   Future<void> toggleFavorite(FavoriteMessageModel model) async {
     final box = await _getBox();
 
-    if (box!.containsKey(model.savedAt)) {
-      await box.delete(model.savedAt);
+    if (box!.containsKey(model.messageId)) {
+      await box.delete(model.messageId);
     } else {
-      await box.put(model.savedAt, model);
+      await box.put(model.messageId, model);
     }
   }
 

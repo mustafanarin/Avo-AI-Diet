@@ -19,17 +19,20 @@ class FavoriteMessageModelAdapter extends TypeAdapter<FavoriteMessageModel> {
     return FavoriteMessageModel(
       fields[0] as String,
       fields[1] as String,
+      fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, FavoriteMessageModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.content)
       ..writeByte(1)
-      ..write(obj.savedAt);
+      ..write(obj.savedAt)
+      ..writeByte(2)
+      ..write(obj.messageId);
   }
 
   @override
