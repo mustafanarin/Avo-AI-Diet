@@ -1,0 +1,312 @@
+{
+    "foods": [
+      {
+        "name": "Elma",
+        "calorie": 52,
+        "protein": 0.3,
+        "carbohydrate": 14,
+        "fat": 0.2
+      },
+      {
+        "name": "Muz",
+        "calorie": 89,
+        "protein": 1.1,
+        "carbohydrate": 22.8,
+        "fat": 0.3
+      },
+      {
+        "name": "Portakal",
+        "calorie": 47,
+        "protein": 0.9,
+        "carbohydrate": 11.8,
+        "fat": 0.1
+      },
+      {
+        "name": "Çilek",
+        "calorie": 32,
+        "protein": 0.7,
+        "carbohydrate": 7.7,
+        "fat": 0.3
+      },
+      {
+        "name": "Havuç",
+        "calorie": 41,
+        "protein": 0.9,
+        "carbohydrate": 9.6,
+        "fat": 0.2
+      },
+      {
+        "name": "Brokoli",
+        "calorie": 34,
+        "protein": 2.8,
+        "carbohydrate": 7,
+        "fat": 0.4
+      },
+      {
+        "name": "Domates",
+        "calorie": 18,
+        "protein": 0.9,
+        "carbohydrate": 3.9,
+        "fat": 0.2
+      },
+      {
+        "name": "Ispanak",
+        "calorie": 23,
+        "protein": 2.9,
+        "carbohydrate": 3.6,
+        "fat": 0.4
+      },
+      {
+        "name": "Tavuk Göğsü",
+        "calorie": 165,
+        "protein": 31,
+        "carbohydrate": 0,
+        "fat": 3.6
+      },
+      {
+        "name": "Yumurta",
+        "calorie": 155,
+        "protein": 13,
+        "carbohydrate": 1.1,
+        "fat": 11
+      },
+      {
+        "name": "Somon",
+        "calorie": 208,
+        "protein": 22,
+        "carbohydrate": 0,
+        "fat": 13
+      },
+      {
+        "name": "Dana Kıyma (Yağsız)",
+        "calorie": 187,
+        "protein": 26,
+        "carbohydrate": 0,
+        "fat": 8
+      },
+      {
+        "name": "Pirinç (Pişmemiş)",
+        "calorie": 365,
+        "protein": 7.1,
+        "carbohydrate": 80,
+        "fat": 0.7
+      },
+      {
+        "name": "Makarna (Pişmemiş)",
+        "calorie": 371,
+        "protein": 13,
+        "carbohydrate": 75,
+        "fat": 1.5
+      },
+      {
+        "name": "Tam Buğday Ekmeği",
+        "calorie": 247,
+        "protein": 13,
+        "carbohydrate": 41,
+        "fat": 3.4
+      },
+      {
+        "name": "Yulaf",
+        "calorie": 389,
+        "protein": 16.9,
+        "carbohydrate": 66,
+        "fat": 6.9
+      },
+      {
+        "name": "Zeytinyağı",
+        "calorie": 884,
+        "protein": 0,
+        "carbohydrate": 0,
+        "fat": 100
+      },
+      {
+        "name": "Avokado",
+        "calorie": 160,
+        "protein": 2,
+        "carbohydrate": 8.5,
+        "fat": 14.7
+      },
+      {
+        "name": "Ceviz",
+        "calorie": 654,
+        "protein": 15.2,
+        "carbohydrate": 13.7,
+        "fat": 65.2
+      },
+      {
+        "name": "Badem",
+        "calorie": 579,
+        "protein": 21.2,
+        "carbohydrate": 21.7,
+        "fat": 49.9
+      },
+      {
+        "name": "Mercimek",
+        "calorie": 353,
+        "protein": 25.8,
+        "carbohydrate": 60.1,
+        "fat": 1.1
+      },
+      {
+        "name": "Nohut",
+        "calorie": 364,
+        "protein": 19.3,
+        "carbohydrate": 61,
+        "fat": 6
+      },
+      {
+        "name": "Fasulye",
+        "calorie": 333,
+        "protein": 23.4,
+        "carbohydrate": 60,
+        "fat": 0.9
+      },
+      {
+        "name": "Patates",
+        "calorie": 77,
+        "protein": 2,
+        "carbohydrate": 17,
+        "fat": 0.1
+      },
+      {
+        "name": "Bulgur",
+        "calorie": 342,
+        "protein": 12.3,
+        "carbohydrate": 75.9,
+        "fat": 1.3
+      },
+      {
+        "name": "Mozzarella Peyniri",
+        "calorie": 280,
+        "protein": 28,
+        "carbohydrate": 2.2,
+        "fat": 17
+      },
+      {
+        "name": "Beyaz Peynir",
+        "calorie": 264,
+        "protein": 14,
+        "carbohydrate": 3.3,
+        "fat": 21
+      },
+      {
+        "name": "Süt (Tam Yağlı)",
+        "calorie": 61,
+        "protein": 3.2,
+        "carbohydrate": 4.8,
+        "fat": 3.3
+      },
+      {
+        "name": "Yoğurt (Tam Yağlı)",
+        "calorie": 61,
+        "protein": 3.5,
+        "carbohydrate": 4.7,
+        "fat": 3.3
+      },
+      {
+        "name": "Mango",
+        "calorie": 60,
+        "protein": 0.8,
+        "carbohydrate": 15,
+        "fat": 0.4
+      },
+      {
+        "name": "Ananas",
+        "calorie": 50,
+        "protein": 0.5,
+        "carbohydrate": 13,
+        "fat": 0.1
+      },
+      {
+        "name": "Kivi",
+        "calorie": 61,
+        "protein": 1.1,
+        "carbohydrate": 14.7,
+        "fat": 0.5
+      },
+      {
+        "name": "Üzüm",
+        "calorie": 69,
+        "protein": 0.7,
+        "carbohydrate": 18.1,
+        "fat": 0.2
+      },
+      {
+        "name": "Karnabahar",
+        "calorie": 25,
+        "protein": 1.9,
+        "carbohydrate": 5,
+        "fat": 0.3
+      },
+      {
+        "name": "Patlıcan",
+        "calorie": 25,
+        "protein": 1,
+        "carbohydrate": 6,
+        "fat": 0.2
+      },
+      {
+        "name": "Kabak",
+        "calorie": 17,
+        "protein": 1.2,
+        "carbohydrate": 3.4,
+        "fat": 0.2
+      },
+      {
+        "name": "Hindistan Cevizi",
+        "calorie": 354,
+        "protein": 3.3,
+        "carbohydrate": 15.2,
+        "fat": 33.5
+      },
+      {
+        "name": "Fındık",
+        "calorie": 628,
+        "protein": 15,
+        "carbohydrate": 16.7,
+        "fat": 60.8
+      },
+      {
+        "name": "Antep Fıstığı",
+        "calorie": 557,
+        "protein": 20.2,
+        "carbohydrate": 27.2,
+        "fat": 45.3
+      },
+      {
+        "name": "Chia Tohumu",
+        "calorie": 486,
+        "protein": 16.5,
+        "carbohydrate": 42.1,
+        "fat": 30.7
+      },
+      {
+        "name": "Kinoa",
+        "calorie": 120,
+        "protein": 4.4,
+        "carbohydrate": 21.3,
+        "fat": 1.9
+      },
+      {
+        "name": "Ton Balığı",
+        "calorie": 132,
+        "protein": 28,
+        "carbohydrate": 0,
+        "fat": 1.3
+      },
+      {
+        "name": "Hindi Göğsü",
+        "calorie": 104,
+        "protein": 22,
+        "carbohydrate": 0,
+        "fat": 1
+      },
+      {
+        "name": "Kuzu Pirzola",
+        "calorie": 276,
+        "protein": 25.6,
+        "carbohydrate": 0,
+        "fat": 18.7
+      }
+    ]
+  }

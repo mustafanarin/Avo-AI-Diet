@@ -1,5 +1,6 @@
 import 'package:avo_ai_diet/feature/favorites/view/favorite_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
+import 'package:avo_ai_diet/feature/search/view/search_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ final class CustomTabBarView extends HookWidget {
         controller: pageController,
         children: const [
           HomeView(),
-          SearchPage(),
+          SearchView(),
           SizedBox.shrink(),
           FavoriteView(),
           ProfilePage(),
@@ -98,11 +99,7 @@ final class CustomTabBarView extends HookWidget {
   }
 }
 
-class SearchPage extends StatelessWidget {
-  const SearchPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Arama'));
-}
+
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
