@@ -99,8 +99,6 @@ final class CustomTabBarView extends HookWidget {
   }
 }
 
-
-
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
   @override
