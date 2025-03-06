@@ -13,7 +13,7 @@ final class GeminiService {
   }
   late final GenerativeModel _model;
   late final SecureStorageService _secureStorage;
-  static const String _geminiModel = 'gemini-pro';
+  static const String _geminiModel = 'gemini-1.5-pro';
 
   Future<void> _initialize() async {
     final apiKey = await _getSecureApiKey();
