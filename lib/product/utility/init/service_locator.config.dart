@@ -32,10 +32,10 @@ _i174.GetIt $initGetIt(
     environment,
     environmentFilter,
   );
-  gh.factory<_i288.AiResponseManager>(() => _i288.AiResponseManager());
-  gh.factory<_i575.NameAndCalManager>(() => _i575.NameAndCalManager());
   gh.factory<_i466.FavoriteMessageManager>(
       () => _i466.FavoriteMessageManager());
+  gh.factory<_i288.AiResponseManager>(() => _i288.AiResponseManager());
+  gh.factory<_i575.NameAndCalManager>(() => _i575.NameAndCalManager());
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
   gh.factory<_i456.FavoritesCubit>(
       () => _i456.FavoritesCubit(gh<_i466.FavoriteMessageManager>()));

@@ -1,15 +1,14 @@
 import 'package:avo_ai_diet/feature/chat/view/chat_view.dart';
 import 'package:avo_ai_diet/feature/favorites/view/favorite_view.dart';
-import 'package:avo_ai_diet/feature/home/view/home_view.dart';
-import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
+import 'package:avo_ai_diet/feature/search/model/food_model.dart';
+import 'package:avo_ai_diet/feature/search/view/food_detail_view.dart';
+import 'package:avo_ai_diet/feature/search/view/search_view.dart';
 import 'package:avo_ai_diet/feature/tabbar/tabbar_view.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final class AppRouter {
@@ -19,7 +18,7 @@ final class AppRouter {
   static final GoRouter router = GoRouter(
     // navigatorKey: _rootNavigatorKey,
     routes: _routes,
-    initialLocation: RouteNames.welcome,
+    initialLocation: '/search',
     errorBuilder: (context, state) => const _ErrorPage(),
   );
 
@@ -43,19 +42,23 @@ final class AppRouter {
           ),
         ),
         GoRoute(
-          path: RouteNames.home,
-          builder: (context, state) => BlocProvider.value(
-            value: getIt<UserInfoCubit>(),
-            child: const HomeView(),
-          ),
-        ),
-        GoRoute(
           path: RouteNames.chat,
           builder: (context, state) => const ChatView(),
         ),
         GoRoute(
           path: RouteNames.favorite,
           builder: (context, state) => const FavoriteView(),
+        ),
+        GoRoute(
+          path: '/search',
+          builder: (context, state) => const SearchView(),
+        ),
+        GoRoute(
+          path: RouteNames.detail,
+          builder: (context, state) {
+            final foodModel = state.extra! as FoodModel;
+            return FoodDetailPage(foodModel: foodModel);
+          },
         ),
       ];
 

@@ -3,9 +3,11 @@ import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/state/search_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/nutrition_info.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -89,7 +91,7 @@ class _SearchViewState extends State<SearchView> {
                                       onPressed: () {
                                         _controller.clear();
                                         context.read<SearchCubit>().clearSearch();
-                                        // TODO mantıklı mı
+                                        // TODOmantıklı mı
                                         FocusScope.of(context).unfocus();
                                       },
                                       icon: const Icon(Icons.clear),
@@ -169,69 +171,72 @@ class _FoodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Column(
-        children: [
-          ListTile(
-            leading: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: ProjectColors.successGreen.withOpacity(0.3),
+    return GestureDetector(
+      onTap: () => context.push(RouteNames.detail, extra: food),
+      child: Card(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          children: [
+            ListTile(
+              leading: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: ProjectColors.successGreen.withOpacity(0.3),
+                ),
+                child: const Icon(
+                  Icons.restaurant_rounded,
+                  color: ProjectColors.forestGreen,
+                  size: 30,
+                ),
               ),
-              child: const Icon(
-                Icons.restaurant_rounded,
-                color: ProjectColors.forestGreen,
-                size: 30,
-              ),
-            ),
-            title: Text(
-              food.name,
-              style: context.textTheme().titleMedium,
-            ),
-            subtitle: Text(
-              '100 gram',
-              style: context.textTheme().bodySmall?.copyWith(
-                    color: ProjectColors.grey600,
-                  ),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: ProjectColors.forestGreen.withOpacity(0.1),
-              ),
-              child: Text(
-                '${food.calorie} kcal',
+              title: Text(
+                food.name,
                 style: context.textTheme().titleMedium,
               ),
+              subtitle: Text(
+                '100 gram',
+                style: context.textTheme().bodySmall?.copyWith(
+                      color: ProjectColors.grey600,
+                    ),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: ProjectColors.forestGreen.withOpacity(0.1),
+                ),
+                child: Text(
+                  '${food.calorie} kcal',
+                  style: context.textTheme().titleMedium,
+                ),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _NutritionInfoBox(
-                  label: NutritionInfo.protein,
-                  value: food.protein,
-                  color: ProjectColors.green,
-                ),
-                _NutritionInfoBox(
-                  label: NutritionInfo.carbohydrate,
-                  value: food.carbohydrate,
-                  color: ProjectColors.primary,
-                ),
-                _NutritionInfoBox(
-                  label: NutritionInfo.fat,
-                  value: food.fat,
-                  color: ProjectColors.earthBrown,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _NutritionInfoBox(
+                    label: NutritionInfo.protein,
+                    value: food.protein,
+                    color: ProjectColors.green,
+                  ),
+                  _NutritionInfoBox(
+                    label: NutritionInfo.carbohydrate,
+                    value: food.carbohydrate,
+                    color: ProjectColors.primary,
+                  ),
+                  _NutritionInfoBox(
+                    label: NutritionInfo.fat,
+                    value: food.fat,
+                    color: ProjectColors.earthBrown,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
