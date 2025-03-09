@@ -1,13 +1,14 @@
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
 import 'package:avo_ai_diet/product/cache/reponse_manager/ai_response_manager.dart';
+import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/extensions/json_extension.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +57,7 @@ class _HomeViewState extends State<HomeView> {
                   nameCalState.name != null ? '${ProjectStrings.hello} ${nameCalState.name}' : ProjectStrings.hello,
                 ),
                 Hero(
-                  // TODOhero animation
-                  tag: 'avoLottie',
+                  tag: HeroLottie.avoLottie.value,
                   child: Lottie.asset(
                     fit: BoxFit.cover,
                     height: 70.h,

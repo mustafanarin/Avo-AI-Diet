@@ -32,4 +32,28 @@ abstract final class ProjectStrings {
   static const String dietListTitle = 'Günlük Beslenme Planı';
   static const String hello = 'Merhaba';
   static const String myDietList = 'Diyet Listelerim';
+
+  // Chat Page
+  static const String askToAvo = "Avo'ya sor";
+  static const String avoHowCanIHelpText =
+      'Merhaba ben yapay zeka diyet asistanın Avo. Sana nasıl yardımcı olabilirim?';
+  static const String writeMessage = 'Mesajınızı yazın';
+
+  // Favorite Page
+  static const String details = 'Detaylar';
+  static const String close = 'Kapat';
+  static const String myFavorites = 'Favorilerim';
+  static const String noFavorite = 'Henüz favori mesajlarınız bulunmuyor';
+
+  // Search Page
+  static const String searchFood = 'Besin Ara';
+  static const String enterFoodName = 'Besin adı girin...';
+  static const String noResults = 'Sonuç bulunamadı';
+  static const String noFood = 'Besin bulunamadı';
+  static const String oneHundredGram = '100 gram';
+
+  // Food Detail Page
+  static const String foodDetail = 'Besin Detayı';
+  static const String allCalori = 'Toplam Kalori';
+
 }

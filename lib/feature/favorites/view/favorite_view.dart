@@ -1,7 +1,8 @@
 import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
 import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +33,7 @@ class _FavoriteViewState extends State<FavoriteView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Detaylar',
+                ProjectStrings.details,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBox(height: 16.h),
@@ -50,7 +51,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                 width: 100.h,
                 height: 50.w,
                 child: ProjectButton(
-                  text: 'Kapat',
+                  text: ProjectStrings.close,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -68,7 +69,7 @@ class _FavoriteViewState extends State<FavoriteView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Favorilerim',
+          ProjectStrings.myFavorites,
           style: context.textTheme().titleLarge,
         ),
       ),
@@ -83,7 +84,7 @@ class _FavoriteViewState extends State<FavoriteView> {
             }
             if (state.favorites == null || state.favorites!.isEmpty) {
               return const Center(
-                child: Text('Henüz favori mesajlarınız bulunmuyor'),
+                child: Text(ProjectStrings.noFavorite),
               );
             }
             return LayoutBuilder(

@@ -4,8 +4,8 @@ import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.d
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/extensions/png_extension.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

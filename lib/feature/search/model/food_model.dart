@@ -1,4 +1,4 @@
-class FoodModel {
+final class FoodModel {
   FoodModel({
     required this.name,
     required this.calorie,

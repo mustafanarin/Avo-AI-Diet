@@ -2,15 +2,16 @@ import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
+import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/extensions/activity_level_extension.dart';
-import 'package:avo_ai_diet/product/extensions/json_extension.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
@@ -179,7 +180,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                         child: Column(
                           children: [
                             Hero(
-                              tag: 'avoLottie',
+                              tag: HeroLottie.avoLottie.value,
                               child: Lottie.asset(JsonName.avoWalk.path),
                             ),
                             const Text('Senin için en uygun diyet planını hazırlıyorum :)'),

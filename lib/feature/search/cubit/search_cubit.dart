@@ -3,9 +3,12 @@ import 'dart:convert';
 
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/state/search_state.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
+import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:injectable/injectable.dart';
+@injectable
 class SearchCubit extends Cubit<SearchState> {
   SearchCubit() : super(const SearchState()) {
     loadAllFoods();
@@ -32,10 +35,10 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   Future<List<FoodModel>> _fetchAllFoods() async {
-    final response = await rootBundle.loadString('assets/json/foods.json');
+    final response = await rootBundle.loadString(JsonName.foods.path);
     final data = jsonDecode(response);
 
-    return (data['foods'] as List).map((item) => FoodModel.fromJson(item as Map<String, dynamic>)).toList();
+    return (data[JsonName.foods.name] as List).map((item) => FoodModel.fromJson(item as Map<String, dynamic>)).toList();
   }
 
   void searchTextChanged(String query) {

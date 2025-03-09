@@ -8,12 +8,12 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 final class GeminiService {
-  GeminiService(this._secureStorage) {
-    _initialize();
-  }
+  GeminiService(this._secureStorage);
+  final SecureStorageService _secureStorage;
   late final GenerativeModel _model;
-  late final SecureStorageService _secureStorage;
-  static const String _geminiModel = 'gemini-1.5-pro';
+  final String _geminiModel = 'gemini-1.5-pro';
+
+  late final Future<void> _initFuture = _initialize();
 
   Future<void> _initialize() async {
     final apiKey = await _getSecureApiKey();
@@ -39,6 +39,8 @@ final class GeminiService {
 
   Future<String> getUserDiet(UserInfoModel user) async {
     try {
+      await _initFuture;
+
       final prompt = '''
           Sen beslenme üzerine de uzman bir diyetisyensin. 
       
@@ -66,6 +68,8 @@ final class GeminiService {
 
   Future<String> aiChat(String text, String conversationHistory) async {
     try {
+      await _initFuture;
+
       final prompt = '''
         Ben Avo, sağlıklı beslenme konusunda size yol gösteren bir dijital asistanım.
 

@@ -3,8 +3,10 @@ import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/state/search_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/nutrition_info.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +30,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SearchCubit>(
-      create: (context) => SearchCubit(),
+      create: (context) => getIt<SearchCubit>(),
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -50,7 +52,7 @@ class _SearchViewState extends State<SearchView> {
                       centerTitle: false,
                       titlePadding: const EdgeInsets.only(left: 16),
                       title: Text(
-                        'Besin Ara',
+                        ProjectStrings.searchFood,
                         style: context.textTheme().titleLarge,
                       ),
                     ),
@@ -81,7 +83,7 @@ class _SearchViewState extends State<SearchView> {
                             color: ProjectColors.forestGreen,
                           ),
                           iconColor: ProjectColors.forestGreen,
-                          hintText: 'Besin adı girin...',
+                          hintText: ProjectStrings.enterFoodName,
                           filled: true,
                           fillColor: ProjectColors.white,
                           suffixIcon: BlocBuilder<SearchCubit, SearchState>(
@@ -91,7 +93,6 @@ class _SearchViewState extends State<SearchView> {
                                       onPressed: () {
                                         _controller.clear();
                                         context.read<SearchCubit>().clearSearch();
-                                        // TODOmantıklı mı
                                         FocusScope.of(context).unfocus();
                                       },
                                       icon: const Icon(Icons.clear),
@@ -122,7 +123,7 @@ class _SearchViewState extends State<SearchView> {
                               children: [
                                 Icon(Icons.search_off_rounded),
                                 SizedBox(height: 16),
-                                Text('Sonuç bulunamadı'),
+                                Text(ProjectStrings.noResults),
                               ],
                             ),
                           ),
@@ -136,7 +137,7 @@ class _SearchViewState extends State<SearchView> {
                       } else if (state.results.isEmpty) {
                         return const SliverFillRemaining(
                           child: Center(
-                            child: Text('Besin bulunamadı'),
+                            child: Text(ProjectStrings.noFood),
                           ),
                         );
                       } else {
@@ -195,7 +196,7 @@ class _FoodCard extends StatelessWidget {
                 style: context.textTheme().titleMedium,
               ),
               subtitle: Text(
-                '100 gram',
+                ProjectStrings.oneHundredGram,
                 style: context.textTheme().bodySmall?.copyWith(
                       color: ProjectColors.grey600,
                     ),

@@ -7,7 +7,7 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit(this._service) : super(ChatState());
+  ChatCubit(this._service) : super(const ChatState());
 
   final GeminiService _service;
 
@@ -18,8 +18,10 @@ class ChatCubit extends Cubit<ChatState> {
       log(response);
       emit(state.copyWith(isLoading: false, response: response));
     } on Exception catch (e) {
+      final errorMessage = 'There was a problem talking to Avo: $e';
+      log(errorMessage);
       emit(state.copyWith(isLoading: false));
-      throw Exception('Avo ile konuşşurken bir sorun oluştu: $e');
+      emit(state.copyWith(isLoading: false, error: errorMessage));
     }
   }
 }

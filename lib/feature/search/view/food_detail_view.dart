@@ -1,6 +1,7 @@
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -93,7 +94,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Besin Detayı', style: context.textTheme().titleLarge),
+        title: Text(ProjectStrings.foodDetail, style: context.textTheme().titleLarge),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: ProjectColors.earthBrown, size: 24),
           onPressed: () => Navigator.of(context).pop(),
@@ -124,7 +125,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                   children: [
                     CircleAvatar(
                       radius: 45.r,
-                      backgroundColor: const Color(0xFFEDF6EC),
+                      backgroundColor: ProjectColors.primary.withOpacity(0.2),
                       child: const Icon(
                         Icons.restaurant,
                         size: 40,
@@ -188,7 +189,8 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                             margin: EdgeInsets.symmetric(horizontal: 8.w),
                             padding: EdgeInsets.symmetric(horizontal: 8.w),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEDF6EC),
+                              color: ProjectColors.primary.withOpacity(0.2),
+                              //   Color(0xFFEDF6EC)
                               borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(color: ProjectColors.lightGreen.withOpacity(0.3)),
                             ),
@@ -255,7 +257,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
               // Kalori Bilgisi
               _buildNutritionCard(
                 context: context,
-                title: 'Toplam Kalori',
+                title: ProjectStrings.allCalori,
                 value: '${calculatedCalorie.toStringAsFixed(1)} kcal',
                 color: ProjectColors.accentCoral,
                 icon: Icons.local_fire_department,

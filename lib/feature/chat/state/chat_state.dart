@@ -1,5 +1,7 @@
-class ChatState {
-  ChatState({ this.isLoading = false,  this.response,  this.error});
+import 'package:equatable/equatable.dart';
+
+class ChatState extends Equatable {
+  const ChatState({this.isLoading = false, this.response, this.error});
 
   final bool isLoading;
   final String? response;
@@ -11,9 +13,12 @@ class ChatState {
     String? error,
   }) {
     return ChatState(
-      isLoading: isLoading ?? false,
+      isLoading: isLoading ?? this.isLoading,
       response: response ?? this.response,
       error: error ?? this.error,
     );
   }
+
+  @override
+  List<Object?> get props => [isLoading, response, error];
 }
