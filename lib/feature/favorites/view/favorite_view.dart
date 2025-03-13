@@ -17,6 +17,7 @@ class FavoriteView extends StatefulWidget {
 
 class _FavoriteViewState extends State<FavoriteView> {
   void _showFullText(BuildContext context, String text) {
+    // TODOscroll shadow
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -162,7 +163,6 @@ class _FavoriteViewState extends State<FavoriteView> {
                                       ),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 8,
-                                  
                                 ),
                               ),
                             ],

@@ -2,6 +2,7 @@ import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -254,7 +255,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
 
               SizedBox(height: 24.h),
 
-              // Kalori Bilgisi
+              // Calorie Information
               _buildNutritionCard(
                 context: context,
                 title: ProjectStrings.allCalori,
@@ -284,41 +285,44 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Besin Değerleri',
+                      ProjectStrings.foodValues,
                       style: context.textTheme().titleMedium,
                     ),
                     SizedBox(height: 20.h),
                     // Protein information
                     _buildNutrientRow(
+                      // TODOicon change
                       context: context,
-                      title: 'Protein',
+                      title: ProjectStrings.protein,
                       value: '${calculatedProtein.toStringAsFixed(1)}g',
-                      color: const Color(0xFF6CB4EE),
-                      icon: Icons.health_and_safety,
-                    ),
+                      color: ProjectColors.blueJeans,
+                      icon: Icons.abc,
+                    ), //
                     SizedBox(height: 16.h),
                     // Carbohydrate information
                     _buildNutrientRow(
                       context: context,
-                      title: 'Karbonhidrat',
+                      title: ProjectStrings.carbohydrate,
                       value: '${calculatedCarbohydrate.toStringAsFixed(1)}g',
                       color: ProjectColors.mainAvocado,
-                      icon: Icons.grain,
+                      icon: Icons.kayaking,
                     ),
                     SizedBox(height: 16.h),
                     // Fat information
                     _buildNutrientRow(
                       context: context,
-                      title: 'Yağ',
+                      title: ProjectStrings.oil,
                       value: '${calculatedFat.toStringAsFixed(1)}g',
                       color: ProjectColors.seedBeige,
-                      icon: Icons.opacity,
+                      icon: Icons.palette,
                     ),
                   ],
                 ),
               ),
 
               SizedBox(height: 24.h),
+              ProjectButton(text: "Ekle", onPressed: (){}),
+              SizedBox(height: 16.h),
             ],
           ),
         ),
@@ -340,7 +344,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
           Container(
             padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(
-              color: ProjectColors.forestGreen,
+              color: ProjectColors.lightGreen,
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(
@@ -354,11 +358,10 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
               padding: EdgeInsets.only(top: 4.h),
               child: Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                  color: ProjectColors.grey600,
-                ),
+                style: context.textTheme().bodySmall?.copyWith(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
             ),
         ],
@@ -412,9 +415,8 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
               SizedBox(height: 4.h),
               Text(
                 value,
-                style: context.textTheme().titleMedium?.copyWith(
-                      color: ProjectColors.darkAvocado,
-                      fontSize: 20,
+                style: context.textTheme().titleLarge?.copyWith(
+                      color: ProjectColors.forestGreen,
                     ),
               ),
             ],
@@ -442,7 +444,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
           child: Icon(
             icon,
             color: color,
-            size: 20,
+            size: 20.sp,
           ),
         ),
         SizedBox(width: 12.w),

@@ -55,5 +55,15 @@ abstract final class ProjectStrings {
   // Food Detail Page
   static const String foodDetail = 'Besin Detayı';
   static const String allCalori = 'Toplam Kalori';
+  static const String foodValues = 'Besin Değerleri';
+  static const String protein = 'Protein';
+  static const String carbohydrate = 'Karbonhidrat';
+  static const String oil = 'Yağ';
+
+  // BottomNavBar
+  static const String home = 'Ana Sayfa';
+  static const String search = 'Arama';
+  static const String favorites = 'Favoriler';
+  static const String profile = 'Profil';
 
 }

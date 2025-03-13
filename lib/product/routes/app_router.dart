@@ -5,7 +5,6 @@ import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/view/food_detail_view.dart';
-import 'package:avo_ai_diet/feature/search/view/search_view.dart';
 import 'package:avo_ai_diet/feature/tabbar/tabbar_view.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
@@ -48,10 +47,6 @@ final class AppRouter {
         GoRoute(
           path: RouteNames.favorite,
           builder: (context, state) => const FavoriteView(),
-        ),
-        GoRoute(
-          path: '/search',
-          builder: (context, state) => const SearchView(),
         ),
         GoRoute(
           path: RouteNames.detail,

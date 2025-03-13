@@ -2,9 +2,11 @@ import 'package:avo_ai_diet/feature/favorites/view/favorite_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
 import 'package:avo_ai_diet/feature/search/view/search_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 final class CustomTabBarView extends HookWidget {
@@ -27,8 +29,8 @@ final class CustomTabBarView extends HookWidget {
         ],
       ),
       floatingActionButton: Container(
-        height: 65,
-        width: 65,
+        height: 65.h,
+        width: 65.w,
         margin: const EdgeInsets.only(top: 30),
         child: FloatingActionButton(
           elevation: 0,
@@ -41,7 +43,7 @@ final class CustomTabBarView extends HookWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
-        height: 80,
+        height: 80.h,
         decoration: BoxDecoration(
           color: ProjectColors.white,
           borderRadius: const BorderRadius.only(
@@ -66,11 +68,11 @@ final class CustomTabBarView extends HookWidget {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
-              label: 'Ana Sayfa',
+              label: ProjectStrings.home,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.search_outlined),
-              label: 'Arama',
+              label: ProjectStrings.search,
             ),
             BottomNavigationBarItem(
               icon: SizedBox.shrink(),
@@ -78,16 +80,16 @@ final class CustomTabBarView extends HookWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite_outline),
-              label: 'Favoriler',
+              label: ProjectStrings.favorites,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
-              label: 'Profil',
+              label: ProjectStrings.profile,
             ),
           ],
           currentIndex: selectedIndex.value,
-          selectedItemColor: Colors.green,
-          unselectedItemColor: Colors.grey,
+          selectedItemColor: ProjectColors.green,
+          unselectedItemColor: ProjectColors.grey,
           onTap: (index) {
             if (index == 2) return;
             selectedIndex.value = index;
@@ -103,25 +105,4 @@ class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
   @override
   Widget build(BuildContext context) => const Center(child: Text('Profil'));
-}
-
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Chat'),
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: const Center(
-        child: Text('Chat Sayfası', style: TextStyle(color: Colors.black)),
-      ),
-    );
-  }
 }

@@ -9,11 +9,11 @@ import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.d
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
+import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
+import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
-import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
-import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
@@ -99,8 +99,31 @@ class _UserInfoViewState extends State<UserInfoView> {
     return StepState.disabled;
   }
 
+  double _calculateTotalCalories() {
+    final weight = double.parse(_weightController.text);
+    final height = double.parse(_heightController.text);
+    final age = double.parse(_ageController.text);
+
+    final bmr = CalorieCalculatorService.calculateBMR(
+      gender: _gender!,
+      weight: weight,
+      height: height,
+      age: age,
+    );
+
+    final selectedActivity = ActivityLevelExtension.fromDisplayName(_activityLevel!);
+
+    return CalorieCalculatorService.calculateTotalCalories(
+      bmr: bmr,
+      activityLevel: selectedActivity,
+      goal: _goal!,
+    );
+  }
+
   Future<void> _submitForm(BuildContext context, UserInfoCubit cubit) async {
     if (!_validateCurrentStep()) return;
+
+    final totalCalories = _calculateTotalCalories();
 
     final userInfo = UserInfoModel(
       height: double.parse(_heightController.text),
@@ -110,6 +133,7 @@ class _UserInfoViewState extends State<UserInfoView> {
       activityLevel: _activityLevel!,
       target: _goal!,
       budget: _budget!,
+      targetCalories: totalCalories,
     );
 
     await cubit.submitUserInfo(userInfo);
@@ -144,27 +168,9 @@ class _UserInfoViewState extends State<UserInfoView> {
                   SnackBar(content: Text(state.error!)),
                 );
               }
-              
+
               if (state.response != null) {
-                final weight = double.parse(_weightController.text);
-                final height = double.parse(_heightController.text);
-                final age = double.parse(_ageController.text);
-
-                final bmr = CalorieCalculatorService.calculateBMR(
-                  gender: _gender!,
-                  weight: weight,
-                  height: height,
-                  age: age,
-                );
-
-                final selectedActivity = ActivityLevelExtension.fromDisplayName(_activityLevel!);
-
-                final totalCalories = CalorieCalculatorService.calculateTotalCalories(
-                  bmr: bmr,
-                  activityLevel: selectedActivity,
-                  goal: _goal!,
-                );
-
+                final totalCalories = _calculateTotalCalories();
                 _navigateToHome(
                   context,
                   userName: widget.userName,

@@ -7,9 +7,9 @@ import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
-import 'package:avo_ai_diet/product/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +27,7 @@ final class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  AiResponse? _response;
+  AiResponse? _response; // TODObloc
   late final AiResponseManager _manager;
 
   @override
@@ -78,7 +78,25 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _CalorieFollowSlider(maxCalories: nameCalState.targetCal ?? 2500),
                       SizedBox(height: 30.h),
-                      Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
+                          InkWell(
+                            onTap: () {},
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.add,
+                                  size: 18.sp,
+                                  color: ProjectColors.earthBrown,
+                                ),
+                                Text('Ekle', style: context.textTheme().bodySmall),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -97,78 +115,134 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class ModernDietCard extends StatelessWidget {
+class ModernDietCard extends HookWidget {
   const ModernDietCard({required this.response, super.key});
 
   final AiResponse? response;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: AppPadding.customSymmetricMediumSmall(),
-        decoration: BoxDecoration(
-          color: ProjectColors.white.withOpacity(0.6),
-          borderRadius: AppRadius.circularSmall(),
-          border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: AppPadding.customSymmetricMediumNormal(),
+    final showShadow = useState(false);
+    return Stack(
+      children: [
+        NotificationListener<ScrollNotification>(
+          onNotification: (scrollNotification) {
+            showShadow.value = scrollNotification.metrics.pixels > 10;
+            return true;
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              margin: AppPadding.customSymmetricMediumSmall(),
               decoration: BoxDecoration(
-                color: ProjectColors.backgroundCream,
-                borderRadius: AppRadius.onlyTopSmall(),
+                color: ProjectColors.white.withOpacity(0.6),
+                borderRadius: AppRadius.circularSmall(),
+                border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
               ),
-              child: Row(
+              child: Column(
                 children: [
                   Container(
-                    padding: AppPadding.smallAll(),
+                    padding: AppPadding.customSymmetricMediumNormal(),
                     decoration: BoxDecoration(
-                      color: ProjectColors.primary.withOpacity(0.1),
-                      borderRadius: AppRadius.circularxSmall(),
+                      color: ProjectColors.backgroundCream,
+                      borderRadius: AppRadius.onlyTopSmall(),
                     ),
-                    child: Icon(
-                      Icons.restaurant_rounded,
-                      color: ProjectColors.primary,
-                      size: 18.r,
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        Text(
-                          ProjectStrings.dietListTitle,
-                          style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
+                        Container(
+                          padding: AppPadding.smallAll(),
+                          decoration: BoxDecoration(
+                            color: ProjectColors.primary.withOpacity(0.1),
+                            borderRadius: AppRadius.circularxSmall(),
+                          ),
+                          child: Icon(
+                            Icons.restaurant_rounded,
+                            color: ProjectColors.primary,
+                            size: 18.r,
+                          ),
                         ),
-                        Text(
-                          '${response?.formattedDayMonthYear}',
-                          style: context.textTheme().bodySmall?.copyWith(
-                                fontSize: 13,
-                                color: ProjectColors.grey,
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ProjectStrings.dietListTitle,
+                                style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
                               ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${response?.formattedDayMonthYear}',
+                                    style: context.textTheme().bodySmall?.copyWith(
+                                          fontSize: 13.sp,
+                                          color: ProjectColors.grey,
+                                        ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.delete_outline,
+                                          size: 18.sp,
+                                          color: ProjectColors.accentCoral,
+                                        ),
+                                        Text(
+                                          'Sil',
+                                          style: context.textTheme().bodySmall?.copyWith(
+                                                color: ProjectColors.accentCoral,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
+                  Container(
+                    width: double.infinity,
+                    padding: AppPadding.mediumAll(),
+                    child: response == null
+                        ? const CircularProgressIndicator()
+                        : Text(
+                            response!.dietPlan,
+                            style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
+                          ),
+                  ),
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              padding: AppPadding.mediumAll(),
-              child: response == null
-                  ? const CircularProgressIndicator()
-                  : Text(
-                      response!.dietPlan,
-                      style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
-                    ),
-            ),
-          ],
+          ),
         ),
-      ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: AnimatedOpacity(
+            opacity: showShadow.value ? 1 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: Container(
+              height: 20,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    ProjectColors.black.withOpacity(0.1),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

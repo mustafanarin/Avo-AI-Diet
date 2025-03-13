@@ -27,6 +27,8 @@ class _SearchViewState extends State<SearchView> {
     super.dispose();
   }
 
+  // TODO keyboard bug
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SearchCubit>(
