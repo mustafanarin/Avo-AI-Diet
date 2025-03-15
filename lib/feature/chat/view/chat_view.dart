@@ -6,11 +6,12 @@ import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
@@ -21,6 +22,7 @@ class ChatView extends StatefulWidget {
   State<ChatView> createState() => _ChatViewState();
 }
 
+// TODOtoken limiti için 3 5 mesaj geçmiş çifti kullan
 class _ChatViewState extends State<ChatView> {
   final List<_ChatMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();
@@ -248,11 +250,25 @@ class _ChatMessage extends StatelessWidget {
                       ),
                     )
                   else
-                    Text(
-                      text,
-                      style: TextStyle(
-                        color: isMe ? ProjectColors.white : ProjectColors.black,
+                    MarkdownBody(
+                      data: text,
+                      styleSheet: MarkdownStyleSheet(
+                        p: TextStyle(
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
+                        strong: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
+                        em: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
+                        listBullet: TextStyle(
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
                       ),
+                      selectable: true,
                     ),
                   if (!isLoading && !isMe) ...[
                     const SizedBox(height: 4),

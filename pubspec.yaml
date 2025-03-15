@@ -25,6 +25,8 @@ dependencies:
   get_it: ^7.6.0
   injectable: ^2.1.0
   intl: ^0.20.2
+  flutter_markdown: ^0.7.6+2
+  font_awesome_flutter: ^10.8.0
 
   # Navigation
   go_router: ^14.6.2

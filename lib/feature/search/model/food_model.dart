@@ -5,6 +5,7 @@ final class FoodModel {
     required this.protein,
     required this.carbohydrate,
     required this.fat,
+    required this.icon,
   });
 
   factory FoodModel.fromJson(Map<String, dynamic> json) {
@@ -14,13 +15,16 @@ final class FoodModel {
       protein: (json['protein'] as num).toDouble(),
       carbohydrate: (json['carbohydrate'] as num).toDouble(),
       fat: (json['fat'] as num).toDouble(),
+      icon: json['icon'] as String,
     );
   }
+  
   final String name;
   final double calorie;
   final double protein;
   final double carbohydrate;
   final double fat;
+  final String icon;
 
   Map<String, dynamic> toJson() {
     return {
@@ -29,6 +33,7 @@ final class FoodModel {
       'protein': protein,
       'carbohydrate': carbohydrate,
       'fat': fat,
+      'icon': icon,
     };
   }
 }

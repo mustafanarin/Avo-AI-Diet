@@ -14,6 +14,7 @@ import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
@@ -207,12 +208,23 @@ class ModernDietCard extends HookWidget {
                   ),
                   Container(
                     width: double.infinity,
-                    padding: AppPadding.mediumAll(),
                     child: response == null
                         ? const CircularProgressIndicator()
-                        : Text(
-                            response!.dietPlan,
-                            style: context.textTheme().bodySmall?.copyWith(fontSize: 16),
+                        : Markdown(
+                            data: response!.dietPlan,
+                            styleSheet: MarkdownStyleSheet(
+                              p: context.textTheme().bodySmall?.copyWith(fontSize: 16.sp),
+                              strong: context.textTheme().bodySmall?.copyWith(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              em: context.textTheme().bodySmall?.copyWith(
+                                    fontSize: 16.sp,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                            ),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(), 
                           ),
                   ),
                 ],

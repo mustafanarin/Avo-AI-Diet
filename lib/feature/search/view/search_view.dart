@@ -1,14 +1,16 @@
 import 'package:avo_ai_diet/feature/search/cubit/search_cubit.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/state/search_state.dart';
-import 'package:avo_ai_diet/product/constants/enum/custom/nutrition_info.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
+import 'package:avo_ai_diet/product/utility/extensions/icon_data_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 class SearchView extends StatefulWidget {
@@ -27,7 +29,7 @@ class _SearchViewState extends State<SearchView> {
     super.dispose();
   }
 
-  // TODO keyboard bug
+  // TODOkeyboard bug
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +189,10 @@ class _FoodCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   color: ProjectColors.successGreen.withOpacity(0.3),
                 ),
-                child: const Icon(
-                  Icons.restaurant_rounded,
+                child: Icon(
+                  food.getIconData(),
                   color: ProjectColors.forestGreen,
-                  size: 30,
+                  size: 30.sp,
                 ),
               ),
               title: Text(
@@ -220,20 +222,23 @@ class _FoodCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // protein
                   _NutritionInfoBox(
-                    label: NutritionInfo.protein,
+                    icon: FontAwesomeIcons.drumstickBite,
                     value: food.protein,
                     color: ProjectColors.green,
                   ),
+                  // carb
                   _NutritionInfoBox(
-                    label: NutritionInfo.carbohydrate,
+                    icon: FontAwesomeIcons.breadSlice,
                     value: food.carbohydrate,
-                    color: ProjectColors.primary,
+                    color: ProjectColors.sandyBrown,
                   ),
+                  // fat
                   _NutritionInfoBox(
-                    label: NutritionInfo.fat,
+                    icon: FontAwesomeIcons.droplet,
                     value: food.fat,
-                    color: ProjectColors.earthBrown,
+                    color: ProjectColors.shadow,
                   ),
                 ],
               ),
@@ -248,27 +253,16 @@ class _FoodCard extends StatelessWidget {
 class _NutritionInfoBox extends StatelessWidget {
   const _NutritionInfoBox({
     required this.value,
-    required this.label,
+    required this.icon,
     required this.color,
   });
 
   final double value;
-  final NutritionInfo label;
+  final IconData icon;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    IconData getIcon() {
-      switch (label) {
-        case NutritionInfo.protein:
-          return Icons.ad_units;
-        case NutritionInfo.carbohydrate:
-          return Icons.label;
-        case NutritionInfo.fat:
-          return Icons.aspect_ratio;
-      }
-    }
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       decoration: BoxDecoration(
@@ -278,7 +272,7 @@ class _NutritionInfoBox extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            getIcon(),
+            icon,
             color: color,
             size: 16,
           ),

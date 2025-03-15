@@ -5,7 +5,6 @@ import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
-import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
@@ -327,31 +326,24 @@ class _PersonelInfoStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: ProjectColors.white,
-            borderRadius: AppRadius.circularSmall(),
-            border: Border.all(color: ProjectColors.grey200),
-          ),
-          child: Column(
-            children: [
-              RadioListTile<String>(
-                title: const Text(ProjectStrings.male),
-                value: ProjectStrings.male,
-                groupValue: gender,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: onGenderChanged,
+        Row(
+          children: [
+            Expanded(
+              child: _SelectionItem(
+                title: ProjectStrings.male,
+                isSelected: gender == ProjectStrings.male,
+                onTap: () => onGenderChanged(ProjectStrings.male),
               ),
-              const Divider(height: 1),
-              RadioListTile<String>(
-                title: const Text(ProjectStrings.female),
-                value: ProjectStrings.female,
-                groupValue: gender,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: onGenderChanged,
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: _SelectionItem(
+                title: ProjectStrings.female,
+                isSelected: gender == ProjectStrings.female,
+                onTap: () => onGenderChanged(ProjectStrings.female),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         SizedBox(height: 16.h),
         ProjectTextField(
@@ -359,7 +351,7 @@ class _PersonelInfoStep extends StatelessWidget {
           labelText: ProjectStrings.age,
           validator: validators.validateAge,
           keyboardType: TextInputType.number,
-          onChanged: (_) => onGenderChanged(gender), // To trigger validation
+          onChanged: (_) => onGenderChanged(gender),
         ),
         SizedBox(height: 16.h),
         ProjectTextField(
@@ -395,33 +387,14 @@ class _ActivityLevelStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.grey200),
-      ),
-      child: Column(
-        children: activityLevels.map((level) {
-          return Column(
-            children: [
-              RadioListTile<String>(
-                title: Text(
-                  level,
-                  style: context.textTheme().bodyLarge?.copyWith(
-                        color: ProjectColors.black,
-                      ),
-                ),
-                value: level,
-                groupValue: activityLevel,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: onActivityLevelChanged,
-              ),
-              if (level != activityLevels.last) const Divider(height: 1),
-            ],
-          );
-        }).toList(),
-      ),
+    return Column(
+      children: activityLevels.map((level) {
+        return _SelectionItem(
+          title: level,
+          isSelected: activityLevel == level,
+          onTap: () => onActivityLevelChanged(level),
+        );
+      }).toList(),
     );
   }
 }
@@ -439,33 +412,14 @@ class _CaloriTargetStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.grey200),
-      ),
-      child: Column(
-        children: goals.map((g) {
-          return Column(
-            children: [
-              RadioListTile<String>(
-                title: Text(
-                  g,
-                  style: context.textTheme().bodyLarge?.copyWith(
-                        color: ProjectColors.black,
-                      ),
-                ),
-                value: g,
-                groupValue: goal,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: onGoalChanged,
-              ),
-              if (g != goals.last) const Divider(height: 1),
-            ],
-          );
-        }).toList(),
-      ),
+    return Column(
+      children: goals.map((g) {
+        return _SelectionItem(
+          title: g,
+          isSelected: goal == g,
+          onTap: () => onGoalChanged(g),
+        );
+      }).toList(),
     );
   }
 }
@@ -483,32 +437,72 @@ class _BudgetStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: AppRadius.circularSmall(),
-        border: Border.all(color: ProjectColors.grey200),
-      ),
-      child: Column(
-        children: budgets.map((b) {
-          return Column(
+    return Column(
+      children: budgets.map((b) {
+        return _SelectionItem(
+          title: b,
+          isSelected: budget == b,
+          onTap: () => onBudgetChanged(b),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _SelectionItem extends StatelessWidget {
+  const _SelectionItem({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12.h),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding:EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+          decoration: BoxDecoration(
+            color: isSelected ? ProjectColors.mainAvocado.withOpacity(0.2) : ProjectColors.backgroundCream,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected ? ProjectColors.mainAvocado : ProjectColors.grey400,
+              width: 1.5,
+            ),
+          ),
+          child: Row(
             children: [
-              RadioListTile<String>(
-                title: Text(
-                  b,
+              if (isSelected)
+                Icon(
+                  Icons.check_circle,
+                  color: ProjectColors.mainAvocado,
+                  size: 20.sp,
+                )
+              else
+                Icon(
+                  Icons.circle_outlined,
+                  color: ProjectColors.grey500,
+                  size: 20.sp,
+                ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Text(
+                  title,
                   style: context.textTheme().bodyLarge?.copyWith(
-                        color: ProjectColors.black,
+                        color: isSelected ? ProjectColors.darkAvocado : ProjectColors.grey600,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
                 ),
-                value: b,
-                groupValue: budget,
-                activeColor: ProjectColors.forestGreen,
-                onChanged: onBudgetChanged,
               ),
-              if (b != budgets.last) const Divider(height: 1),
             ],
-          );
-        }).toList(),
+          ),
+        ),
       ),
     );
   }

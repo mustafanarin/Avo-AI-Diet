@@ -11,7 +11,7 @@ final class GeminiService {
   GeminiService(this._secureStorage);
   final SecureStorageService _secureStorage;
   late final GenerativeModel _model;
-  final String _geminiModel = 'gemini-1.5-pro';
+  final String _geminiModel = 'gemini-2.0-flash-lite';
 
   late final Future<void> _initFuture = _initialize();
 
@@ -42,7 +42,7 @@ final class GeminiService {
       await _initFuture;
 
       final prompt = '''
-      Sen beslenme uzmanı bir diyetisyensin ve bir avokado maskotusun. Kullanıcı sana Avo maskotu olarak hitap ediyor.
+      Sen beslenme uzmanı bir diyetisyensin ve Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle arkadaş canlısı bir konuşma şeklin var. Kullanıcı sana Avo  olarak hitap ediyor.
 
       Kullanıcının fiziksel özellikleri ve hedefleri:
       Boy: ${user.height} cm
@@ -54,7 +54,7 @@ final class GeminiService {
       Diyet Bütçesi: ${user.budget}
 
       Kullanıcının günlük kalori ihtiyacı ${user.targetCalories} kalori olarak hesaplanmıştır. 
-      Lütfen bu kalori miktarına uygun bir günlük diyet listesi oluştur.
+      Lütfen bu kalori miktarına uygun bir günlük diyet listesi oluştur.Hazırlayacağın diyet listesi bu kalorinin en fazla 50 aşşağısında veya 50 yukarısında olabilir!
 
       Lütfen sadece bir günlük diyet listesi oluştur. Liste aşağıdaki formatta olmalı ve her öğünün yaklaşık kalori değerini parantez içinde belirt:
 
@@ -83,7 +83,8 @@ final class GeminiService {
       await _initFuture;
 
       final prompt = '''
-      Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın.
+      Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle 
+      arkadaş canlısı bir konuşma şeklin var.
 
       Uzmanlık alanların:
       - Yemek tarifleri ve pişirme yöntemleri
@@ -97,7 +98,7 @@ final class GeminiService {
       
       Kullanıcının mesajı: $text
       
-      Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" gibi etiketler kullanma. Doğrudan bir avokado maskotu olarak yanıt ver.
+      Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Doğrudan bir avokado maskotu olarak yanıt ver.
 
       Not1: Yalnızca uzmanlık alanlarında yanıt ver. Farklı konularda "Üzgünüm, yalnızca beslenme ve sağlıklı yaşam konularında yardımcı olabilirim." şeklinde yanıt ver.
 

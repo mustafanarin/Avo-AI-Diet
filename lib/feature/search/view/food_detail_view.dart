@@ -1,11 +1,14 @@
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
+import 'package:avo_ai_diet/feature/search/view/search_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/utility/extensions/icon_data_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FoodDetailPage extends StatefulWidget {
   const FoodDetailPage({required this.foodModel, super.key});
@@ -126,9 +129,9 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                   children: [
                     CircleAvatar(
                       radius: 45.r,
-                      backgroundColor: ProjectColors.primary.withOpacity(0.2),
-                      child: const Icon(
-                        Icons.restaurant,
+                      backgroundColor: ProjectColors.successGreen.withOpacity(0.3),
+                      child:  Icon(
+                        widget.foodModel.getIconData(),
                         size: 40,
                         color: ProjectColors.forestGreen,
                       ),
@@ -190,7 +193,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                             margin: EdgeInsets.symmetric(horizontal: 8.w),
                             padding: EdgeInsets.symmetric(horizontal: 8.w),
                             decoration: BoxDecoration(
-                              color: ProjectColors.primary.withOpacity(0.2),
+                              color: ProjectColors.successGreen.withOpacity(0.3),
                               //   Color(0xFFEDF6EC)
                               borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(color: ProjectColors.lightGreen.withOpacity(0.3)),
@@ -291,12 +294,11 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                     SizedBox(height: 20.h),
                     // Protein information
                     _buildNutrientRow(
-                      // TODOicon change
                       context: context,
                       title: ProjectStrings.protein,
                       value: '${calculatedProtein.toStringAsFixed(1)}g',
-                      color: ProjectColors.blueJeans,
-                      icon: Icons.abc,
+                      color: ProjectColors.green,
+                      icon: FontAwesomeIcons.drumstickBite,
                     ), //
                     SizedBox(height: 16.h),
                     // Carbohydrate information
@@ -304,8 +306,8 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                       context: context,
                       title: ProjectStrings.carbohydrate,
                       value: '${calculatedCarbohydrate.toStringAsFixed(1)}g',
-                      color: ProjectColors.mainAvocado,
-                      icon: Icons.kayaking,
+                      color: ProjectColors.sandyBrown,
+                      icon: FontAwesomeIcons.breadSlice,
                     ),
                     SizedBox(height: 16.h),
                     // Fat information
@@ -313,15 +315,15 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                       context: context,
                       title: ProjectStrings.oil,
                       value: '${calculatedFat.toStringAsFixed(1)}g',
-                      color: ProjectColors.seedBeige,
-                      icon: Icons.palette,
+                      color: ProjectColors.shadow,
+                      icon: FontAwesomeIcons.droplet,
                     ),
                   ],
                 ),
               ),
 
               SizedBox(height: 24.h),
-              ProjectButton(text: "Ekle", onPressed: (){}),
+              ProjectButton(text: 'Ekle', onPressed: () {}),
               SizedBox(height: 16.h),
             ],
           ),
@@ -350,7 +352,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
             child: Icon(
               icon,
               color: ProjectColors.white,
-              size: 20,
+              size: 20.sp,
             ),
           ),
           if (label != null)
