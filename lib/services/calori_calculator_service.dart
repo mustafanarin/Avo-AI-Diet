@@ -1,6 +1,6 @@
 import 'package:avo_ai_diet/product/constants/enum/general/activity_level.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/extensions/activity_level_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
 
 final class CalorieCalculatorService {
   static double calculateBMR({

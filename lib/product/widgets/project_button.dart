@@ -1,6 +1,6 @@
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
-import 'package:avo_ai_diet/product/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,7 +25,7 @@ final class ProjectButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: isEnabled ? onPressed : null,
-          borderRadius: AppRadius.circularMedium(),
+          borderRadius: AppRadius.circularSmall(),
           splashColor: ProjectColors.white.withOpacity(0.2),
           child: Center(
             child: Text(
@@ -40,7 +40,7 @@ final class ProjectButton extends StatelessWidget {
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
-      borderRadius: AppRadius.circularMedium(),
+      borderRadius: AppRadius.circularSmall(), // TODO eski hali circularMedium
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

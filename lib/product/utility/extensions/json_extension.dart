@@ -7,6 +7,8 @@ extension JsonNameExtension on JsonName {
         return 'avoAnimation';
       case JsonName.avoWalk:
         return 'avoWalk';
+      case JsonName.foods:
+        return 'foods';
     }
   }
 

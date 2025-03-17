@@ -8,7 +8,7 @@ enum _DurationValues {
 }
 
 final class AppDurations extends Duration {
-  AppDurations.oneSeconds() : super(seconds: _DurationValues.one.value);
+  AppDurations. oneSeconds() : super(seconds: _DurationValues.one.value);
   AppDurations.smallMilliseconds() : super(
     milliseconds: _DurationValues.smallMilliseconds.value,);
   

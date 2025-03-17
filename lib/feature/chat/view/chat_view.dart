@@ -5,10 +5,13 @@ import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
@@ -19,6 +22,7 @@ class ChatView extends StatefulWidget {
   State<ChatView> createState() => _ChatViewState();
 }
 
+// TODOtoken limiti için 3 5 mesaj geçmiş çifti kullan
 class _ChatViewState extends State<ChatView> {
   final List<_ChatMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();
@@ -31,7 +35,7 @@ class _ChatViewState extends State<ChatView> {
     // for start message
     _messages.add(
       const _ChatMessage(
-        text: 'Merhaba ben yapay zeka diyet asistanın Avo. Sana nasıl yardımcı olabilirim?',
+        text: ProjectStrings.avoHowCanIHelpText,
         isMe: false,
       ),
     );
@@ -67,7 +71,7 @@ class _ChatViewState extends State<ChatView> {
       setState(() {
         _messages
           ..removeWhere((msg) => msg.isLoading)
-          ..add(_ChatMessage(text: 'Hata: $e', isMe: false));
+          ..add(_ChatMessage(text: 'Üzgünüm bir hata oluştu: $e', isMe: false));
       });
     }
     _scrollToBottom();
@@ -86,20 +90,26 @@ class _ChatViewState extends State<ChatView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _textController.dispose();
+    _scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 10,
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.eco, color: ProjectColors.darkGreen),
-            SizedBox(width: 8),
+            const Icon(Icons.eco, color: ProjectColors.darkGreen),
+            const SizedBox(width: 8),
             Text(
-              'Avo Chat',
-              style: TextStyle(
-                color: ProjectColors.darkGreen,
-                fontWeight: FontWeight.bold,
-              ),
+              ProjectStrings.askToAvo,
+              style: context.textTheme().titleLarge?.copyWith(
+                    color: ProjectColors.darkGreen,
+                  ),
             ),
           ],
         ),
@@ -161,7 +171,7 @@ class _ChatViewState extends State<ChatView> {
               controller: _textController,
               onSubmitted: _handleSubmitted,
               decoration: InputDecoration(
-                hintText: 'Mesajınızı yazın',
+                hintText: ProjectStrings.writeMessage,
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
               ),
@@ -186,7 +196,6 @@ class _ChatMessage extends StatelessWidget {
     required this.text,
     required this.isMe,
     this.isLoading = false,
-    super.key,
   });
 
   final String text;
@@ -241,11 +250,25 @@ class _ChatMessage extends StatelessWidget {
                       ),
                     )
                   else
-                    Text(
-                      text,
-                      style: TextStyle(
-                        color: isMe ? ProjectColors.white : ProjectColors.black,
+                    MarkdownBody(
+                      data: text,
+                      styleSheet: MarkdownStyleSheet(
+                        p: TextStyle(
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
+                        strong: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
+                        em: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
+                        listBullet: TextStyle(
+                          color: isMe ? ProjectColors.white : ProjectColors.black,
+                        ),
                       ),
+                      selectable: true,
                     ),
                   if (!isLoading && !isMe) ...[
                     const SizedBox(height: 4),
@@ -253,9 +276,10 @@ class _ChatMessage extends StatelessWidget {
                       builder: (context, state) {
                         final messageId = text.hashCode.toString();
                         final isFavorited = state.favorites?.any(
-                          (favorite) => favorite.messageId == messageId,
-                        ) ?? false;
-                        
+                              (favorite) => favorite.messageId == messageId,
+                            ) ??
+                            false;
+
                         return SizedBox(
                           height: 20,
                           width: 20,
@@ -289,4 +313,3 @@ class _ChatMessage extends StatelessWidget {
     );
   }
 }
-

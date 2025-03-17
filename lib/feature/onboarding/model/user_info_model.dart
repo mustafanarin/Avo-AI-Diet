@@ -7,6 +7,7 @@ final class UserInfoModel {
     required this.activityLevel,
     required this.target,
     required this.budget,
+    required this.targetCalories,
   });
 
   final double height;
@@ -16,4 +17,5 @@ final class UserInfoModel {
   final String activityLevel;
   final String target;
   final String budget;
+  final double targetCalories;
 }

@@ -1,6 +1,7 @@
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract final class AppTheme {
   static ThemeData get getLightTheme => ThemeData.light().copyWith(
@@ -13,7 +14,7 @@ abstract final class AppTheme {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: false,
-          scrolledUnderElevation: 0
+          scrolledUnderElevation: 0,
         ),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelStyle: _ProjectTextStyle.bodyMedium.copyWith(
@@ -37,7 +38,7 @@ abstract final class AppTheme {
         colorScheme: const ColorScheme.light(
           primary: ProjectColors.forestGreen,
         ),
-        textTheme: const TextTheme(
+        textTheme:  TextTheme(
           displayLarge: _ProjectTextStyle.displayLarge,
           displayMedium: _ProjectTextStyle.displayMedium,
           bodyLarge: _ProjectTextStyle.bodyLarge,
@@ -51,67 +52,67 @@ abstract final class AppTheme {
 }
 
 class _ProjectTextStyle {
-  static const displayLarge = TextStyle(
+  static final TextStyle displayLarge = TextStyle(
     // for welcome view title
     fontFamily: 'Inter',
-    fontSize: 28,
+    fontSize: 28.sp,
     fontWeight: FontWeight.bold,
     color: ProjectColors.forestGreen,
   );
 
-  static const displayMedium = TextStyle(
+  static final displayMedium = TextStyle(
     // for suptitle
     fontFamily: 'Inter',
-    fontSize: 24,
+    fontSize: 24.sp,
     fontWeight: FontWeight.w600,
     color: ProjectColors.darkAvocado,
     letterSpacing: -0.3,
   );
 
-  static const titlelarge = TextStyle(
+  static final titlelarge = TextStyle(
     // for appbar title
-    fontSize: 20,
+    fontSize: 20.sp,
     fontWeight: FontWeight.w600,
     color: ProjectColors.earthBrown,
     letterSpacing: 0.5,
   );
 
-  static const titleMedium = TextStyle(
+  static final titleMedium = TextStyle(
     // for normal title with forestGreen
-    fontSize: 17,
+    fontSize: 17.sp,
     fontWeight: FontWeight.w600,
     color: ProjectColors.forestGreen,
     letterSpacing: 0.5,
   );
 
-  static const bodyLarge = TextStyle(
+  static final bodyLarge = TextStyle(
     // large texts
     fontFamily: 'Inter',
-    fontSize: 18,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     color: ProjectColors.darkAvocado,
   );
 
-  static const bodyMedium = TextStyle(
+  static final bodyMedium = TextStyle(
     // for normal text and form labels
     fontFamily: 'Inter',
-    fontSize: 16,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     color: ProjectColors.earthBrown,
   );
 
-  static const bodySmall = TextStyle(
+  static final bodySmall = TextStyle(
     // for small texts and descriptions
     fontFamily: 'Inter',
-    fontSize: 14,
+    fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     color: ProjectColors.earthBrown,
   );
 
-  static const buttonText = TextStyle(
+  static final buttonText = TextStyle(
     // for button text
     fontFamily: 'Inter',
-    fontSize: 18,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     color: ProjectColors.white,
   );

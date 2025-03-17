@@ -1,7 +1,8 @@
 import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
-@injectable // TODO Singlenton
+
+@singleton
 final class NameAndCalManager {
   Box<NameAndCalModel>? _box;
 
@@ -17,7 +18,7 @@ final class NameAndCalManager {
 
   Future<NameAndCalModel?> getNameCalori() async {
     final box = await _getBox();
-    final response = await box.get(
+    final response = box.get(
       'userInfo',
       defaultValue: NameAndCalModel(userName: '', targetCal: 2500),
     );

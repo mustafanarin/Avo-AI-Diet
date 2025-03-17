@@ -8,12 +8,12 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 final class GeminiService {
-  GeminiService(this._secureStorage) {
-    _initialize();
-  }
+  GeminiService(this._secureStorage);
+  final SecureStorageService _secureStorage;
   late final GenerativeModel _model;
-  late final SecureStorageService _secureStorage;
-  static const String _geminiModel = 'gemini-pro';
+  final String _geminiModel = 'gemini-2.0-flash-lite';
+
+  late final Future<void> _initFuture = _initialize();
 
   Future<void> _initialize() async {
     final apiKey = await _getSecureApiKey();
@@ -39,19 +39,33 @@ final class GeminiService {
 
   Future<String> getUserDiet(UserInfoModel user) async {
     try {
+      await _initFuture;
+
       final prompt = '''
-          Sen beslenme üzerine de uzman bir diyetisyensin. 
-      
-        Kullanıcının fiziksel özellikleri ve hedefleri hakkında bilgiler:
-        Boy: ${user.height} cm
-        Kilo: ${user.weight} kg
-        Yaş: ${user.age}
-        Cinsiyet: ${user.gender}
-        Aktivite seviyes: ${user.activityLevel}
-        Hedef: ${user.target}
-        Diyet Bütçesi: ${user.budget}
-        
-        Bu bilgiler ışığında sadece bir diyet listesi öner.
+      Sen beslenme uzmanı bir diyetisyensin ve Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle arkadaş canlısı bir konuşma şeklin var. Kullanıcı sana Avo  olarak hitap ediyor.
+
+      Kullanıcının fiziksel özellikleri ve hedefleri:
+      Boy: ${user.height} cm
+      Kilo: ${user.weight} kg
+      Yaş: ${user.age}
+      Cinsiyet: ${user.gender}
+      Aktivite seviyesi: ${user.activityLevel}
+      Hedef: ${user.target}
+      Diyet Bütçesi: ${user.budget}
+
+      Kullanıcının günlük kalori ihtiyacı ${user.targetCalories} kalori olarak hesaplanmıştır. 
+      Lütfen bu kalori miktarına uygun bir günlük diyet listesi oluştur.Hazırlayacağın diyet listesi bu kalorinin en fazla 50 aşşağısında veya 50 yukarısında olabilir!
+
+      Lütfen sadece bir günlük diyet listesi oluştur. Liste aşağıdaki formatta olmalı ve her öğünün yaklaşık kalori değerini parantez içinde belirt:
+
+      - Kahvaltı: [detaylar] (yaklaşık ... kalori)
+      - Öğle: [detaylar] (yaklaşık ... kalori)
+      - Akşam: [detaylar] (yaklaşık ... kalori)
+      - Ara öğünler: [detaylar ve toplam kalori değeri]
+      Listeyi oluşturduktan sonra tüm gün toplam kalori değerini belirt ve aşağıdaki 3 notu eklemeyi unutma:
+      - Günde en az 2 litre sıvı tüketmeniz gerekli.
+      - Bu sadece bir örnek listedir, kendi zevklerinize göre değişiklikler yapabilirsiniz. Ancak değişiklik yaparken kalori dengesine dikkat edin.
+      - Sağlıklı bir beslenme planı oluşturmak için bir diyetisyene danışmanız her zaman en iyisidir.
       ''';
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
@@ -66,25 +80,30 @@ final class GeminiService {
 
   Future<String> aiChat(String text, String conversationHistory) async {
     try {
+      await _initFuture;
+
       final prompt = '''
-        Ben Avo, sağlıklı beslenme konusunda size yol gösteren bir dijital asistanım.
+      Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle 
+      arkadaş canlısı bir konuşma şeklin var.
 
-        Uzmanlık alanlarım:
-        - Yemek tarifleri ve pişirme yöntemleri
-        - Besinlerin değerleri ve faydaları 
-        - Dengeli beslenme önerileri
-        - Sağlıklı yaşam tavsiyeleri
-        - Besinlerin yaklaşık kalori değerleri
+      Uzmanlık alanların:
+      - Yemek tarifleri ve pişirme yöntemleri
+      - Besinlerin değerleri ve faydaları 
+      - Dengeli beslenme önerileri
+      - Sağlıklı yaşam tavsiyeleri
+      - Besinlerin yaklaşık kalori değerleri
 
-        Önceki konuşma:
-        $conversationHistory
+      Önceki konuşma:
+      $conversationHistory
+      
+      Kullanıcının mesajı: $text
+      
+      Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Doğrudan bir avokado maskotu olarak yanıt ver.
 
-        Kullanıcı: $text
+      Not1: Yalnızca uzmanlık alanlarında yanıt ver. Farklı konularda "Üzgünüm, yalnızca beslenme ve sağlıklı yaşam konularında yardımcı olabilirim." şeklinde yanıt ver.
 
-        Not1: Yalnızca bu alanlarda yanıt veririm. Farklı konularda "Üzgünüm, yalnızca beslenme ve sağlıklı yaşam konularında yardımcı olabilirim." şeklinde yanıt veririm.
-        Not2: Teşekkür mesajlarına: "Rica ederim! Size başka hangi konuda yardımcı olabilirim?" şeklinde yanıt veririm.
-        ''';
-
+      Not2: SADECE kullanıcı açıkça teşekkür ettiğinde "Rica ederim! Size başka hangi konuda yardımcı olabilirim?" şeklinde yanıt ver. Kullanıcı teşekkür etmediyse, yanıtını "Rica ederim!" veya benzer ifadelerle bitirme.
+      ''';
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
 
