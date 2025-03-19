@@ -1,5 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 
 class FavoritesState {
   FavoritesState({this.favorites, this.messageId, this.savedAt, this.isLoading = false});
@@ -8,10 +7,6 @@ class FavoritesState {
   final String? savedAt;
   final String? messageId;
   final bool isLoading;
-
-  
-
-  
 
   FavoritesState copyWith({
     List<FavoriteMessageModel>? favorites,

@@ -1,4 +1,4 @@
-import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
+import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 

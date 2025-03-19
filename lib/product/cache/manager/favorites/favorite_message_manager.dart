@@ -1,14 +1,13 @@
-import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class FavoriteMessageManager {
+final class FavoriteMessageManager {
   LazyBox<FavoriteMessageModel>? _box;
 
   Future<LazyBox<FavoriteMessageModel>?> _getBox() async {
-    if (_box != null) return _box;
-    _box = await Hive.openLazyBox<FavoriteMessageModel>('favoriteMessages');
+    _box ??= await Hive.openLazyBox<FavoriteMessageModel>('favoriteMessages');
     return _box!;
   }
 

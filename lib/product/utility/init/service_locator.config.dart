@@ -13,14 +13,16 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../../feature/chat/cubit/chat_cubit.dart' as _i648;
 import '../../../feature/favorites/cubit/favorites_cubit.dart' as _i456;
+import '../../../feature/home/cubit/daily_calorie_cubit.dart' as _i688;
 import '../../../feature/onboarding/cubit/name_and_cal_cubit.dart' as _i784;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
 import '../../../services/gemini_service.dart' as _i709;
 import '../../../services/secure_storage_service.dart' as _i976;
-import '../../cache/favorites_manager/favorite_message_manager.dart' as _i466;
-import '../../cache/name_and_cal_manager/name_and_cal_manager.dart' as _i575;
-import '../../cache/reponse_manager/ai_response_manager.dart' as _i288;
+import '../../cache/manager/daily_calorie/daily_calorie_manager.dart' as _i18;
+import '../../cache/manager/favorites/favorite_message_manager.dart' as _i45;
+import '../../cache/manager/name_and_cal/name_and_cal_manager.dart' as _i490;
+import '../../cache/manager/reponse/ai_response_manager.dart' as _i697;
 
 // initializes the registration of main-scope dependencies inside of GetIt
 _i174.GetIt $initGetIt(
@@ -33,21 +35,23 @@ _i174.GetIt $initGetIt(
     environment,
     environmentFilter,
   );
-  gh.factory<_i466.FavoriteMessageManager>(
-      () => _i466.FavoriteMessageManager());
-  gh.factory<_i288.AiResponseManager>(() => _i288.AiResponseManager());
   gh.factory<_i104.SearchCubit>(() => _i104.SearchCubit());
-  gh.singleton<_i575.NameAndCalManager>(() => _i575.NameAndCalManager());
+  gh.factory<_i697.AiResponseManager>(() => _i697.AiResponseManager());
+  gh.factory<_i45.FavoriteMessageManager>(() => _i45.FavoriteMessageManager());
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
-  gh.factory<_i456.FavoritesCubit>(
-      () => _i456.FavoritesCubit(gh<_i466.FavoriteMessageManager>()));
+  gh.singleton<_i18.DailyCalorieManager>(() => _i18.DailyCalorieManager());
+  gh.singleton<_i490.NameAndCalManager>(() => _i490.NameAndCalManager());
+  gh.factory<_i688.DailyCalorieCubit>(
+      () => _i688.DailyCalorieCubit(gh<_i18.DailyCalorieManager>()));
   gh.singleton<_i709.GeminiService>(
       () => _i709.GeminiService(gh<_i976.SecureStorageService>()));
+  gh.factory<_i456.FavoritesCubit>(
+      () => _i456.FavoritesCubit(gh<_i45.FavoriteMessageManager>()));
   gh.factory<_i784.NameAndCalCubit>(
-      () => _i784.NameAndCalCubit(gh<_i575.NameAndCalManager>()));
+      () => _i784.NameAndCalCubit(gh<_i490.NameAndCalManager>()));
   gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
         gh<_i709.GeminiService>(),
-        gh<_i288.AiResponseManager>(),
+        gh<_i697.AiResponseManager>(),
       ));
   gh.factory<_i648.ChatCubit>(() => _i648.ChatCubit(gh<_i709.GeminiService>()));
   return getIt;

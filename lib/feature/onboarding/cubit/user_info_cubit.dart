@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
-import 'package:avo_ai_diet/product/cache/reponse_manager/ai_response_manager.dart';
-import 'package:avo_ai_diet/product/model/response/ai_response.dart';
+import 'package:avo_ai_diet/product/cache/manager/reponse/ai_response_manager.dart';
+import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:avo_ai_diet/services/gemini_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';

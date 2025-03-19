@@ -6,7 +6,7 @@ import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';

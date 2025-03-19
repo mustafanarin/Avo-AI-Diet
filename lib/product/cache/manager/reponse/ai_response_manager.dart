@@ -1,4 +1,4 @@
-import 'package:avo_ai_diet/product/model/response/ai_response.dart';
+import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 

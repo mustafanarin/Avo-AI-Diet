@@ -1,5 +1,6 @@
+import 'package:avo_ai_diet/feature/home/cubit/daily_calorie_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
-import 'package:avo_ai_diet/feature/search/view/search_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/utility/extensions/icon_data_extension.dart';
@@ -7,6 +8,7 @@ import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -96,6 +98,9 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final targetCalories = context.select(
+      (NameAndCalCubit cubit) => cubit.state.targetCal ?? 2500,
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(ProjectStrings.foodDetail, style: context.textTheme().titleLarge),
@@ -130,7 +135,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                     CircleAvatar(
                       radius: 45.r,
                       backgroundColor: ProjectColors.successGreen.withOpacity(0.3),
-                      child:  Icon(
+                      child: Icon(
                         widget.foodModel.getIconData(),
                         size: 40,
                         color: ProjectColors.forestGreen,
@@ -323,7 +328,49 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
               ),
 
               SizedBox(height: 24.h),
-              ProjectButton(text: 'Ekle', onPressed: () {}),
+              ProjectButton(
+                text: 'Ekle',
+                onPressed: () {
+                  context.read<DailyCalorieCubit>().addCalories(
+                        calculatedCalorie.toInt(),
+                        targetCalories.toInt(),
+                      );
+                  // TODO2500
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(
+                            Icons.local_fire_department,
+                            color: ProjectColors.white,
+                            size: 24.r,
+                          ),
+                          SizedBox(width: 12.w),
+                          Text(
+                            '${calculatedCalorie.toInt()} kalori günlük takibinize eklendi',
+                            style: context.textTheme().bodyMedium?.copyWith(
+                                  color: ProjectColors.white,
+                                ),
+                          ),
+                        ],
+                      ),
+                      backgroundColor: ProjectColors.forestGreen,
+                      duration: const Duration(seconds: 3),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      margin: EdgeInsets.only(
+                        bottom: 16.h,
+                        left: 16.w,
+                        right: 16.w,
+                      ),
+                      elevation: 4,
+                    ),
+                  );
+                  Navigator.of(context).pop();
+                },
+              ),
               SizedBox(height: 16.h),
             ],
           ),

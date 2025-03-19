@@ -1,6 +1,6 @@
 import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
-import 'package:avo_ai_diet/product/cache/name_and_cal_manager/name_and_cal_manager.dart';
-import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
+import 'package:avo_ai_diet/product/cache/manager/name_and_cal/name_and_cal_manager.dart';
+import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 @injectable

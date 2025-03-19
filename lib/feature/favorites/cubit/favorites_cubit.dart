@@ -1,6 +1,6 @@
 import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
-import 'package:avo_ai_diet/product/cache/favorites_manager/favorite_message_manager.dart';
-import 'package:avo_ai_diet/product/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/cache/manager/favorites/favorite_message_manager.dart';
+import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 

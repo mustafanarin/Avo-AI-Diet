@@ -5,7 +5,7 @@ part 'favorite_message_model.g.dart';
 
 // TODOequtable
 @HiveType(typeId: 2)
-class FavoriteMessageModel extends Equatable {
+final class FavoriteMessageModel extends Equatable {
   const FavoriteMessageModel(this.content, this.savedAt, this.messageId);
 
   @HiveField(0)

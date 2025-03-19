@@ -8,7 +8,7 @@ import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/model/name_calori/name_and_cal.dart';
+import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';

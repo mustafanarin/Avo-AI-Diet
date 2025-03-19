@@ -1,13 +1,15 @@
+import 'package:avo_ai_diet/feature/home/cubit/daily_calorie_cubit.dart';
+import 'package:avo_ai_diet/feature/home/state/daily_calorie_state.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
-import 'package:avo_ai_diet/product/cache/reponse_manager/ai_response_manager.dart';
+import 'package:avo_ai_diet/product/cache/manager/reponse/ai_response_manager.dart';
+import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
@@ -49,6 +51,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return BlocBuilder<NameAndCalCubit, NameAndCalState>(
       builder: (context, nameCalState) {
+        final targetCalories = nameCalState.targetCal ?? 2500;
         return Scaffold(
           appBar: AppBar(
             title: Row(
@@ -77,7 +80,7 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _CalorieFollowSlider(maxCalories: nameCalState.targetCal ?? 2500),
+                      _CalorieFollowSlider(maxCalories: targetCalories),
                       SizedBox(height: 30.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,7 +209,7 @@ class ModernDietCard extends HookWidget {
                       ],
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: response == null
                         ? const CircularProgressIndicator()
@@ -224,7 +227,7 @@ class ModernDietCard extends HookWidget {
                                   ),
                             ),
                             shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(), 
+                            physics: const NeverScrollableScrollPhysics(),
                           ),
                   ),
                 ],
@@ -259,62 +262,68 @@ class ModernDietCard extends HookWidget {
   }
 }
 
-class _CalorieFollowSlider extends HookWidget {
-  const _CalorieFollowSlider({required this.maxCalories});
+class _CalorieFollowSlider extends StatelessWidget {
+  const _CalorieFollowSlider({required this.maxCalories, super.key});
 
   final double maxCalories;
 
   int _calculateDivisions() {
-    // Calculates the number of divisions for a slider based on maxCalories, ensuring a minimum of 100 if the result is non-positive.
     final calculatedDivisions = (maxCalories / 10).round();
     return calculatedDivisions > 0 ? calculatedDivisions : 100;
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentCalories = useState(0);
-    final caloriesLeft = maxCalories - currentCalories.value;
+    return BlocBuilder<DailyCalorieCubit, DailyCalorieState>(
+      builder: (context, state) {
+        final currentCalories = state.currentCalories;
+        final caloriesLeft = maxCalories - currentCalories;
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.local_fire_department,
-            color: ProjectColors.accentCoral,
-            size: 50.r,
-          ),
-          Text(
-            currentCalories.value.toStringAsFixed(0),
-            style: context.textTheme().displayLarge?.copyWith(
-                  fontSize: 40,
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.local_fire_department,
+                color: ProjectColors.accentCoral,
+                size: 50.r,
+              ),
+              Text(
+                currentCalories.toString(),
+                style: context.textTheme().displayLarge?.copyWith(
+                      fontSize: 40,
+                    ),
+              ),
+              Text(
+                '${caloriesLeft.toStringAsFixed(0)} kalori kaldı.',
+                style: context.textTheme().bodyMedium,
+              ),
+              SizedBox(height: 20.h),
+              SliderTheme(
+                data: _customSliderTheme(context, currentCalories),
+                child: Slider(
+                  value: currentCalories.toDouble(),
+                  max: maxCalories,
+                  divisions: _calculateDivisions(),
+                  onChanged: (value) {
+                    context.read<DailyCalorieCubit>().setCalories(
+                          value.toInt(),
+                          maxCalories.toInt(),
+                        );
+                  },
                 ),
+              ),
+            ],
           ),
-          Text(
-            '${caloriesLeft.toStringAsFixed(0)} kalori kaldı.',
-            style: context.textTheme().bodyMedium,
-          ),
-          SizedBox(height: 20.h),
-          SliderTheme(
-            data: _customSliderTheme(currentCalories),
-            child: Slider(
-              value: currentCalories.value.toDouble(),
-              max: maxCalories,
-              divisions: _calculateDivisions(),
-              onChanged: (value) {
-                currentCalories.value = value.toInt();
-              },
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  SliderThemeData _customSliderTheme(ValueNotifier<int> currentCalories) {
+  SliderThemeData _customSliderTheme(BuildContext context, int currentCalories) {
     // Keep the Lightness value between 0.0 - 1.0
     double calculateLightness() {
-      final ratio = currentCalories.value / maxCalories;
+      final ratio = currentCalories / maxCalories;
       // 0.2 minimum lightness, 0.8 maximum lightness
       return 0.8 - (ratio * 0.6).clamp(0.0, 0.6);
     }
@@ -335,7 +344,7 @@ class _CalorieFollowSlider extends HookWidget {
       inactiveTrackColor: ProjectColors.grey400,
 
       // Green color until about half of maximum calories and then activeTrackColor
-      thumbColor: currentCalories.value <= maxCalories * 2 / 3
+      thumbColor: currentCalories <= maxCalories * 2 / 3
           ? ProjectColors.green
           : HSLColor.fromColor(ProjectColors.forestGreen).withLightness(lightness).toColor(),
     );
