@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => getIt<UserInfoCubit>()),
         BlocProvider(create: (context) => getIt<NameAndCalCubit>()),
         BlocProvider(create: (context) => getIt<FavoritesCubit>()),
-        BlocProvider(create: (context) => getIt<DailyCalorieCubit>())
+        BlocProvider(create: (context) => getIt<DailyCalorieCubit>()..initialize()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(393, 808),

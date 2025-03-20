@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/product/cache/model/daily_calorie/daily_calorie_model.dart';
 import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
@@ -17,7 +18,8 @@ final class AppInitialize {
     Hive
       ..registerAdapter(AiResponseAdapter())
       ..registerAdapter(NameAndCalModelAdapter())
-      ..registerAdapter(FavoriteMessageModelAdapter());
+      ..registerAdapter(FavoriteMessageModelAdapter())
+      ..registerAdapter(DailyCalorieModelAdapter());
     await initializeDateFormatting('tr_TR');
 
     await setupServiceLocator();

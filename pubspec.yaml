@@ -13,6 +13,8 @@ dependencies:
 
   # Animation
   lottie: ^3.2.0
+  percent_indicator: ^4.2.4
+
 
   # Cache
   hive: ^2.2.3

@@ -335,24 +335,27 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                         calculatedCalorie.toInt(),
                         targetCalories.toInt(),
                       );
-                  // TODO2500
+                  // TODO scafold
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Row(
-                        children: [
-                          Icon(
-                            Icons.local_fire_department,
-                            color: ProjectColors.white,
-                            size: 24.r,
-                          ),
-                          SizedBox(width: 12.w),
-                          Text(
-                            '${calculatedCalorie.toInt()} kalori günlük takibinize eklendi',
-                            style: context.textTheme().bodyMedium?.copyWith(
-                                  color: ProjectColors.white,
-                                ),
-                          ),
-                        ],
+                      showCloseIcon: true,
+                      content: Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.local_fire_department,
+                              color: ProjectColors.white,
+                              size: 24.r,
+                            ),
+                            SizedBox(width: 12.w),
+                            Text(
+                              '${calculatedCalorie.toInt()} kalori günlük takibinize eklendi',
+                              style: context.textTheme().bodyMedium?.copyWith(
+                                    color: ProjectColors.white,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                       backgroundColor: ProjectColors.forestGreen,
                       duration: const Duration(seconds: 3),

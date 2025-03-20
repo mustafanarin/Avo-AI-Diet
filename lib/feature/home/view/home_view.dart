@@ -19,6 +19,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 final class HomeView extends StatefulWidget {
   const HomeView({
@@ -80,8 +81,8 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _CalorieFollowSlider(maxCalories: targetCalories),
-                      SizedBox(height: 30.h),
+                      _CalorieFollowIndicator(maxCalories: targetCalories),
+                      SizedBox(height: 20.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -106,7 +107,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 SizedBox(height: 8.h),
                 Expanded(
-                  child: ModernDietCard(
+                  child: _ModernDietCard(
                     response: _response,
                   ),
                 ),
@@ -119,8 +120,8 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class ModernDietCard extends HookWidget {
-  const ModernDietCard({required this.response, super.key});
+class _ModernDietCard extends HookWidget {
+  const _ModernDietCard({required this.response, super.key});
 
   final AiResponse? response;
 
@@ -262,55 +263,233 @@ class ModernDietCard extends HookWidget {
   }
 }
 
-class _CalorieFollowSlider extends StatelessWidget {
-  const _CalorieFollowSlider({required this.maxCalories, super.key});
+class _CalorieFollowIndicator extends StatelessWidget {
+  const _CalorieFollowIndicator({required this.maxCalories, super.key});
 
   final double maxCalories;
-
-  int _calculateDivisions() {
-    final calculatedDivisions = (maxCalories / 10).round();
-    return calculatedDivisions > 0 ? calculatedDivisions : 100;
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DailyCalorieCubit, DailyCalorieState>(
       builder: (context, state) {
         final currentCalories = state.currentCalories;
-        final caloriesLeft = maxCalories - currentCalories;
 
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        // Kalan kalori hesabı ve min 0 kontrolü
+        final caloriesLeft = (maxCalories - currentCalories).clamp(0.0, maxCalories);
+
+        // Yüzde hesaplama mantığı düzeltildi
+        double calculatePercent() {
+          // Eğer hedef kalori ve mevcut kalori aynıysa veya mevcut kalori daha fazlaysa
+          if (currentCalories >= maxCalories) {
+            return 1; // %100
+          }
+          return currentCalories / maxCalories;
+        }
+
+        final percent = calculatePercent();
+
+        // Görüntülenecek yüzde
+        final percentDisplay = (percent * 100).round();
+
+        // Yüzde değerine göre rengi ayarla
+        Color getColorByPercent(double percent) {
+          if (percent < 0.3) {
+            return ProjectColors.green; // Az tüketim - açık yeşil
+          } else if (percent < 0.7) {
+            return ProjectColors.forestGreen; // Orta tüketim - orta yeşil
+          } else if (percent < 0.95) {
+            return ProjectColors.sandyBrown; // Yüksek tüketim - turuncu
+          } else {
+            return ProjectColors.accentCoral; // Maksimuma yakın - kırmızımsı
+          }
+        }
+
+        final indicatorColor = getColorByPercent(percent);
+
+        return Padding(
+          padding: EdgeInsets.only(top: 16.h, bottom: 6.h),
+          child: Row(
             children: [
-              Icon(
-                Icons.local_fire_department,
-                color: ProjectColors.accentCoral,
-                size: 50.r,
+              // Kalori simgesi ve gösterge
+              Expanded(
+                flex: 5,
+                child: CircularPercentIndicator(
+                  radius: 75.r,
+                  lineWidth: 15,
+                  animation: true,
+                  animationDuration: 800,
+                  percent: percent,
+                  center: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$currentCalories',
+                        style: context.textTheme().displayMedium?.copyWith(
+                              fontSize: 32.sp,
+                              fontWeight: FontWeight.bold,
+                              color: currentCalories > 0 ? indicatorColor : ProjectColors.grey600,
+                            ),
+                      ),
+                      Text(
+                        'kalori',
+                        style: context.textTheme().bodySmall?.copyWith(
+                              color: ProjectColors.grey600,
+                            ),
+                      ),
+                    ],
+                  ),
+                  circularStrokeCap: CircularStrokeCap.round,
+                  backgroundColor: ProjectColors.grey200,
+                  progressColor: indicatorColor,
+                ),
               ),
-              Text(
-                currentCalories.toString(),
-                style: context.textTheme().displayLarge?.copyWith(
-                      fontSize: 40,
-                    ),
-              ),
-              Text(
-                '${caloriesLeft.toStringAsFixed(0)} kalori kaldı.',
-                style: context.textTheme().bodyMedium,
-              ),
-              SizedBox(height: 20.h),
-              SliderTheme(
-                data: _customSliderTheme(context, currentCalories),
-                child: Slider(
-                  value: currentCalories.toDouble(),
-                  max: maxCalories,
-                  divisions: _calculateDivisions(),
-                  onChanged: (value) {
-                    context.read<DailyCalorieCubit>().setCalories(
-                          value.toInt(),
-                          maxCalories.toInt(),
-                        );
-                  },
+
+              // Sağ taraftaki bilgiler
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Kalan kalori bilgisi
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.local_fire_department,
+                            color: ProjectColors.accentCoral,
+                            size: 22.r,
+                          ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            '${caloriesLeft.toInt()} kalori kaldı',
+                            style: context.textTheme().bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 12.h),
+
+                      // Hedef kalori
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.flag_outlined,
+                            color: ProjectColors.green,
+                            size: 22.r,
+                          ),
+                          SizedBox(width: 6.w),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Hedef: ',
+                                  style: context.textTheme().bodyMedium?.copyWith(
+                                        color: ProjectColors.grey600,
+                                      ),
+                                ),
+                                TextSpan(
+                                  text: '${maxCalories.toInt()} kcal',
+                                  style: context.textTheme().bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 12.h),
+
+                      // Tüketim yüzdesi
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.pie_chart_outline_rounded,
+                            color: indicatorColor,
+                            size: 22.r,
+                          ),
+                          SizedBox(width: 6.w),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Tüketilen: ',
+                                  style: context.textTheme().bodyMedium?.copyWith(
+                                        color: ProjectColors.grey600,
+                                      ),
+                                ),
+                                TextSpan(
+                                  text: '%$percentDisplay',
+                                  style: context.textTheme().bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: indicatorColor,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Bilgi satırlarının altına yerleştirilmiş butonlar
+                      SizedBox(height: 10.h),
+                      Row(
+                        children: [
+                          _MiniAdjustButton(
+                            text: '-100',
+                            textColor: ProjectColors.green,
+                            onPressed: () {
+                              final newCalories = (currentCalories - 100).clamp(0, maxCalories.toInt());
+                              context.read<DailyCalorieCubit>().setCalories(
+                                    newCalories,
+                                    maxCalories.toInt(),
+                                  );
+                            },
+                          ),
+                          SizedBox(width: 4.w),
+                          _MiniAdjustButton(
+                            text: '-10',
+                            textColor: ProjectColors.green,
+                            onPressed: () {
+                              final newCalories = (currentCalories - 10).clamp(0, maxCalories.toInt());
+                              context.read<DailyCalorieCubit>().setCalories(
+                                    newCalories,
+                                    maxCalories.toInt(),
+                                  );
+                            },
+                          ),
+                          SizedBox(width: 4.w),
+                          _MiniAdjustButton(
+                            text: '+10',
+                            textColor: ProjectColors.accentCoral,
+                            onPressed: () {
+                              final newCalories = (currentCalories + 10).clamp(0, maxCalories.toInt());
+                              context.read<DailyCalorieCubit>().setCalories(
+                                    newCalories,
+                                    maxCalories.toInt(),
+                                  );
+                            },
+                          ),
+                          SizedBox(width: 4.w),
+                          _MiniAdjustButton(
+                            text: '+100',
+                            textColor: ProjectColors.accentCoral,
+                            onPressed: () {
+                              final newCalories = (currentCalories + 100).clamp(0, maxCalories.toInt());
+                              context.read<DailyCalorieCubit>().setCalories(
+                                    newCalories,
+                                    maxCalories.toInt(),
+                                  );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -319,34 +498,44 @@ class _CalorieFollowSlider extends StatelessWidget {
       },
     );
   }
+}
 
-  SliderThemeData _customSliderTheme(BuildContext context, int currentCalories) {
-    // Keep the Lightness value between 0.0 - 1.0
-    double calculateLightness() {
-      final ratio = currentCalories / maxCalories;
-      // 0.2 minimum lightness, 0.8 maximum lightness
-      return 0.8 - (ratio * 0.6).clamp(0.0, 0.6);
-    }
+class _MiniAdjustButton extends StatelessWidget {
+  const _MiniAdjustButton({
+    required this.text,
+    required this.textColor,
+    required this.onPressed,
+  });
 
-    final lightness = calculateLightness();
+  final String text;
+  final Color textColor;
+  final VoidCallback onPressed;
 
-    return SliderThemeData(
-      trackHeight: 20,
-      thumbShape: const RoundSliderThumbShape(
-        pressedElevation: 5,
-        enabledThumbRadius: 15,
-        elevation: 2,
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(6.r),
+        child: Container(
+          width: 40.w,
+          height: 24.h,
+          decoration: BoxDecoration(
+            color: textColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6.r),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ),
-      overlayShape: const RoundSliderOverlayShape(overlayRadius: 0),
-
-      // The color gets darker as the calories consumed increase
-      activeTrackColor: HSLColor.fromColor(ProjectColors.forestGreen).withLightness(lightness).toColor(),
-      inactiveTrackColor: ProjectColors.grey400,
-
-      // Green color until about half of maximum calories and then activeTrackColor
-      thumbColor: currentCalories <= maxCalories * 2 / 3
-          ? ProjectColors.green
-          : HSLColor.fromColor(ProjectColors.forestGreen).withLightness(lightness).toColor(),
     );
   }
 }
