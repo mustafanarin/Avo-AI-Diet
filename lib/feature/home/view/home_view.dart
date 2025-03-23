@@ -32,12 +32,12 @@ final class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   AiResponse? _response; // TODObloc
-  late final AiResponseManager _manager;
+  late final IAiResponseManager _manager;
 
   @override
   void initState() {
     super.initState();
-    _manager = getIt<AiResponseManager>();
+    _manager = getIt<IAiResponseManager>();
     _loadDietPlan();
   }
 
@@ -262,7 +262,7 @@ class _ModernDietCard extends HookWidget {
     );
   }
 }
-
+// TODO search için buton değiştir,textfield next koy 
 class _CalorieFollowIndicator extends StatelessWidget {
   const _CalorieFollowIndicator({required this.maxCalories, super.key});
 
@@ -274,12 +274,12 @@ class _CalorieFollowIndicator extends StatelessWidget {
       builder: (context, state) {
         final currentCalories = state.currentCalories;
 
-        // Kalan kalori hesabı ve min 0 kontrolü
+        // Remaining calorie calculation and min 0 control
         final caloriesLeft = (maxCalories - currentCalories).clamp(0.0, maxCalories);
 
-        // Yüzde hesaplama mantığı düzeltildi
         double calculatePercent() {
-          // Eğer hedef kalori ve mevcut kalori aynıysa veya mevcut kalori daha fazlaysa
+          // If target calories and current calories are the same or current
+          // calories are more
           if (currentCalories >= maxCalories) {
             return 1; // %100
           }
@@ -288,19 +288,18 @@ class _CalorieFollowIndicator extends StatelessWidget {
 
         final percent = calculatePercent();
 
-        // Görüntülenecek yüzde
         final percentDisplay = (percent * 100).round();
 
-        // Yüzde değerine göre rengi ayarla
+        // Adjust color by percentage
         Color getColorByPercent(double percent) {
           if (percent < 0.3) {
-            return ProjectColors.green; // Az tüketim - açık yeşil
+            return ProjectColors.green;
           } else if (percent < 0.7) {
-            return ProjectColors.forestGreen; // Orta tüketim - orta yeşil
+            return ProjectColors.forestGreen;
           } else if (percent < 0.95) {
-            return ProjectColors.sandyBrown; // Yüksek tüketim - turuncu
+            return ProjectColors.sandyBrown;
           } else {
-            return ProjectColors.accentCoral; // Maksimuma yakın - kırmızımsı
+            return ProjectColors.accentCoral;
           }
         }
 
@@ -310,14 +309,14 @@ class _CalorieFollowIndicator extends StatelessWidget {
           padding: EdgeInsets.only(top: 16.h, bottom: 6.h),
           child: Row(
             children: [
-              // Kalori simgesi ve gösterge
+              // Calorie CircularPercentIndicator
               Expanded(
                 flex: 5,
                 child: CircularPercentIndicator(
                   radius: 75.r,
                   lineWidth: 15,
                   animation: true,
-                  animationDuration: 800,
+                  animateFromLastPercent: true, // TODOanimation false?
                   percent: percent,
                   center: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -344,7 +343,7 @@ class _CalorieFollowIndicator extends StatelessWidget {
                 ),
               ),
 
-              // Sağ taraftaki bilgiler
+              // information to the right of the calorie indicator
               Expanded(
                 flex: 5,
                 child: Padding(
@@ -352,7 +351,7 @@ class _CalorieFollowIndicator extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Kalan kalori bilgisi
+                      // Remaining calorie information
                       Row(
                         children: [
                           Icon(
@@ -372,7 +371,7 @@ class _CalorieFollowIndicator extends StatelessWidget {
 
                       SizedBox(height: 12.h),
 
-                      // Hedef kalori
+                      // target calorie
                       Row(
                         children: [
                           Icon(
@@ -404,7 +403,7 @@ class _CalorieFollowIndicator extends StatelessWidget {
 
                       SizedBox(height: 12.h),
 
-                      // Tüketim yüzdesi
+                      // Consumption percentage
                       Row(
                         children: [
                           Icon(
@@ -435,7 +434,7 @@ class _CalorieFollowIndicator extends StatelessWidget {
                         ],
                       ),
 
-                      // Bilgi satırlarının altına yerleştirilmiş butonlar
+                      // calorie change buttons
                       SizedBox(height: 10.h),
                       Row(
                         children: [

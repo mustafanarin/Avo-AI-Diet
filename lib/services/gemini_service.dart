@@ -6,10 +6,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:injectable/injectable.dart';
 
+abstract class IGeminiService {
+  Future<String> getUserDiet(UserInfoModel user);
+  Future<String> aiChat(String text, String conversationHistory);
+}
+
 @singleton
-final class GeminiService {
+final class GeminiService implements IGeminiService {
   GeminiService(this._secureStorage);
-  final SecureStorageService _secureStorage;
+  final ISecureStorageService _secureStorage;
   late final GenerativeModel _model;
   final String _geminiModel = 'gemini-2.0-flash-lite';
 
@@ -37,6 +42,7 @@ final class GeminiService {
     }
   }
 
+  @override
   Future<String> getUserDiet(UserInfoModel user) async {
     try {
       await _initFuture;
@@ -78,6 +84,7 @@ final class GeminiService {
     }
   }
 
+  @override
   Future<String> aiChat(String text, String conversationHistory) async {
     try {
       await _initFuture;

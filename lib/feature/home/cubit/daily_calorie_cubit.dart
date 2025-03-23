@@ -7,7 +7,7 @@ import 'package:injectable/injectable.dart';
 @injectable
 final class DailyCalorieCubit extends Cubit<DailyCalorieState> {
   DailyCalorieCubit(this._calorieManager) : super(DailyCalorieState());
-  final DailyCalorieManager _calorieManager;
+  final IDailyCalorieManager _calorieManager;
 
   Future<void> initialize() async {
     emit(state.copyWith(isLoading: true));

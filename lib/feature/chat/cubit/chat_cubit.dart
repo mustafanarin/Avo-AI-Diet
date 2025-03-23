@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit(this._service) : super(const ChatState());
 
-  final GeminiService _service;
+  final IGeminiService _service;
 
   Future<void> chatWithAi(String text, String conversationHistory) async {
     emit(state.copyWith(isLoading: true));

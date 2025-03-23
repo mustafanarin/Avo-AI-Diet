@@ -8,7 +8,7 @@ class NameAndCalCubit extends Cubit<NameAndCalState> {
   NameAndCalCubit(this._manager) : super(NameAndCalState()) {
     _loadInitialData();
   }
-  final NameAndCalManager _manager;
+  final INameAndCalManager _manager;
 
   Future<void> _loadInitialData() async {
     final cachedData = await _manager.getNameCalori();

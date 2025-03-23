@@ -23,6 +23,7 @@ import '../../cache/manager/daily_calorie/daily_calorie_manager.dart' as _i18;
 import '../../cache/manager/favorites/favorite_message_manager.dart' as _i45;
 import '../../cache/manager/name_and_cal/name_and_cal_manager.dart' as _i490;
 import '../../cache/manager/reponse/ai_response_manager.dart' as _i697;
+import 'app_module.dart' as _i460;
 
 // initializes the registration of main-scope dependencies inside of GetIt
 _i174.GetIt $initGetIt(
@@ -35,24 +36,36 @@ _i174.GetIt $initGetIt(
     environment,
     environmentFilter,
   );
-  gh.factory<_i104.SearchCubit>(() => _i104.SearchCubit());
-  gh.factory<_i697.AiResponseManager>(() => _i697.AiResponseManager());
+  final appModule = _$AppModule();
   gh.factory<_i45.FavoriteMessageManager>(() => _i45.FavoriteMessageManager());
-  gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
+  gh.factory<_i104.SearchCubit>(() => _i104.SearchCubit());
+  gh.singleton<_i697.AiResponseManager>(() => _i697.AiResponseManager());
   gh.singleton<_i18.DailyCalorieManager>(() => _i18.DailyCalorieManager());
   gh.singleton<_i490.NameAndCalManager>(() => _i490.NameAndCalManager());
-  gh.factory<_i688.DailyCalorieCubit>(
-      () => _i688.DailyCalorieCubit(gh<_i18.DailyCalorieManager>()));
-  gh.singleton<_i709.GeminiService>(
-      () => _i709.GeminiService(gh<_i976.SecureStorageService>()));
+  gh.singleton<_i18.IDailyCalorieManager>(() => appModule.dailyCalorieManager);
+  gh.singleton<_i976.ISecureStorageService>(
+      () => appModule.secureStorageService);
+  gh.singleton<_i709.IGeminiService>(() => appModule.geminiService);
+  gh.singleton<_i45.IFavoriteMessageManager>(
+      () => appModule.favoriteMessageManager);
+  gh.singleton<_i490.INameAndCalManager>(() => appModule.nameAndCalManager);
+  gh.singleton<_i697.IAiResponseManager>(() => appModule.aiResponseManager);
+  gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
+  gh.factory<_i648.ChatCubit>(
+      () => _i648.ChatCubit(gh<_i709.IGeminiService>()));
   gh.factory<_i456.FavoritesCubit>(
-      () => _i456.FavoritesCubit(gh<_i45.FavoriteMessageManager>()));
+      () => _i456.FavoritesCubit(gh<_i45.IFavoriteMessageManager>()));
+  gh.factory<_i688.DailyCalorieCubit>(
+      () => _i688.DailyCalorieCubit(gh<_i18.IDailyCalorieManager>()));
+  gh.singleton<_i709.GeminiService>(
+      () => _i709.GeminiService(gh<_i976.ISecureStorageService>()));
   gh.factory<_i784.NameAndCalCubit>(
-      () => _i784.NameAndCalCubit(gh<_i490.NameAndCalManager>()));
+      () => _i784.NameAndCalCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
-        gh<_i709.GeminiService>(),
-        gh<_i697.AiResponseManager>(),
+        gh<_i709.IGeminiService>(),
+        gh<_i697.IAiResponseManager>(),
       ));
-  gh.factory<_i648.ChatCubit>(() => _i648.ChatCubit(gh<_i709.GeminiService>()));
   return getIt;
 }
+
+class _$AppModule extends _i460.AppModule {}

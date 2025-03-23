@@ -13,8 +13,8 @@ import 'package:intl/intl.dart';
 class UserInfoCubit extends Cubit<UserInfoState> {
   UserInfoCubit(this._service, this._manager) : super(UserInfoState());
 
-  final GeminiService _service;
-  final AiResponseManager _manager;
+  final IGeminiService _service;
+  final IAiResponseManager _manager;
 
   Future<void> submitUserInfo(UserInfoModel userInfo) async {
     try {

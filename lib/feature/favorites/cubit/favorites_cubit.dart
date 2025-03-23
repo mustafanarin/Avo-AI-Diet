@@ -10,7 +10,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     _initFavorites();
   }
 
-  final FavoriteMessageManager _manager;
+  final IFavoriteMessageManager _manager;
 
   Future<void> _initFavorites() async {
     await getFavorites();
