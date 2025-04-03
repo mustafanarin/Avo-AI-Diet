@@ -10,6 +10,7 @@ abstract final class RouteNames {
   static const String chat = '/chat';
   static const String favorite = '/favorite';
   static const String detail = '/detail';
+  static const String nameEdit = '/nameEdit';
 
 
   static String userInfoPath(String userName) => '/user/$userName';

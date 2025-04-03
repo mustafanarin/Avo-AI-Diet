@@ -3,6 +3,7 @@ import 'package:avo_ai_diet/feature/favorites/view/favorite_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
+import 'package:avo_ai_diet/feature/profile/view/name_edit_view.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/view/food_detail_view.dart';
 import 'package:avo_ai_diet/feature/tabbar/tabbar_view.dart';
@@ -54,6 +55,10 @@ final class AppRouter {
             final foodModel = state.extra! as FoodModel;
             return FoodDetailPage(foodModel: foodModel);
           },
+        ),
+        GoRoute(
+          path: RouteNames.nameEdit,
+          builder: (context, state) => const NameEditView(),
         ),
       ];
 

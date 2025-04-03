@@ -1,6 +1,9 @@
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
+import 'package:avo_ai_diet/product/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -37,7 +40,7 @@ class _ProfileViewState extends State<ProfileView> {
                   });
                 },
                 onNameEditTap: () {
-                  // Navigate to NameEditView
+                  context.push(RouteNames.nameEdit);
                 },
                 onUserInfoEditTap: () {
                   // Navigate to UserInfoEditView
