@@ -16,6 +16,7 @@ import '../../../feature/favorites/cubit/favorites_cubit.dart' as _i456;
 import '../../../feature/home/cubit/daily_calorie_cubit.dart' as _i688;
 import '../../../feature/onboarding/cubit/name_and_cal_cubit.dart' as _i784;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
+import '../../../feature/profile/cubit/name_edit_cubit.dart' as _i307;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
 import '../../../services/gemini_service.dart' as _i709;
 import '../../../services/secure_storage_service.dart' as _i976;
@@ -61,6 +62,8 @@ _i174.GetIt $initGetIt(
       () => _i709.GeminiService(gh<_i976.ISecureStorageService>()));
   gh.factory<_i784.NameAndCalCubit>(
       () => _i784.NameAndCalCubit(gh<_i490.INameAndCalManager>()));
+  gh.factory<_i307.NameEditCubit>(
+      () => _i307.NameEditCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
         gh<_i709.IGeminiService>(),
         gh<_i697.IAiResponseManager>(),

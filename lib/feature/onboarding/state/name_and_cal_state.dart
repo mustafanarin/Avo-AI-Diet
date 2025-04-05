@@ -1,4 +1,4 @@
-class NameAndCalState {
+final class NameAndCalState {
   NameAndCalState({this.isLoading = false, this.name, this.targetCal, this.error});
 
   final bool isLoading;

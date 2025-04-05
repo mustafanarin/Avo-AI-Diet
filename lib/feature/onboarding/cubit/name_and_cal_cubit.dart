@@ -3,8 +3,9 @@ import 'package:avo_ai_diet/product/cache/manager/name_and_cal/name_and_cal_mana
 import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
 @injectable
-class NameAndCalCubit extends Cubit<NameAndCalState> {
+final class NameAndCalCubit extends Cubit<NameAndCalState> {
   NameAndCalCubit(this._manager) : super(NameAndCalState()) {
     _loadInitialData();
   }
@@ -33,6 +34,31 @@ class NameAndCalCubit extends Cubit<NameAndCalState> {
         state.copyWith(
           isLoading: false,
           error: 'Bilgiler kaydedilirken bir hata oluştu: $e',
+        ),
+      );
+    }
+  }
+
+  Future<void> refreshData() async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final nameCalData = await _manager.getNameCalori();
+      if (nameCalData != null) {
+        emit(
+          state.copyWith(
+            name: nameCalData.userName,
+            targetCal: nameCalData.targetCal,
+            isLoading: false,
+          ),
+        );
+      } else {
+        emit(state.copyWith(isLoading: false));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          error: 'Veriler yüklenirken bir sorun oluştu',
+          isLoading: false,
         ),
       );
     }

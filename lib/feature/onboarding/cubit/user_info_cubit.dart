@@ -10,7 +10,7 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 @injectable
-class UserInfoCubit extends Cubit<UserInfoState> {
+final class UserInfoCubit extends Cubit<UserInfoState> {
   UserInfoCubit(this._service, this._manager) : super(UserInfoState());
 
   final IGeminiService _service;

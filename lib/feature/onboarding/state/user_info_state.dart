@@ -1,4 +1,4 @@
-class UserInfoState {
+final class UserInfoState {
   UserInfoState({this.isLoading = false, this.response, this.error});
 
   final bool isLoading;

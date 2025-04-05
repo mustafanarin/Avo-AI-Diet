@@ -16,11 +16,13 @@ final class NameAndCalManager implements INameAndCalManager{
     return _box!;
   }
 
+  @override
   Future<void> saveNameCalori(NameAndCalModel model) async {
     final box = await _getBox();
     await box.put('userInfo', model);
   }
 
+  @override
   Future<NameAndCalModel?> getNameCalori() async {
     final box = await _getBox();
     final response = box.get(
@@ -29,4 +31,6 @@ final class NameAndCalManager implements INameAndCalManager{
     );
     return response;
   }
+
+
 }

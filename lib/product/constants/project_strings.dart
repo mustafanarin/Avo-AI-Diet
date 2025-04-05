@@ -66,4 +66,12 @@ abstract final class ProjectStrings {
   static const String favorites = 'Favoriler';
   static const String profile = 'Profil';
 
+  // Name Edit Page
+  static const String inputNewName = 'Yeni adını gir';
+  static const String updateName = 'Adını Güncelle!';
+  static const String updateNameDesc =
+      'Uygulamada görünen adını değiştirmek ister misin? Yeni adını aşağıya yazabilirsin.';
+  static const String saving = 'Kaydediliyor...';
+  static const String save = 'Kaydet';
+  static const String nameSuccessful= 'İsminiz başarıyla güncellendi!';
 }

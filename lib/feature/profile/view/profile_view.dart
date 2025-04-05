@@ -1,7 +1,9 @@
+import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/routes/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,13 +16,12 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   bool _waterReminderEnabled = true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Profil',
+          'Profilim',
           style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
@@ -28,7 +29,7 @@ class _ProfileViewState extends State<ProfileView> {
         child: Column(
           children: [
             SizedBox(height: 20.h),
-            const ProfileHeader(userName: 'Mustafa'),
+            const ProfileHeader(),
             SizedBox(height: 30.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -58,11 +59,7 @@ class _ProfileViewState extends State<ProfileView> {
 }
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({
-    required this.userName,
-    super.key,
-  });
-  final String userName;
+  const ProfileHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +81,18 @@ class ProfileHeader extends StatelessWidget {
           ),
         ),
         SizedBox(height: 24.h),
-        Text(
-          'Merhaba, $userName!',
-          style: TextStyle(
-            fontSize: 28.sp,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF2E7D32),
-          ),
+        BlocSelector<NameAndCalCubit, NameAndCalState, String?>(
+          selector: (state) => state.name,
+          builder: (context, name) {
+            return Text(
+              'Merhaba, $name!',
+              style: TextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF2E7D32),
+              ),
+            );
+          },
         ),
         SizedBox(height: 8.h),
         Text(
