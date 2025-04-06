@@ -60,10 +60,10 @@ _i174.GetIt $initGetIt(
       () => _i688.DailyCalorieCubit(gh<_i18.IDailyCalorieManager>()));
   gh.singleton<_i709.GeminiService>(
       () => _i709.GeminiService(gh<_i976.ISecureStorageService>()));
-  gh.factory<_i784.NameAndCalCubit>(
-      () => _i784.NameAndCalCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i307.NameEditCubit>(
       () => _i307.NameEditCubit(gh<_i490.INameAndCalManager>()));
+  gh.factory<_i784.NameAndCalCubit>(
+      () => _i784.NameAndCalCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
         gh<_i709.IGeminiService>(),
         gh<_i697.IAiResponseManager>(),

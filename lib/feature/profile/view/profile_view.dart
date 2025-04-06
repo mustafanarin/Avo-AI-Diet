@@ -44,7 +44,7 @@ class _ProfileViewState extends State<ProfileView> {
                   context.push(RouteNames.nameEdit);
                 },
                 onUserInfoEditTap: () {
-                  // Navigate to UserInfoEditView
+                  context.push(RouteNames.userInfoEdit);
                 },
                 onRegionalBodyTap: () {
                   // Navigate to RegionalBodyView
