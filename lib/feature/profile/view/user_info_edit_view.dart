@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/home/cubit/ai_diet_advice_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
@@ -20,6 +21,7 @@ import 'package:avo_ai_diet/services/calori_calculator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -149,8 +151,7 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
 
     cubit.submitNameAndCal(nameAndCal);
 
-    const path = RouteNames.tabbar;
-    context.go(path);
+    context.go(RouteNames.tabbarWithIndexPath(0));
   }
 
   @override
@@ -169,6 +170,19 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
 
               if (state.response != null) {
                 final totalCalories = _calculateTotalCalories();
+
+                context.read<AiDietAdviceCubit>().refreshDietPlan();
+
+                Fluttertoast.showToast(
+                  msg: "Diyetin başarıyla güncellendi!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor:
+                      ProjectColors.green, // TODOcolor change? and name lenght control add, project widget?
+                  textColor: ProjectColors.white,
+                  fontSize: 16.sp,
+                );
+
                 _navigateToHome(
                   context,
                   userName: '888888', // todo

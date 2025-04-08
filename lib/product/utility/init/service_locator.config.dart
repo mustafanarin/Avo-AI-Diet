@@ -13,6 +13,7 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../../../feature/chat/cubit/chat_cubit.dart' as _i648;
 import '../../../feature/favorites/cubit/favorites_cubit.dart' as _i456;
+import '../../../feature/home/cubit/ai_diet_advice_cubit.dart' as _i568;
 import '../../../feature/home/cubit/daily_calorie_cubit.dart' as _i688;
 import '../../../feature/onboarding/cubit/name_and_cal_cubit.dart' as _i784;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
@@ -60,6 +61,8 @@ _i174.GetIt $initGetIt(
       () => _i688.DailyCalorieCubit(gh<_i18.IDailyCalorieManager>()));
   gh.singleton<_i709.GeminiService>(
       () => _i709.GeminiService(gh<_i976.ISecureStorageService>()));
+  gh.factory<_i568.AiDietAdviceCubit>(
+      () => _i568.AiDietAdviceCubit(gh<_i697.IAiResponseManager>()));
   gh.factory<_i307.NameEditCubit>(
       () => _i307.NameEditCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i784.NameAndCalCubit>(

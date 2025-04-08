@@ -151,7 +151,7 @@ class _ContinueButton extends StatelessWidget {
                     msg: ProjectStrings.nameSuccessful,
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
-                    backgroundColor: ProjectColors.green, // TODOcolor change? and name lenght control add
+                    backgroundColor: ProjectColors.green, // TODOcolor change? and name lenght control add, project widget?
                     textColor: ProjectColors.white,
                     fontSize: 16.sp,
                   ),

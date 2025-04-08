@@ -12,7 +12,9 @@ abstract final class RouteNames {
   static const String detail = '/detail';
   static const String nameEdit = '/nameEdit';
   static const String userInfoEdit = '/userInfoEdit';
+  static const String tabbarWithIndex = '/tabbar/:tabIndex';
 
 
   static String userInfoPath(String userName) => '/user/$userName';
+  static String tabbarWithIndexPath(int index) => '/tabbar/$index';
 }

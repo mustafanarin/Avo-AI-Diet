@@ -11,12 +11,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 final class CustomTabBarView extends HookWidget {
-  const CustomTabBarView({super.key});
+  const CustomTabBarView({super.key, this.initialIndex = 0});
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
-    final pageController = usePageController();
-    final selectedIndex = useState(0);
+    final pageController = usePageController(initialPage: initialIndex);
+    final selectedIndex = useState(initialIndex);
 
     return Scaffold(
       body: PageView(

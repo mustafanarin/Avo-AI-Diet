@@ -1,8 +1,9 @@
+import 'package:avo_ai_diet/feature/home/cubit/ai_diet_advice_cubit.dart';
 import 'package:avo_ai_diet/feature/home/cubit/daily_calorie_cubit.dart';
+import 'package:avo_ai_diet/feature/home/state/ai_diet_advice_state.dart';
 import 'package:avo_ai_diet/feature/home/state/daily_calorie_state.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
-import 'package:avo_ai_diet/product/cache/manager/reponse/ai_response_manager.dart';
 import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
@@ -12,7 +13,6 @@ import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
-import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -31,23 +31,6 @@ final class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  AiResponse? _response; // TODObloc
-  late final IAiResponseManager _manager;
-
-  @override
-  void initState() {
-    super.initState();
-    _manager = getIt<IAiResponseManager>();
-    _loadDietPlan();
-  }
-
-  Future<void> _loadDietPlan() async {
-    final result = await _manager.getDietPlan();
-    setState(() {
-      _response = result;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NameAndCalCubit, NameAndCalState>(
@@ -106,10 +89,8 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Expanded(
-                  child: _ModernDietCard(
-                    response: _response,
-                  ),
+                const Expanded(
+                  child: _ModernDietCard(),
                 ),
               ],
             ),
@@ -121,9 +102,7 @@ class _HomeViewState extends State<HomeView> {
 }
 
 class _ModernDietCard extends HookWidget {
-  const _ModernDietCard({required this.response, super.key});
-
-  final AiResponse? response;
+  const _ModernDietCard();
 
   @override
   Widget build(BuildContext context) {
@@ -136,103 +115,125 @@ class _ModernDietCard extends HookWidget {
             return true;
           },
           child: SingleChildScrollView(
-            child: Container(
-              margin: AppPadding.customSymmetricMediumSmall(),
-              decoration: BoxDecoration(
-                color: ProjectColors.white.withOpacity(0.6),
-                borderRadius: AppRadius.circularSmall(),
-                border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: AppPadding.customSymmetricMediumNormal(),
-                    decoration: BoxDecoration(
-                      color: ProjectColors.backgroundCream,
-                      borderRadius: AppRadius.onlyTopSmall(),
+            child: BlocSelector<AiDietAdviceCubit, AiDietAdviceState,
+                ({AiResponse? response, bool isLoading, String? error})>(
+              selector: (state) => (response: state.response, isLoading: state.isLoading, error: state.error),
+              builder: (context, data) {
+                if (data.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (data.response == null) {
+                  return Padding(
+                    padding: AppPadding.mediumAll(),
+                    child: Text(
+                      data.error ?? 'Diyet planı yüklenemedi.',
+                      style: context.textTheme().bodyMedium?.copyWith(color: ProjectColors.accentCoral),
                     ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: AppPadding.smallAll(),
-                          decoration: BoxDecoration(
-                            color: ProjectColors.primary.withOpacity(0.1),
-                            borderRadius: AppRadius.circularxSmall(),
-                          ),
-                          child: Icon(
-                            Icons.restaurant_rounded,
-                            color: ProjectColors.primary,
-                            size: 18.r,
-                          ),
+                  );
+                }
+
+                final response = data.response!;
+
+                return Container(
+                  margin: AppPadding.customSymmetricMediumSmall(),
+                  decoration: BoxDecoration(
+                    color: ProjectColors.white.withOpacity(0.6),
+                    borderRadius: AppRadius.circularSmall(),
+                    border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: AppPadding.customSymmetricMediumNormal(),
+                        decoration: BoxDecoration(
+                          color: ProjectColors.backgroundCream,
+                          borderRadius: AppRadius.onlyTopSmall(),
                         ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                ProjectStrings.dietListTitle,
-                                style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: AppPadding.smallAll(),
+                              decoration: BoxDecoration(
+                                color: ProjectColors.primary.withOpacity(0.1),
+                                borderRadius: AppRadius.circularxSmall(),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              child: Icon(
+                                Icons.restaurant_rounded,
+                                color: ProjectColors.primary,
+                                size: 18.r,
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${response?.formattedDayMonthYear}',
-                                    style: context.textTheme().bodySmall?.copyWith(
-                                          fontSize: 13.sp,
-                                          color: ProjectColors.grey,
-                                        ),
+                                    ProjectStrings.dietListTitle,
+                                    style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
                                   ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.delete_outline,
-                                          size: 18.sp,
-                                          color: ProjectColors.accentCoral,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        response.formattedDayMonthYear,
+                                        style: context.textTheme().bodySmall?.copyWith(
+                                              fontSize: 13.sp,
+                                              color: ProjectColors.grey,
+                                            ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          // silme işlemi
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete_outline,
+                                              size: 18.sp,
+                                              color: ProjectColors.accentCoral,
+                                            ),
+                                            Text(
+                                              'Sil',
+                                              style: context.textTheme().bodySmall?.copyWith(
+                                                    color: ProjectColors.accentCoral,
+                                                  ),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          'Sil',
-                                          style: context.textTheme().bodySmall?.copyWith(
-                                                color: ProjectColors.accentCoral,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: response == null
-                        ? const CircularProgressIndicator()
-                        : Markdown(
-                            data: response!.dietPlan,
-                            styleSheet: MarkdownStyleSheet(
-                              p: context.textTheme().bodySmall?.copyWith(fontSize: 16.sp),
-                              strong: context.textTheme().bodySmall?.copyWith(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                              em: context.textTheme().bodySmall?.copyWith(
-                                    fontSize: 16.sp,
-                                    fontStyle: FontStyle.italic,
-                                  ),
                             ),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Markdown(
+                          data: response.dietPlan,
+                          styleSheet: MarkdownStyleSheet(
+                            p: context.textTheme().bodySmall?.copyWith(fontSize: 16.sp),
+                            strong: context.textTheme().bodySmall?.copyWith(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            em: context.textTheme().bodySmall?.copyWith(
+                                  fontSize: 16.sp,
+                                  fontStyle: FontStyle.italic,
+                                ),
                           ),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ),
@@ -262,7 +263,8 @@ class _ModernDietCard extends HookWidget {
     );
   }
 }
-// TODO search için buton değiştir,textfield next koy 
+
+// TODOsearch için buton değiştir,textfield next koy
 class _CalorieFollowIndicator extends StatelessWidget {
   const _CalorieFollowIndicator({required this.maxCalories, super.key});
 

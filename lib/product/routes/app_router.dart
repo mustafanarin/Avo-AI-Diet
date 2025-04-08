@@ -29,6 +29,13 @@ final class AppRouter {
           builder: (context, state) => const CustomTabBarView(),
         ),
         GoRoute(
+          path: RouteNames.tabbarWithIndex,
+          builder: (context, state) {
+            final tabIndex = int.tryParse(state.pathParameters['tabIndex'] ?? '0') ?? 0;
+            return CustomTabBarView(initialIndex: tabIndex);
+          },
+        ),
+        GoRoute(
           path: RouteNames.welcome,
           builder: (context, state) => const WelcomeView(),
         ),
