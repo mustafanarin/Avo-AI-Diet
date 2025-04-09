@@ -2,6 +2,7 @@ import 'package:avo_ai_diet/product/cache/model/daily_calorie/daily_calorie_mode
 import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
+import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -19,7 +20,8 @@ final class AppInitialize {
       ..registerAdapter(AiResponseAdapter())
       ..registerAdapter(NameAndCalModelAdapter())
       ..registerAdapter(FavoriteMessageModelAdapter())
-      ..registerAdapter(DailyCalorieModelAdapter());
+      ..registerAdapter(DailyCalorieModelAdapter())
+      ..registerAdapter(UserInfoCacheModelAdapter());
     await initializeDateFormatting('tr_TR');
 
     await setupServiceLocator();

@@ -16,6 +16,7 @@ import '../../../feature/favorites/cubit/favorites_cubit.dart' as _i456;
 import '../../../feature/home/cubit/ai_diet_advice_cubit.dart' as _i568;
 import '../../../feature/home/cubit/daily_calorie_cubit.dart' as _i688;
 import '../../../feature/onboarding/cubit/name_and_cal_cubit.dart' as _i784;
+import '../../../feature/onboarding/cubit/user_info_cache_cubit.dart' as _i924;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../feature/profile/cubit/name_edit_cubit.dart' as _i307;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
@@ -25,6 +26,7 @@ import '../../cache/manager/daily_calorie/daily_calorie_manager.dart' as _i18;
 import '../../cache/manager/favorites/favorite_message_manager.dart' as _i45;
 import '../../cache/manager/name_and_cal/name_and_cal_manager.dart' as _i490;
 import '../../cache/manager/reponse/ai_response_manager.dart' as _i697;
+import '../../cache/manager/user_info/user_info_manager.dart' as _i833;
 import 'app_module.dart' as _i460;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -44,6 +46,7 @@ _i174.GetIt $initGetIt(
   gh.singleton<_i697.AiResponseManager>(() => _i697.AiResponseManager());
   gh.singleton<_i18.DailyCalorieManager>(() => _i18.DailyCalorieManager());
   gh.singleton<_i490.NameAndCalManager>(() => _i490.NameAndCalManager());
+  gh.singleton<_i833.UserInfoManager>(() => _i833.UserInfoManager());
   gh.singleton<_i18.IDailyCalorieManager>(() => appModule.dailyCalorieManager);
   gh.singleton<_i976.ISecureStorageService>(
       () => appModule.secureStorageService);
@@ -52,6 +55,7 @@ _i174.GetIt $initGetIt(
       () => appModule.favoriteMessageManager);
   gh.singleton<_i490.INameAndCalManager>(() => appModule.nameAndCalManager);
   gh.singleton<_i697.IAiResponseManager>(() => appModule.aiResponseManager);
+  gh.singleton<_i833.IUserInfoManager>(() => appModule.userInfoManager);
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
   gh.factory<_i648.ChatCubit>(
       () => _i648.ChatCubit(gh<_i709.IGeminiService>()));
@@ -67,6 +71,8 @@ _i174.GetIt $initGetIt(
       () => _i307.NameEditCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i784.NameAndCalCubit>(
       () => _i784.NameAndCalCubit(gh<_i490.INameAndCalManager>()));
+  gh.factory<_i924.UserInfoCacheCubit>(
+      () => _i924.UserInfoCacheCubit(gh<_i833.IUserInfoManager>()));
   gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
         gh<_i709.IGeminiService>(),
         gh<_i697.IAiResponseManager>(),

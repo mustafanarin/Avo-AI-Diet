@@ -2,6 +2,7 @@ import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
 import 'package:avo_ai_diet/feature/home/cubit/ai_diet_advice_cubit.dart';
 import 'package:avo_ai_diet/feature/home/cubit/daily_calorie_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/product/routes/app_router.dart';
 import 'package:avo_ai_diet/product/theme/app_theme.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => getIt<NameAndCalCubit>()),
         BlocProvider(create: (context) => getIt<FavoritesCubit>()),
         BlocProvider(create: (context) => getIt<AiDietAdviceCubit>()),
+        BlocProvider(create: (context) => getIt<UserInfoCacheCubit>()),
         BlocProvider(create: (context) => getIt<DailyCalorieCubit>()..initialize()),
       ],
       child: ScreenUtilInit(

@@ -2,7 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 part 'name_and_cal.g.dart';
 
 @HiveType(typeId: 1)
-class NameAndCalModel {
+final class NameAndCalModel {
   NameAndCalModel({required this.userName, required this.targetCal});
 
   @HiveField(0)
