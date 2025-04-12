@@ -1,9 +1,12 @@
 import 'package:avo_ai_diet/feature/home/cubit/ai_diet_advice_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
+import 'package:avo_ai_diet/feature/onboarding/state/user_info_cache_state.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
 import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
+import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
@@ -25,7 +28,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class UserInfoEditView extends StatefulWidget {
+final class UserInfoEditView extends StatefulWidget {
   const UserInfoEditView({super.key});
   @override
   State<UserInfoEditView> createState() => _UserInfoEditViewState();
@@ -139,6 +142,18 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
     await cubit.submitUserInfo(userInfo);
   }
 
+  Future<void> _userInfoCache(BuildContext context) async {
+    final cacheCubit = context.read<UserInfoCacheCubit>();
+    final userInfoCache = UserInfoCacheModel(
+      gender: _gender ?? '',
+      age: _ageController.text,
+      height: _heightController.text,
+      weight: _weightController.text,
+    );
+
+    await cacheCubit.saveUserInfo(userInfoCache);
+  }
+
   void _navigateToHome(
     BuildContext context, {
     required String userName,
@@ -151,168 +166,211 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
 
     cubit.submitNameAndCal(nameAndCal);
 
-    context.go(RouteNames.tabbarWithIndexPath(0));
+    context.pushReplacement(RouteNames.tabbarWithIndexPath(0));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<UserInfoCubit>(),
-      child: Builder(
-        builder: (context) {
-          return BlocConsumer<UserInfoCubit, UserInfoState>(
-            listener: (context, state) {
-              if (state.error != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error!)),
-                );
-              }
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<UserInfoCubit>()),
+        BlocProvider(
+          create: (context) {
+            final cubit = getIt<UserInfoCacheCubit>()..loadUserInfo();
+            return cubit;
+          },
+        ),
+      ],
+      child: BlocListener<UserInfoCacheCubit, UserInfoCacheState>(
+        listener: (context, cacheState) {
+          if (cacheState.cacheModel != null && !cacheState.isLoading) {
+            final userInfo = cacheState.cacheModel!;
 
-              if (state.response != null) {
-                final totalCalories = _calculateTotalCalories();
+            if (userInfo.age.isNotEmpty) {
+              _ageController.text = userInfo.age;
+            }
 
-                context.read<AiDietAdviceCubit>().refreshDietPlan();
+            if (userInfo.height.isNotEmpty) {
+              _heightController.text = userInfo.height;
+            }
 
-                Fluttertoast.showToast(
-                  msg: "Diyetin başarıyla güncellendi!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor:
-                      ProjectColors.green, // TODOcolor change? and name lenght control add, project widget?
-                  textColor: ProjectColors.white,
-                  fontSize: 16.sp,
-                );
+            if (userInfo.weight.isNotEmpty) {
+              _weightController.text = userInfo.weight;
+            }
 
-                _navigateToHome(
-                  context,
-                  userName: '888888', // todo
-                  targetCal: totalCalories,
-                );
-              }
-            },
-            builder: (context, state) {
-              final cubit = context.read<UserInfoCubit>();
-              return state.isLoading
-                  ? Scaffold(
-                      body: Center(
-                        child: Column(
-                          children: [
-                            Hero(
-                              tag: HeroLottie.avoLottie.value,
-                              child: Lottie.asset(JsonName.avoWalk.path),
-                            ),
-                            const Text('Senin için en uygun diyet planını hazırlıyorum :)'),
-                          ],
-                        ),
-                      ),
-                    )
-                  : Scaffold(
-                      appBar: const _CustomAppbar(),
-                      body: Form(
-                        key: _formKey,
-                        child: Stepper(
-                          currentStep: _currentStep,
-                          elevation: 0,
-                          onStepTapped: (step) {
-                            if (step < _currentStep) {
-                              setState(() => _currentStep = step);
-                            }
-                          },
-                          controlsBuilder: (context, details) {
-                            return Padding(
-                              padding: AppPadding.onlyTopXmedium(),
+            if (userInfo.gender.isNotEmpty) {
+              setState(() {
+                _gender = userInfo.gender;
+              });
+            }
+          }
+        },
+        child: Builder(
+          builder: (context) {
+            return BlocBuilder<UserInfoCacheCubit, UserInfoCacheState>(
+              builder: (context, cacheState) {
+                if (cacheState.isLoading) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                return BlocConsumer<UserInfoCubit, UserInfoState>(
+                  listener: (context, state) {
+                    if (state.error != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.error!)),
+                      );
+                    }
+
+                    if (state.response != null) {
+                      final totalCalories = _calculateTotalCalories();
+
+                      context.read<AiDietAdviceCubit>().refreshDietPlan();
+
+                      Fluttertoast.showToast(
+                        msg: 'Diyetin başarıyla güncellendi!',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: ProjectColors.green,
+                        textColor: ProjectColors.white,
+                        fontSize: 16.sp,
+                      );
+
+                      _navigateToHome(
+                        context,
+                        userName: '',
+                        targetCal: totalCalories,
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    final cubit = context.read<UserInfoCubit>();
+                    return state.isLoading
+                        ? Scaffold(
+                            body: Center(
                               child: Column(
                                 children: [
-                                  ProjectButton(
-                                    text: _currentStep == 3
-                                        ? ProjectStrings.calculatButton
-                                        : ProjectStrings.continueButton,
-                                    onPressed: !_validateCurrentStep() || state.isLoading
-                                        ? null
-                                        : () {
-                                            if (_currentStep < 3) {
-                                              setState(() => _currentStep += 1);
-                                            } else {
-                                              _submitForm(context, cubit);
-                                            }
-                                          },
-                                    isEnabled: _validateCurrentStep() && !state.isLoading,
+                                  Hero(
+                                    tag: HeroLottie.avoLottie.value,
+                                    child: Lottie.asset(JsonName.avoWalk.path),
                                   ),
-                                  if (_currentStep > 0) ...[
-                                    SizedBox(height: 12.h),
-                                    BackButton(
-                                      onPressed: () {
-                                        setState(() => _currentStep -= 1);
-                                      },
-                                    ),
-                                  ],
+                                  const Text('Senin için en uygun diyet planını hazırlıyorum :)'),
                                 ],
                               ),
-                            );
-                          },
-                          steps: [
-                            Step(
-                              state: _getStepState(0),
-                              title: Text(
-                                ProjectStrings.personelInfoTitle,
-                                style: context.textTheme().titleMedium,
-                              ),
-                              content: _PersonelInfoStep(
-                                gender: _gender,
-                                onGenderChanged: (value) => setState(() => _gender = value),
-                                ageController: _ageController,
-                                validators: _validators,
-                                heightController: _heightController,
-                                weightController: _weightController,
-                              ),
-                              isActive: _currentStep >= 0,
                             ),
-                            Step(
-                              state: _getStepState(1),
-                              title: Text(
-                                ProjectStrings.activityLevel,
-                                style: context.textTheme().titleMedium,
+                          )
+                        : Scaffold(
+                            appBar: const _CustomAppbar(),
+                            body: Form(
+                              key: _formKey,
+                              child: Stepper(
+                                currentStep: _currentStep,
+                                elevation: 0,
+                                onStepTapped: (step) {
+                                  if (step < _currentStep) {
+                                    setState(() => _currentStep = step);
+                                  }
+                                },
+                                controlsBuilder: (context, details) {
+                                  return Padding(
+                                    padding: AppPadding.onlyTopXmedium(),
+                                    child: Column(
+                                      children: [
+                                        ProjectButton(
+                                          text: _currentStep == 3
+                                              ? ProjectStrings.calculatButton
+                                              : ProjectStrings.continueButton,
+                                          onPressed: !_validateCurrentStep() || state.isLoading
+                                              ? null
+                                              : () {
+                                                  if (_currentStep < 3) {
+                                                    setState(() => _currentStep += 1);
+                                                  } else {
+                                                    _userInfoCache(context);
+                                                    _submitForm(context, cubit);
+                                                  }
+                                                },
+                                          isEnabled: _validateCurrentStep() && !state.isLoading,
+                                        ),
+                                        if (_currentStep > 0) ...[
+                                          SizedBox(height: 12.h),
+                                          BackButton(
+                                            onPressed: () {
+                                              setState(() => _currentStep -= 1);
+                                            },
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  );
+                                },
+                                steps: [
+                                  Step(
+                                    state: _getStepState(0),
+                                    title: Text(
+                                      ProjectStrings.personelInfoTitle,
+                                      style: context.textTheme().titleMedium,
+                                    ),
+                                    content: _PersonelInfoStep(
+                                      gender: _gender,
+                                      onGenderChanged: (value) => setState(() => _gender = value),
+                                      ageController: _ageController,
+                                      validators: _validators,
+                                      heightController: _heightController,
+                                      weightController: _weightController,
+                                    ),
+                                    isActive: _currentStep >= 0,
+                                  ),
+                                  Step(
+                                    state: _getStepState(1),
+                                    title: Text(
+                                      ProjectStrings.activityLevel,
+                                      style: context.textTheme().titleMedium,
+                                    ),
+                                    content: _ActivityLevelStep(
+                                      activityLevels: activityLevels,
+                                      activityLevel: _activityLevel,
+                                      onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
+                                    ),
+                                    isActive: _currentStep >= 1,
+                                  ),
+                                  Step(
+                                    state: _getStepState(2),
+                                    title: Text(
+                                      ProjectStrings.target,
+                                      style: context.textTheme().titleMedium,
+                                    ),
+                                    content: _CaloriTargetStep(
+                                      goals: goals,
+                                      goal: _goal,
+                                      onGoalChanged: (value) => setState(() => _goal = value),
+                                    ),
+                                    isActive: _currentStep >= 2,
+                                  ),
+                                  Step(
+                                    state: _getStepState(3),
+                                    title: Text(
+                                      ProjectStrings.budget,
+                                      style: context.textTheme().titleMedium,
+                                    ),
+                                    content: _BudgetStep(
+                                      budgets: budgets,
+                                      budget: _budget,
+                                      onBudgetChanged: (value) => setState(() => _budget = value),
+                                    ),
+                                    isActive: _currentStep >= 3,
+                                  ),
+                                ],
                               ),
-                              content: _ActivityLevelStep(
-                                activityLevels: activityLevels,
-                                activityLevel: _activityLevel,
-                                onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
-                              ),
-                              isActive: _currentStep >= 1,
                             ),
-                            Step(
-                              state: _getStepState(2),
-                              title: Text(
-                                ProjectStrings.target,
-                                style: context.textTheme().titleMedium,
-                              ),
-                              content: _CaloriTargetStep(
-                                goals: goals,
-                                goal: _goal,
-                                onGoalChanged: (value) => setState(() => _goal = value),
-                              ),
-                              isActive: _currentStep >= 2,
-                            ),
-                            Step(
-                              state: _getStepState(3),
-                              title: Text(
-                                ProjectStrings.budget,
-                                style: context.textTheme().titleMedium,
-                              ),
-                              content: _BudgetStep(
-                                budgets: budgets,
-                                budget: _budget,
-                                onBudgetChanged: (value) => setState(() => _budget = value),
-                              ),
-                              isActive: _currentStep >= 3,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-            },
-          );
-        },
+                          );
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:avo_ai_diet/product/cache/manager/user_info/user_info_manager.da
 import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
 @injectable
 final class UserInfoCacheCubit extends Cubit<UserInfoCacheState> {
   UserInfoCacheCubit(this._manager) : super(UserInfoCacheState());

@@ -22,6 +22,7 @@ final class CustomTabBarView extends HookWidget {
     return Scaffold(
       body: PageView(
         controller: pageController,
+        onPageChanged: (index) => selectedIndex.value = index,
         children: const [
           HomeView(),
           SearchView(),
