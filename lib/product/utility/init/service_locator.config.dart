@@ -21,12 +21,15 @@ import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../feature/profile/cubit/name_edit_cubit.dart' as _i307;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
 import '../../../services/gemini_service.dart' as _i709;
+import '../../../services/notification_service.dart' as _i354;
 import '../../../services/secure_storage_service.dart' as _i976;
 import '../../cache/manager/daily_calorie/daily_calorie_manager.dart' as _i18;
 import '../../cache/manager/favorites/favorite_message_manager.dart' as _i45;
 import '../../cache/manager/name_and_cal/name_and_cal_manager.dart' as _i490;
 import '../../cache/manager/reponse/ai_response_manager.dart' as _i697;
 import '../../cache/manager/user_info/user_info_manager.dart' as _i833;
+import '../../cache/manager/water_reminder/water_reminder_manager.dart'
+    as _i859;
 import 'app_module.dart' as _i460;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -56,7 +59,9 @@ _i174.GetIt $initGetIt(
   gh.singleton<_i490.INameAndCalManager>(() => appModule.nameAndCalManager);
   gh.singleton<_i697.IAiResponseManager>(() => appModule.aiResponseManager);
   gh.singleton<_i833.IUserInfoManager>(() => appModule.userInfoManager);
+  gh.singleton<_i354.NotificationService>(() => _i354.NotificationService());
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
+  gh.singleton<_i859.WaterReminderManager>(() => _i859.WaterReminderManager());
   gh.factory<_i648.ChatCubit>(
       () => _i648.ChatCubit(gh<_i709.IGeminiService>()));
   gh.factory<_i456.FavoritesCubit>(

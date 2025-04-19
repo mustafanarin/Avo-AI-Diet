@@ -30,6 +30,8 @@ dependencies:
   intl: ^0.20.2
   flutter_markdown: ^0.7.6+2
   font_awesome_flutter: ^10.8.0
+  flutter_local_notifications: ^19.1.0
+  timezone: ^0.10.0
 
   # Navigation
   go_router: ^14.6.2
