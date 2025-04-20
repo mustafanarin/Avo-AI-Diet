@@ -16,7 +16,7 @@ abstract class INotificationService {
 }
 
 @singleton
-class NotificationService implements INotificationService {
+final class NotificationService implements INotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   // Notification id
@@ -52,7 +52,6 @@ class NotificationService implements INotificationService {
     final permissionStatus = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
-
     if (permissionStatus != true) {
       return;
     }
@@ -91,7 +90,7 @@ class NotificationService implements INotificationService {
           priority: Priority.high,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
 
     // this notification will not appear, it will work at midnight next day
@@ -121,7 +120,7 @@ class NotificationService implements INotificationService {
           visibility: NotificationVisibility.secret,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       payload: 'reset_water_reminder',
     );
   }

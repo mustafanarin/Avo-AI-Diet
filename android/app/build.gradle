@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.mustafanarin.avoai.avo_ai_diet"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

@@ -9,7 +9,7 @@ abstract class IWaterReminderManager {
 }
 
 @singleton
-class WaterReminderManager implements IWaterReminderManager {
+final class WaterReminderManager implements IWaterReminderManager {
   LazyBox<WaterReminderModel>? _box;
 
   Future<LazyBox<WaterReminderModel>> _getBox() async {

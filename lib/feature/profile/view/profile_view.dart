@@ -1,13 +1,16 @@
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
+import 'package:avo_ai_diet/feature/profile/cubit/water_reminder_cubit.dart';
+import 'package:avo_ai_diet/feature/profile/state/water_reminder_state.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
+import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfileView extends StatefulWidget {
+final class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
 
   @override
@@ -15,43 +18,39 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  bool _waterReminderEnabled = true;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Profilim',
-          style: Theme.of(context).textTheme.titleLarge,
+    return BlocProvider<WaterReminderCubit>(
+      create: (context) => getIt<WaterReminderCubit>(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Profilim',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20.h),
-            const ProfileHeader(),
-            SizedBox(height: 30.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
-              child: _ProfileItems(
-                waterReminderEnabled: _waterReminderEnabled,
-                onWaterReminderChanged: (value) {
-                  setState(() {
-                    _waterReminderEnabled = value;
-                  });
-                },
-                onNameEditTap: () {
-                  context.push(RouteNames.nameEdit);
-                },
-                onUserInfoEditTap: () {
-                  context.push(RouteNames.userInfoEdit);
-                },
-                onRegionalBodyTap: () {
-                  // Navigate to RegionalBodyView
-                },
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 20.h),
+              const ProfileHeader(),
+              SizedBox(height: 30.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: _ProfileItems(
+                  onNameEditTap: () {
+                    context.push(RouteNames.nameEdit);
+                  },
+                  onUserInfoEditTap: () {
+                    context.push(RouteNames.userInfoEdit);
+                  },
+                  onRegionalBodyTap: () {
+                    // Navigate to RegionalBodyView
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -276,17 +275,65 @@ class _SwitchItemWidget extends StatelessWidget {
   }
 }
 
+class _WaterReminderSwitchItem extends StatelessWidget {
+  const _WaterReminderSwitchItem({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WaterReminderCubit, WaterReminderState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            _SwitchItemWidget(
+              title: 'Su Hatırlatıcı',
+              subtitle: 'Her gün 12:00 - 21:00 arasında su içme hatırlatmaları alın',
+              icon: Icons.water_drop_outlined,
+              value: state.isEnabled,
+              onChanged: (value) {
+                context.read<WaterReminderCubit>().toggleWaterReminder(value);
+              },
+            ),
+
+            // TODO bildirim önizleme
+            // if (state.isEnabled)
+            //   Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         // Önizleme bildirimini göster
+            //         context.read<WaterReminderCubit>().showPreviewNotification();
+            //       },
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: const Color(0xFF6CBE45),
+            //         foregroundColor: Colors.white,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(15.r),
+            //         ),
+            //         padding: EdgeInsets.symmetric(vertical: 12.h),
+            //       ),
+            //       child: Text(
+            //         'Bildirim Önizlemesi',
+            //         style: TextStyle(
+            //           fontSize: 16.sp,
+            //           fontWeight: FontWeight.w600,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 class _ProfileItems extends StatelessWidget {
   const _ProfileItems({
-    required this.waterReminderEnabled,
-    required this.onWaterReminderChanged,
     required this.onNameEditTap,
     required this.onUserInfoEditTap,
     required this.onRegionalBodyTap,
     super.key,
   });
-  final bool waterReminderEnabled;
-  final Function(bool) onWaterReminderChanged;
   final VoidCallback onNameEditTap;
   final VoidCallback onUserInfoEditTap;
   final VoidCallback onRegionalBodyTap;
@@ -316,13 +363,8 @@ class _ProfileItems extends StatelessWidget {
           onTap: onRegionalBodyTap,
         ),
         SizedBox(height: 16.h),
-        _SwitchItemWidget(
-          title: 'Su Hatırlatıcı',
-          subtitle: 'Günlük su içme hatırlatmaları alın',
-          icon: Icons.water_drop_outlined,
-          value: waterReminderEnabled,
-          onChanged: onWaterReminderChanged,
-        ),
+        // Su hatırlatıcı widget'ını ekle
+        const _WaterReminderSwitchItem(),
         SizedBox(height: 30.h),
       ],
     );
