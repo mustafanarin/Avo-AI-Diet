@@ -13,6 +13,7 @@ abstract final class RouteNames {
   static const String nameEdit = '/nameEdit';
   static const String userInfoEdit = '/userInfoEdit';
   static const String tabbarWithIndex = '/tabbar/:tabIndex';
+  static const String regionalFat = '/regionalFat';
 
 
   static String userInfoPath(String userName) => '/user/$userName';

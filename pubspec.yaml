@@ -32,6 +32,8 @@ dependencies:
   font_awesome_flutter: ^10.8.0
   flutter_local_notifications: ^19.1.0
   timezone: ^0.10.0
+  flutter_svg: ^2.1.0
+  xml: ^6.5.0
 
   # Navigation
   go_router: ^14.6.2
@@ -62,6 +64,7 @@ flutter:
 
   assets:
     - .env
+    - assets/
     - assets/png/
     - assets/json/
 

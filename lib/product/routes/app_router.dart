@@ -4,6 +4,7 @@ import 'package:avo_ai_diet/feature/onboarding/view/name_input_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/user_info_view.dart';
 import 'package:avo_ai_diet/feature/onboarding/view/welcome_view.dart';
 import 'package:avo_ai_diet/feature/profile/view/name_edit_view.dart';
+import 'package:avo_ai_diet/feature/profile/view/regional_fat_burning.dart';
 import 'package:avo_ai_diet/feature/profile/view/user_info_edit_view.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/view/food_detail_view.dart';
@@ -19,7 +20,7 @@ final class AppRouter {
   static final GoRouter router = GoRouter(
     // navigatorKey: _rootNavigatorKey,
     routes: _routes,
-    initialLocation: RouteNames.welcome,
+    initialLocation: RouteNames.regionalFat,
     errorBuilder: (context, state) => const _ErrorPage(),
   );
 
@@ -71,6 +72,10 @@ final class AppRouter {
         GoRoute(
           path: RouteNames.userInfoEdit,
           builder: (context, state) => const UserInfoEditView(),
+        ),
+        GoRoute(
+          path: RouteNames.regionalFat,
+          builder: (context, state) => BodySvgInteractivePage(),
         ),
       ];
 
