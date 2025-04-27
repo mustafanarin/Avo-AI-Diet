@@ -31,4 +31,9 @@ final class UserInfoCacheCubit extends Cubit<UserInfoCacheState> {
       emit(state.copyWith(error: 'Bilgiler kaydedilemedi.', isLoading: false));
     }
   }
+
+  Future<String> getUserGender() async {
+    final userData = await _manager.getUserInfo();
+    return userData?.gender ?? 'Erkek';
+  }
 }

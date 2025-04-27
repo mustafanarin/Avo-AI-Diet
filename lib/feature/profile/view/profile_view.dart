@@ -24,6 +24,7 @@ class _ProfileViewState extends State<ProfileView> {
       create: (context) => getIt<WaterReminderCubit>(),
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(
             'Profilim',
             style: Theme.of(context).textTheme.titleLarge,
@@ -45,7 +46,7 @@ class _ProfileViewState extends State<ProfileView> {
                     context.push(RouteNames.userInfoEdit);
                   },
                   onRegionalBodyTap: () {
-                    // Navigate to RegionalBodyView
+                    context.push(RouteNames.regionalFat);
                   },
                 ),
               ),

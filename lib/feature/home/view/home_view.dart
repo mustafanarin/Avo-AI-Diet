@@ -38,6 +38,7 @@ class _HomeViewState extends State<HomeView> {
         final targetCalories = nameCalState.targetCal ?? 2500;
         return Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             title: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

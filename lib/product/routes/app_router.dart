@@ -20,7 +20,7 @@ final class AppRouter {
   static final GoRouter router = GoRouter(
     // navigatorKey: _rootNavigatorKey,
     routes: _routes,
-    initialLocation: RouteNames.regionalFat,
+    initialLocation: RouteNames.welcome,
     errorBuilder: (context, state) => const _ErrorPage(),
   );
 
@@ -75,7 +75,7 @@ final class AppRouter {
         ),
         GoRoute(
           path: RouteNames.regionalFat,
-          builder: (context, state) => BodySvgInteractivePage(),
+          builder: (context, state) => const RegionalFatBurning(),
         ),
       ];
 
