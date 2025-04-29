@@ -19,6 +19,8 @@ import '../../../feature/onboarding/cubit/name_and_cal_cubit.dart' as _i784;
 import '../../../feature/onboarding/cubit/user_info_cache_cubit.dart' as _i924;
 import '../../../feature/onboarding/cubit/user_info_cubit.dart' as _i250;
 import '../../../feature/profile/cubit/name_edit_cubit.dart' as _i307;
+import '../../../feature/profile/cubit/regional_fat_burning_cubit.dart'
+    as _i744;
 import '../../../feature/profile/cubit/water_reminder_cubit.dart' as _i927;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
 import '../../../services/gemini_service.dart' as _i709;
@@ -86,6 +88,10 @@ _i174.GetIt $initGetIt(
       () => _i784.NameAndCalCubit(gh<_i490.INameAndCalManager>()));
   gh.factory<_i924.UserInfoCacheCubit>(
       () => _i924.UserInfoCacheCubit(gh<_i833.IUserInfoManager>()));
+  gh.factory<_i744.RegionalFatBurningCubit>(() => _i744.RegionalFatBurningCubit(
+        gh<_i709.IGeminiService>(),
+        gh<_i833.IUserInfoManager>(),
+      ));
   gh.factory<_i250.UserInfoCubit>(() => _i250.UserInfoCubit(
         gh<_i709.IGeminiService>(),
         gh<_i697.IAiResponseManager>(),

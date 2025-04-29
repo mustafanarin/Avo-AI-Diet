@@ -23,6 +23,7 @@ class ChatView extends StatefulWidget {
 }
 
 // TODOtoken limiti için 3 5 mesaj geçmiş çifti kullan
+// TODO geminiyi beklerken watsap lottie, textfield satır taşınca aşşağı insiin
 class _ChatViewState extends State<ChatView> {
   final List<_ChatMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();

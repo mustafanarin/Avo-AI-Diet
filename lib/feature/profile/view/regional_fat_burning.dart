@@ -1,4 +1,6 @@
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
+import 'package:avo_ai_diet/feature/profile/cubit/regional_fat_burning_cubit.dart';
+import 'package:avo_ai_diet/feature/profile/state/regional_fat_burning_state.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:xml/xml.dart' as xml;
 
-final class RegionalFatBurning extends StatefulWidget {
+class RegionalFatBurning extends StatefulWidget {
   const RegionalFatBurning({super.key});
 
   @override
@@ -15,8 +17,11 @@ final class RegionalFatBurning extends StatefulWidget {
 }
 
 class _RegionalFatBurningState extends State<RegionalFatBurning> {
-  // Kullanıcı cinsiyeti (cache'den okunacak - şimdilik varsayılan olarak kadın)
-  late final String _userGender;
+  // ScrollController ekliyoruz
+  final ScrollController _scrollController = ScrollController();
+  
+  // Kullanıcı cinsiyeti
+  late String _userGender;
 
   // Cinsiyet bazlı SVG dosyaları
   late String _assetName;
@@ -65,9 +70,18 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
   @override
   void initState() {
     super.initState();
+    // Varsayılan değer
+    _userGender = 'Erkek';
+    _assetName = 'assets/svg/manDiagram.svg';
+    
     // Cinsiyet bazlı SVG dosyasını belirle
-
     _loadUserData();
+  }
+  
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadUserData() async {
@@ -78,7 +92,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
       // State'i güncelle
       setState(() {
         _userGender = gender;
-        _assetName = _userGender == 'Erkek' ? 'assets/manDiagram.svg' : 'assets/womanDiagram.svg';
+        _assetName = _userGender == 'Erkek' ? 'assets/svg/manDiagram.svg' : 'assets/svg/womanDiagram.svg';
       });
 
       // SVG'yi yükle
@@ -86,9 +100,9 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     } catch (e) {
       setState(() {
         _userGender = 'Erkek';
-        _assetName = 'assets/man.svg';
-        _loadSvgAsset();
+        _assetName = 'assets/svg/manDiagram.svg';
       });
+      await _loadSvgAsset();
     }
   }
 
@@ -293,11 +307,24 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
   // Tavsiye Al butonuna basıldığında çağrılacak fonksiyon
   void _getAdvice() {
-    // Burada Gemini API'ye yönlendirme yapılacak
-    final selectedRegions = _getSelectedRegionNames().join(', ');
+    // Seçili bölgelerin isimlerini al
+    final selectedRegions = _getSelectedRegionNames();
+    
+    if (selectedRegions.isNotEmpty) {
+      // Cubit üzerinden tavsiye al
+      context.read<RegionalFatBurningCubit>().getAdvice(selectedRegions);
+    }
+  }
 
-    // Backend bağlantısı burada yapılacak
-    // Bu kısmı sen backend'i bağlarken tamamlayacaksın
+  // Tavsiye geldiğinde sayfayı aşağıya kaydır
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
@@ -311,62 +338,132 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         backgroundColor: ProjectColors.backgroundCream,
       ),
       backgroundColor: ProjectColors.backgroundCream,
-      body: Column(
-        children: [
-          Expanded(
-            flex: 5,
-            child: !_isLoading && _modifiedSvgString != null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: InteractiveSvgBody(
-                        svgString: _modifiedSvgString!,
-                        onTapRegion: _toggleBodyPart,
-                        gender: _userGender,
+      body: BlocConsumer<RegionalFatBurningCubit, RegionalFatBurningState>(
+        listener: (context, state) {
+          // Tavsiye başarıyla alındığında sayfayı aşağı kaydır
+          if (state.advice.isNotEmpty && !state.isLoading) {
+            // UI güncellemesi bittikten sonra kaydırma işlemi yap
+            WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+          }
+        },
+        builder: (context, state) {
+          return SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                // Vücut şeması - sabit boyutta kalacak
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: !_isLoading && _modifiedSvgString != null
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: InteractiveSvgBody(
+                              svgString: _modifiedSvgString!,
+                              onTapRegion: _toggleBodyPart,
+                              gender: _userGender,
+                            ),
+                          ),
+                        )
+                      : const Center(child: CircularProgressIndicator()),
+                ),
+                
+                // Seçilen bölgeler ve Tavsiye Al butonu
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Seçilen bölgeler yazısı
+                      _buildSelectedRegionsBox(selectedRegionNames),
+
+                      // Tavsiye Al butonu
+                      ProjectButton(
+                        text: state.isLoading 
+                            ? 'Tavsiye Alınıyor...' 
+                            : state.adviceReceived 
+                                ? 'Tavsiye Alındı' 
+                                : 'Tavsiye Al',
+                        onPressed: state.isLoading || state.adviceReceived ? null : _getAdvice,
+                        isEnabled: selectedRegionNames.isNotEmpty && !state.isLoading && !state.adviceReceived,
                       ),
-                    ),
-                  )
-                : const Center(child: CircularProgressIndicator()),
-          ),
-          Expanded(
-            flex: 2,
-            child: _buildBottomPanel(selectedRegionNames),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomPanel(List<String> selectedRegionNames) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: ProjectColors.backgroundCream,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Seçilen bölgeler yazısı
-          _buildSelectedRegionsBox(selectedRegionNames),
-
-          // Tavsiye Al butonu
-          ProjectButton(
-            text: 'Tavsiye Al',
-            onPressed: _getAdvice,
-            isEnabled: selectedRegionNames.isNotEmpty,
-          ),
-        ],
+                      
+                      // Hata mesajı varsa göster
+                      if (state.error.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            state.error,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ),
+                      
+                      // Tavsiye içeriği
+                      if (state.advice.isNotEmpty)
+                        Container(
+                          margin: const EdgeInsets.only(top: 16),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: ProjectColors.primary,
+                                    radius: 16.r,
+                                    child: Icon(
+                                      Icons.fitness_center,
+                                      color: Colors.white,
+                                      size: 18.w,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    'Avo\'nun Tavsiyeleri',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: ProjectColors.darkAvocado,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12.h),
+                              Text(
+                                state.advice,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.black87,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                
+                // Ekranın altında biraz boşluk bırakalım
+                SizedBox(height: 20.h),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
