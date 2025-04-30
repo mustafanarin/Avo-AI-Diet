@@ -5,8 +5,10 @@ import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:xml/xml.dart' as xml;
 
 class RegionalFatBurning extends StatefulWidget {
@@ -17,18 +19,15 @@ class RegionalFatBurning extends StatefulWidget {
 }
 
 class _RegionalFatBurningState extends State<RegionalFatBurning> {
-  // ScrollController ekliyoruz
   final ScrollController _scrollController = ScrollController();
-  
-  // Kullanıcı cinsiyeti
+
   late String _userGender;
 
-  // Cinsiyet bazlı SVG dosyaları
   late String _assetName;
 
   final Set<String> _selectedParts = {};
 
-  // Eşleşen bölgeler (kollar ve bacaklar birlikte çalışması için)
+  // Paired regions (for arms and legs to work together)
   final Map<String, List<String>> _pairedRegions = {
     'arm_left': ['arm_right'],
     'arm_right': ['arm_left'],
@@ -36,7 +35,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     'leg_right': ['leg_left'],
   };
 
-  // Bölge ID'lerinin görünen isimleri
+  // Display names of region IDs
   final Map<String, String> _regionNames = {
     'face': 'Yüz',
     'chest': 'Göğüs',
@@ -48,11 +47,11 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     'leg_right': 'Bacaklar',
   };
 
-  // SVG verisi
+  // SVG data
   String? _modifiedSvgString;
   String? _originalSvgString;
 
-  // Beklenen ID'ler
+  // Expected IDs
   final List<String> _expectedIds = [
     'arm_left',
     'arm_right',
@@ -64,20 +63,19 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     'face',
   ];
 
-  // İşlenmiş mi?
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Varsayılan değer
+    // Default value
     _userGender = 'Erkek';
     _assetName = 'assets/svg/manDiagram.svg';
-    
-    // Cinsiyet bazlı SVG dosyasını belirle
+
+    // Determine gender-based SVG file
     _loadUserData();
   }
-  
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -86,16 +84,13 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
   Future<void> _loadUserData() async {
     try {
-      // Cinsiyet bilgisini asenkron olarak yükle
       final gender = await context.read<UserInfoCacheCubit>().getUserGender();
 
-      // State'i güncelle
       setState(() {
         _userGender = gender;
         _assetName = _userGender == 'Erkek' ? 'assets/svg/manDiagram.svg' : 'assets/svg/womanDiagram.svg';
       });
 
-      // SVG'yi yükle
       await _loadSvgAsset();
     } catch (e) {
       setState(() {
@@ -117,7 +112,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         _isLoading = false;
       });
     } catch (e) {
-      // Hata durumunda yedek SVG kullan
+      // Use fallback SVG in case of error
       final fallbackSvg = _createFallbackSvg();
 
       setState(() {
@@ -143,7 +138,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         element.setAttribute('fill', 'transparent');
         element.setAttribute('stroke', 'black');
         element.setAttribute('stroke-width', '0.8');
-        element.setAttribute('stroke-dasharray', '3,2'); // Kesikli çizgi ekle
+        element.setAttribute('stroke-dasharray', '3,2');
       }
     }
   }
@@ -229,15 +224,15 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
   void _toggleBodyPart(String partId) {
     setState(() {
-      // Eğer kollar veya bacaklarsa, her ikisini birden işle
+      // If it's arms or legs, process both of them
       final partsToToggle = <String>[partId];
 
-      // Eşleşen bölgeleri ekleyelim
+      // Let's add the matching regions
       if (_pairedRegions.containsKey(partId)) {
         partsToToggle.addAll(_pairedRegions[partId]!);
       }
 
-      // Tüm ilgili parçaları işleyelim
+      // Process all relevant parts
       for (final part in partsToToggle) {
         if (_selectedParts.contains(part)) {
           _selectedParts.remove(part);
@@ -267,16 +262,17 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         }
       }
 
-      // Güncellenmiş SVG stringini kaydet
+      // Save the updated SVG string
       _modifiedSvgString = document.toXmlString();
     } catch (e) {
-      // Hata durumunda orijinal SVG'yi koruyalım
+      // Let's preserve the original SVG in case of error
       _modifiedSvgString = _originalSvgString;
     }
   }
 
   void _applyStyleToElement(xml.XmlElement element, bool isSelected) {
     if (isSelected) {
+      // TODOcolor
       element.setAttribute('fill', '#557C55'); // ProjectColors.primary
       element.setAttribute('fill-opacity', '0.3'); // Yarı saydam ama biraz daha belirgin
       element.setAttribute('stroke', '#2E5522'); // ProjectColors.darkAvocado
@@ -291,7 +287,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     }
   }
 
-  // Seçili bölgelerin isimlerini liste olarak getir
+  // Get the names of selected regions as a list
   List<String> _getSelectedRegionNames() {
     final regionNames = <String>{};
 
@@ -305,18 +301,15 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     return regionNames.toList();
   }
 
-  // Tavsiye Al butonuna basıldığında çağrılacak fonksiyon
   void _getAdvice() {
-    // Seçili bölgelerin isimlerini al
     final selectedRegions = _getSelectedRegionNames();
-    
+
     if (selectedRegions.isNotEmpty) {
-      // Cubit üzerinden tavsiye al
       context.read<RegionalFatBurningCubit>().getAdvice(selectedRegions);
     }
   }
 
-  // Tavsiye geldiğinde sayfayı aşağıya kaydır
+  // Scroll the page down when advice is received
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
@@ -329,7 +322,6 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
   @override
   Widget build(BuildContext context) {
-    // Seçili bölgelerin isimlerini al
     final selectedRegionNames = _getSelectedRegionNames();
 
     return Scaffold(
@@ -340,9 +332,8 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
       backgroundColor: ProjectColors.backgroundCream,
       body: BlocConsumer<RegionalFatBurningCubit, RegionalFatBurningState>(
         listener: (context, state) {
-          // Tavsiye başarıyla alındığında sayfayı aşağı kaydır
           if (state.advice.isNotEmpty && !state.isLoading) {
-            // UI güncellemesi bittikten sonra kaydırma işlemi yap
+            // Perform scrolling after UI update is complete
             WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
           }
         },
@@ -351,9 +342,8 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
             controller: _scrollController,
             child: Column(
               children: [
-                // Vücut şeması - sabit boyutta kalacak
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.65,
                   child: !_isLoading && _modifiedSvgString != null
                       ? Center(
                           child: Padding(
@@ -367,28 +357,26 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                         )
                       : const Center(child: CircularProgressIndicator()),
                 ),
-                
-                // Seçilen bölgeler ve Tavsiye Al butonu
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Seçilen bölgeler yazısı
+                      // Selected regions text
                       _buildSelectedRegionsBox(selectedRegionNames),
 
-                      // Tavsiye Al butonu
+                      // Get advice button
                       ProjectButton(
-                        text: state.isLoading 
-                            ? 'Tavsiye Alınıyor...' 
-                            : state.adviceReceived 
-                                ? 'Tavsiye Alındı' 
+                        text: state.isLoading
+                            ? 'Tavsiye Alınıyor...'
+                            : state.adviceReceived
+                                ? 'Tavsiye Alındı'
                                 : 'Tavsiye Al',
                         onPressed: state.isLoading || state.adviceReceived ? null : _getAdvice,
                         isEnabled: selectedRegionNames.isNotEmpty && !state.isLoading && !state.adviceReceived,
                       ),
-                      
-                      // Hata mesajı varsa göster
+
+                      // Show error message if exists
                       if (state.error.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 16),
@@ -400,18 +388,30 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                             ),
                           ),
                         ),
-                      
-                      // Tavsiye içeriği
+
+                      if (state.isLoading)
+                        Center(
+                          child: SizedBox(
+                            height: 70.h,
+                            width: 70.h,
+                            child: Lottie.asset(
+                              'assets/json/avoWalk.json',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+
+                      // Advice content
                       if (state.advice.isNotEmpty)
                         Container(
                           margin: const EdgeInsets.only(top: 16),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: ProjectColors.white,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: ProjectColors.black.withOpacity(0.05),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -426,14 +426,14 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                                     backgroundColor: ProjectColors.primary,
                                     radius: 16.r,
                                     child: Icon(
-                                      Icons.fitness_center,
-                                      color: Colors.white,
+                                      Icons.local_fire_department_outlined,
+                                      color: ProjectColors.white,
                                       size: 18.w,
                                     ),
                                   ),
                                   SizedBox(width: 8.w),
                                   Text(
-                                    'Avo\'nun Tavsiyeleri',
+                                    "Avo'nun Tavsiyeleri",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -443,13 +443,25 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                                 ],
                               ),
                               SizedBox(height: 12.h),
-                              Text(
-                                state.advice,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.black87,
-                                  height: 1.5,
+                              MarkdownBody(
+                                data: state.advice,
+                                styleSheet: MarkdownStyleSheet(
+                                  p: const TextStyle(
+                                    color: ProjectColors.black,
+                                  ),
+                                  strong: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: ProjectColors.black,
+                                  ),
+                                  em: const TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: ProjectColors.black,
+                                  ),
+                                  listBullet: const TextStyle(
+                                    color: ProjectColors.black,
+                                  ),
                                 ),
+                                selectable: true,
                               ),
                             ],
                           ),
@@ -457,8 +469,6 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                     ],
                   ),
                 ),
-                
-                // Ekranın altında biraz boşluk bırakalım
                 SizedBox(height: 20.h),
               ],
             ),
@@ -473,11 +483,11 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ProjectColors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: ProjectColors.black.withOpacity(0.05),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -516,10 +526,9 @@ class InteractiveSvgBody extends StatelessWidget {
   final Function(String) onTapRegion;
   final String gender;
 
-  // Erkek ve kadınlar için merkez noktaları
   Map<String, Offset> get _regionCenters => gender == 'Erkek'
       ? {
-          // Erkek vücut şeması için merkez noktaları
+          // Center points for male body diagram
           'face': const Offset(0.5, 0.075),
           'chest': const Offset(0.5, 0.23),
           'belly': const Offset(0.5, 0.36),
@@ -530,7 +539,7 @@ class InteractiveSvgBody extends StatelessWidget {
           'leg_right': const Offset(0.56, 0.71),
         }
       : {
-          // Kadın vücut şeması için merkez noktaları
+          // Center points for female body diagram
           'face': const Offset(0.5, 0.075),
           'chest': const Offset(0.5, 0.22),
           'belly': const Offset(0.5, 0.32),
@@ -551,14 +560,14 @@ class InteractiveSvgBody extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: [
-            // SVG görseli
+            // SVG image
             SizedBox(
               width: maxWidth,
               height: maxHeight,
               child: SvgPicture.string(svgString),
             ),
 
-            // Tıklanabilir hedef noktalar
+            // Clickable target points
             ..._regionCenters.entries.map((entry) {
               return _buildTargetPoint(entry.key, entry.value, maxWidth, maxHeight);
             }),
@@ -585,12 +594,12 @@ class InteractiveSvgBody extends StatelessWidget {
           width: pointSize,
           height: pointSize,
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.3),
+            color: ProjectColors.green.withOpacity(0.3),
             shape: BoxShape.circle,
             border: Border.all(color: Colors.green.shade600, width: borderWidth),
             boxShadow: [
               BoxShadow(
-                color: Colors.green.withOpacity(0.4),
+                color: ProjectColors.green.withOpacity(0.4),
                 blurRadius: blurRadius,
                 spreadRadius: spreadRadius,
               ),
@@ -600,8 +609,8 @@ class InteractiveSvgBody extends StatelessWidget {
             child: Container(
               width: innerPointSize,
               height: innerPointSize,
-              decoration: const BoxDecoration(
-                color: Colors.blue,
+              decoration:  BoxDecoration(
+                color: ProjectColors.earthBrown,
                 shape: BoxShape.circle,
               ),
             ),

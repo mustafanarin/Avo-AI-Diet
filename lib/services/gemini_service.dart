@@ -152,7 +152,7 @@ final class GeminiService implements IGeminiService {
       4. Bu bölgelerde yağ yakmayı destekleyecek beslenme tavsiyelerini 3 madde halinde ver
       5. Bu bölgelerdeki kas tonunu artırmak için ipuçları ver
       
-      Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Yanıtın 300 kelimeyi geçmesin. Arkadaş canlısı ve motive edici ol.
+      Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Cevap verirken en başta kendini tanıtmana gerek yok, kısa bir giriş cümlesiyle konuşmaya başla. Yanıtın 300 kelimeyi geçmesin. Arkadaş canlısı ve motive edici ol.
       ''';
 
       final content = [Content.text(prompt)];
