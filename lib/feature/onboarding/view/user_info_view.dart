@@ -13,6 +13,8 @@ import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/budget_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/goal_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
@@ -45,26 +47,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   String? _activityLevel;
   String? _goal;
   String? _budget;
-
-  final List<String> activityLevels = [
-    'Sedanter (hareketsiz yaşam)',
-    'Hafif aktif (haftada 1-3 gün egzersiz)',
-    'Orta aktif (haftada 3-5 gün egzersiz)',
-    'Çok aktif (haftada 6-7 gün egzersiz)',
-    'Profesyonel sporcu seviyesi',
-  ];
-
-  final List<String> goals = [
-    'Kilo vermek',
-    'Kilo korumak',
-    'Kilo almak',
-  ];
-
-  final List<String> budgets = [
-    'Düşük bütçe',
-    'Orta bütçe',
-    'Yüksek bütçe',
-  ];
 
   @override
   void dispose() {
@@ -117,7 +99,7 @@ class _UserInfoViewState extends State<UserInfoView> {
     return CalorieCalculatorService.calculateTotalCalories(
       bmr: bmr,
       activityLevel: selectedActivity,
-      goal: _goal!,
+      goalDisplayName: _goal!,
     );
   }
 
@@ -205,7 +187,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               tag: HeroLottie.avoLottie.value,
                               child: Lottie.asset(JsonName.avoWalk.path),
                             ),
-                            const Text('Senin için en uygun diyet planını hazırlıyorum :)'),
+                            const Text(ProjectStrings.avoDietLoadingMessage),
                           ],
                         ),
                       ),
@@ -279,7 +261,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 style: context.textTheme().titleMedium,
                               ),
                               content: _ActivityLevelStep(
-                                activityLevels: activityLevels,
+                                activityLevels: ActivityLevelExtension.allDisplayNames,
                                 activityLevel: _activityLevel,
                                 onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
                               ),
@@ -292,7 +274,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 style: context.textTheme().titleMedium,
                               ),
                               content: _CaloriTargetStep(
-                                goals: goals,
+                                goals: GoalExtension.allDisplayNames,
                                 goal: _goal,
                                 onGoalChanged: (value) => setState(() => _goal = value),
                               ),
@@ -305,7 +287,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 style: context.textTheme().titleMedium,
                               ),
                               content: _BudgetStep(
-                                budgets: budgets,
+                                budgets: BudgetExtension.allDisplayNames,
                                 budget: _budget,
                                 onBudgetChanged: (value) => setState(() => _budget = value),
                               ),

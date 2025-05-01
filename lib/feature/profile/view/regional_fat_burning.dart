@@ -1,17 +1,25 @@
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
 import 'package:avo_ai_diet/feature/profile/cubit/regional_fat_burning_cubit.dart';
 import 'package:avo_ai_diet/feature/profile/state/regional_fat_burning_state.dart';
+import 'package:avo_ai_diet/product/constants/body_regions.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/svg_name.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/svg_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:xml/xml.dart' as xml;
 
-class RegionalFatBurning extends StatefulWidget {
+final class RegionalFatBurning extends StatefulWidget {
   const RegionalFatBurning({super.key});
 
   @override
@@ -22,46 +30,12 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
   final ScrollController _scrollController = ScrollController();
 
   late String _userGender;
-
   late String _assetName;
-
   final Set<String> _selectedParts = {};
-
-  // Paired regions (for arms and legs to work together)
-  final Map<String, List<String>> _pairedRegions = {
-    'arm_left': ['arm_right'],
-    'arm_right': ['arm_left'],
-    'leg_left': ['leg_right'],
-    'leg_right': ['leg_left'],
-  };
-
-  // Display names of region IDs
-  final Map<String, String> _regionNames = {
-    'face': 'Yüz',
-    'chest': 'Göğüs',
-    'belly': 'Karın',
-    'hip': 'Kalça',
-    'arm_left': 'Kollar',
-    'arm_right': 'Kollar',
-    'leg_left': 'Bacaklar',
-    'leg_right': 'Bacaklar',
-  };
 
   // SVG data
   String? _modifiedSvgString;
   String? _originalSvgString;
-
-  // Expected IDs
-  final List<String> _expectedIds = [
-    'arm_left',
-    'arm_right',
-    'chest',
-    'belly',
-    'hip',
-    'leg_right',
-    'leg_left',
-    'face',
-  ];
 
   bool _isLoading = true;
 
@@ -69,8 +43,8 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
   void initState() {
     super.initState();
     // Default value
-    _userGender = 'Erkek';
-    _assetName = 'assets/svg/manDiagram.svg';
+    _userGender = ProjectStrings.male;
+    _assetName = SvgName.manDiagram.path;
 
     // Determine gender-based SVG file
     _loadUserData();
@@ -88,14 +62,14 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
       setState(() {
         _userGender = gender;
-        _assetName = _userGender == 'Erkek' ? 'assets/svg/manDiagram.svg' : 'assets/svg/womanDiagram.svg';
+        _assetName = _userGender == ProjectStrings.male ? SvgName.manDiagram.path : SvgName.womanDiagram.path;
       });
 
       await _loadSvgAsset();
     } catch (e) {
       setState(() {
-        _userGender = 'Erkek';
-        _assetName = 'assets/svg/manDiagram.svg';
+        _userGender = ProjectStrings.male;
+        _assetName = SvgName.manDiagram.path;
       });
       await _loadSvgAsset();
     }
@@ -113,7 +87,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
       });
     } catch (e) {
       // Use fallback SVG in case of error
-      final fallbackSvg = _createFallbackSvg();
+      final fallbackSvg = BodyRegions.getFallbackSvg(_userGender);
 
       setState(() {
         _originalSvgString = fallbackSvg;
@@ -131,7 +105,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
   }
 
   void _setDefaultPathStyles(xml.XmlDocument document) {
-    for (final id in _expectedIds) {
+    for (final id in BodyRegions.expectedIds) {
       final elements = document.findAllElements('*').where((element) => element.getAttribute('id') == id);
 
       for (final element in elements) {
@@ -150,10 +124,10 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         .map((element) => element.getAttribute('id'))
         .toSet();
 
-    final missingIds = _expectedIds.where((id) => !foundIds.contains(id));
+    final missingIds = BodyRegions.expectedIds.where((id) => !foundIds.contains(id));
 
     for (final missingId in missingIds) {
-      final pathData = _getDefaultPathForId(missingId);
+      final pathData = BodyRegions.getDefaultPathForId(missingId);
       if (pathData.isNotEmpty) {
         final element = xml.XmlElement(
           xml.XmlName('path'),
@@ -171,65 +145,14 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     }
   }
 
-  String _getDefaultPathForId(String id) {
-    switch (id) {
-      case 'arm_left':
-        return 'M50,100 L30,200 L40,200 L60,100 Z';
-      case 'arm_right':
-        return 'M150,100 L170,200 L160,200 L140,100 Z';
-      case 'chest':
-        return 'M70,100 L130,100 L130,140 L70,140 Z';
-      case 'belly':
-        return 'M70,150 L130,150 L130,200 L70,200 Z';
-      case 'hip':
-        return 'M70,210 L130,210 L130,250 L70,250 Z';
-      case 'leg_left':
-        return 'M70,260 L100,260 L100,350 L70,350 Z';
-      case 'leg_right':
-        return 'M100,260 L130,260 L130,350 L100,350 Z';
-      case 'face':
-        return 'M85,30 L115,30 Q130,50 115,70 Q100,80 85,70 Q70,50 85,30 Z';
-      default:
-        return '';
-    }
-  }
-
-  String _createFallbackSvg() {
-    return _userGender == 'Erkek'
-        ? '''
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 500">
-  <path id="face" d="M85,30 L115,30 Q130,50 115,70 Q100,80 85,70 Q70,50 85,30 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="chest" d="M80,80 L120,80 L120,130 L80,130 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="belly" d="M80,140 L120,140 L120,200 L80,200 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="hip" d="M80,210 L120,210 L120,250 L80,250 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="arm_left" d="M50,90 L70,90 L70,180 L50,180 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="arm_right" d="M130,90 L150,90 L150,180 L130,180 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="leg_left" d="M80,260 L100,260 L100,400 L80,400 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="leg_right" d="M100,260 L120,260 L120,400 L100,400 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-</svg>
-      '''
-        : '''
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 500">
-  <path id="face" d="M85,30 L115,30 Q130,50 115,70 Q100,80 85,70 Q70,50 85,30 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="chest" d="M75,85 L125,85 L125,130 L75,130 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="belly" d="M80,140 L120,140 L120,200 L80,200 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="hip" d="M75,210 L125,210 L125,260 L75,260 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="arm_left" d="M50,90 L70,90 L70,180 L50,180 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="arm_right" d="M130,90 L150,90 L150,180 L130,180 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="leg_left" d="M80,270 L100,270 L100,400 L80,400 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-  <path id="leg_right" d="M100,270 L120,270 L120,400 L100,400 Z" fill="transparent" stroke="black" stroke-width="1.5" stroke-dasharray="3,2" />
-</svg>
-      ''';
-  }
-
   void _toggleBodyPart(String partId) {
     setState(() {
       // If it's arms or legs, process both of them
       final partsToToggle = <String>[partId];
 
       // Let's add the matching regions
-      if (_pairedRegions.containsKey(partId)) {
-        partsToToggle.addAll(_pairedRegions[partId]!);
+      if (BodyRegions.pairedRegions.containsKey(partId)) {
+        partsToToggle.addAll(BodyRegions.pairedRegions[partId]!);
       }
 
       // Process all relevant parts
@@ -251,7 +174,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     try {
       final document = xml.XmlDocument.parse(_originalSvgString!);
 
-      for (final partId in _expectedIds) {
+      for (final partId in BodyRegions.expectedIds) {
         final elements = document.findAllElements('*').where(
               (element) => element.getAttribute('id') == partId,
             );
@@ -272,18 +195,17 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
   void _applyStyleToElement(xml.XmlElement element, bool isSelected) {
     if (isSelected) {
-      // TODOcolor
       element.setAttribute('fill', '#557C55'); // ProjectColors.primary
-      element.setAttribute('fill-opacity', '0.3'); // Yarı saydam ama biraz daha belirgin
+      element.setAttribute('fill-opacity', '0.3');
       element.setAttribute('stroke', '#2E5522'); // ProjectColors.darkAvocado
-      element.setAttribute('stroke-width', '1.2'); // Biraz daha kalın kontur
-      element.setAttribute('stroke-dasharray', ''); // Kesikli çizgiyi kaldır
+      element.setAttribute('stroke-width', '1.2');
+      element.setAttribute('stroke-dasharray', '');
     } else {
       element.setAttribute('fill', 'transparent');
       element.setAttribute('stroke', 'black');
       element.setAttribute('stroke-width', '0.8');
       element.setAttribute('fill-opacity', '0');
-      element.setAttribute('stroke-dasharray', '3,2'); // Kesikli çizgi ekle
+      element.setAttribute('stroke-dasharray', '3,2');
     }
   }
 
@@ -292,7 +214,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
     final regionNames = <String>{};
 
     for (final partId in _selectedParts) {
-      final name = _regionNames[partId];
+      final name = BodyRegions.regionNames[partId];
       if (name != null) {
         regionNames.add(name);
       }
@@ -326,10 +248,17 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bölgesel Yağ Yakımı'),
+        title: const Text(ProjectStrings.regionalFatBurning),
         backgroundColor: ProjectColors.backgroundCream,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: ProjectColors.earthBrown,
+          ),
+        ),
       ),
-      backgroundColor: ProjectColors.backgroundCream,
       body: BlocConsumer<RegionalFatBurningCubit, RegionalFatBurningState>(
         listener: (context, state) {
           if (state.advice.isNotEmpty && !state.isLoading) {
@@ -358,7 +287,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                       : const Center(child: CircularProgressIndicator()),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.r),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -368,10 +297,10 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                       // Get advice button
                       ProjectButton(
                         text: state.isLoading
-                            ? 'Tavsiye Alınıyor...'
+                            ? ProjectStrings.adviceGetting
                             : state.adviceReceived
-                                ? 'Tavsiye Alındı'
-                                : 'Tavsiye Al',
+                                ? ProjectStrings.adviceGot
+                                : ProjectStrings.adviceGet,
                         onPressed: state.isLoading || state.adviceReceived ? null : _getAdvice,
                         isEnabled: selectedRegionNames.isNotEmpty && !state.isLoading && !state.adviceReceived,
                       ),
@@ -382,10 +311,9 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                           padding: const EdgeInsets.only(top: 16),
                           child: Text(
                             state.error,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14.sp,
-                            ),
+                            style: context.textTheme().bodySmall?.copyWith(
+                                  color: ProjectColors.red,
+                                ),
                           ),
                         ),
 
@@ -395,7 +323,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                             height: 70.h,
                             width: 70.h,
                             child: Lottie.asset(
-                              'assets/json/avoWalk.json',
+                              JsonName.avoWalk.path,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -433,7 +361,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                                   ),
                                   SizedBox(width: 8.w),
                                   Text(
-                                    "Avo'nun Tavsiyeleri",
+                                    ProjectStrings.advicesOfAvo,
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -497,15 +425,15 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         text: TextSpan(
           style: TextStyle(
             fontSize: 16.sp,
-            color: const Color(0xFF806040),
+            color: ProjectColors.earthBrown,
           ),
           children: [
             const TextSpan(
-              text: 'Seçilen bölge: ',
+              text: ProjectStrings.selectedRegion,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             TextSpan(
-              text: selectedRegionNames.isEmpty ? 'Henüz bölge seçilmedi' : selectedRegionNames.join(', '),
+              text: selectedRegionNames.isEmpty ? ProjectStrings.noRegionSelected : selectedRegionNames.join(', '),
             ),
           ],
         ),
@@ -523,31 +451,31 @@ class InteractiveSvgBody extends StatelessWidget {
   });
 
   final String svgString;
-  final Function(String) onTapRegion;
+  final void Function(String) onTapRegion;
   final String gender;
 
-  Map<String, Offset> get _regionCenters => gender == 'Erkek'
+  Map<String, Offset> get _regionCenters => gender == ProjectStrings.male
       ? {
           // Center points for male body diagram
-          'face': const Offset(0.5, 0.075),
-          'chest': const Offset(0.5, 0.23),
-          'belly': const Offset(0.5, 0.36),
-          'hip': const Offset(0.5, 0.45),
-          'arm_left': const Offset(0.34, 0.35),
-          'arm_right': const Offset(0.66, 0.35),
-          'leg_left': const Offset(0.44, 0.71),
-          'leg_right': const Offset(0.56, 0.71),
+          BodyRegions.face: const Offset(0.5, 0.075),
+          BodyRegions.chest: const Offset(0.5, 0.23),
+          BodyRegions.belly: const Offset(0.5, 0.36),
+          BodyRegions.hip: const Offset(0.5, 0.45),
+          BodyRegions.armLeft: const Offset(0.34, 0.35),
+          BodyRegions.armRight: const Offset(0.66, 0.35),
+          BodyRegions.legLeft: const Offset(0.44, 0.71),
+          BodyRegions.legRight: const Offset(0.56, 0.71),
         }
       : {
           // Center points for female body diagram
-          'face': const Offset(0.5, 0.075),
-          'chest': const Offset(0.5, 0.22),
-          'belly': const Offset(0.5, 0.32),
-          'hip': const Offset(0.5, 0.42),
-          'arm_left': const Offset(0.37, 0.35),
-          'arm_right': const Offset(0.63, 0.35),
-          'leg_left': const Offset(0.44, 0.72),
-          'leg_right': const Offset(0.56, 0.72),
+          BodyRegions.face: const Offset(0.5, 0.075),
+          BodyRegions.chest: const Offset(0.5, 0.22),
+          BodyRegions.belly: const Offset(0.5, 0.32),
+          BodyRegions.hip: const Offset(0.5, 0.42),
+          BodyRegions.armLeft: const Offset(0.37, 0.35),
+          BodyRegions.armRight: const Offset(0.63, 0.35),
+          BodyRegions.legLeft: const Offset(0.44, 0.72),
+          BodyRegions.legRight: const Offset(0.56, 0.72),
         };
 
   @override
@@ -609,7 +537,7 @@ class InteractiveSvgBody extends StatelessWidget {
             child: Container(
               width: innerPointSize,
               height: innerPointSize,
-              decoration:  BoxDecoration(
+              decoration: const BoxDecoration(
                 color: ProjectColors.earthBrown,
                 shape: BoxShape.circle,
               ),

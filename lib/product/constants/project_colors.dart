@@ -34,5 +34,10 @@ abstract final class ProjectColors {
   static const Color grey600 = Color.fromRGBO(117, 117, 117, 1);
   static const Color forestGreen = Color(0xFF2D5A27);
   static const Color shadow = Color(0xff8C7A6B);
-  static const Color sandyBrown= Color(0xffF4A261);
+  static const Color sandyBrown = Color(0xffF4A261);
+  static const Color greenRYB = Color(0xFF56AB2F);
+  static const Color apple = Color(0xFF6CBE45);
+  static const Color laurel = Color(0xFF2E7D32);
+  static const Color mayGreen= Color(0xFF388E3C);
+  static const Color dolarBill = Color(0xFF8BC34A);
 }

@@ -1,0 +1,4 @@
+enum SvgName {
+  manDiagram,
+  womanDiagram,
+}
