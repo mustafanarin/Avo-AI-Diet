@@ -1,4 +1,5 @@
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
+import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:avo_ai_diet/product/utility/exceptions/gemini_exception.dart';
 import 'package:avo_ai_diet/product/utility/exceptions/secure_storage_exception.dart';
 import 'package:avo_ai_diet/services/secure_storage_service.dart';
@@ -9,6 +10,7 @@ import 'package:injectable/injectable.dart';
 abstract class IGeminiService {
   Future<String> getUserDiet(UserInfoModel user);
   Future<String> aiChat(String text, String conversationHistory);
+  Future<String> getRegionalFatBurningAdvice(UserInfoCacheModel userInfo, List<String> selectedRegions);
 }
 
 @singleton
@@ -120,6 +122,48 @@ final class GeminiService implements IGeminiService {
       return response.text!;
     } catch (e) {
       throw GeminiException(message: 'Gemini error: $e');
+    }
+  }
+
+  @override
+  Future<String> getRegionalFatBurningAdvice(UserInfoCacheModel userInfo, List<String> selectedRegions) async {
+    try {
+      await _initFuture;
+
+      final regionText = selectedRegions.join(', ');
+
+      final prompt = '''
+      Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle arkadaş canlısı bir konuşma şeklin var.
+      
+      Sağlıklı beslenme uzmanı bir diyetisyen olarak, vücudun belirli bölgelerinde yağ yakmak isteyen bir kişiye tavsiye ver.
+      
+      Kullanıcının fiziksel özellikleri:
+      - Boy: ${userInfo.height} cm
+      - Kilo: ${userInfo.weight} kg
+      - Yaş: ${userInfo.age}
+      - Cinsiyet: ${userInfo.gender}
+      
+      Kişi şu bölgelerde yağ yakmak istiyor: $regionText
+      
+      Seçilen bölgeler için:
+      1. Bölgesel yağ yakımının bilimsel olarak sınırlı olduğunu nazikçe açıkla
+      2. Ancak yine de genel yağ yakımı ve şu bölgeleri hedefleyen egzersiz tavsiyeleri ver: $regionText
+      3. Maksimum 3 adet etkili egzersiz öner
+      4. Bu bölgelerde yağ yakmayı destekleyecek beslenme tavsiyelerini 3 madde halinde ver
+      5. Bu bölgelerdeki kas tonunu artırmak için ipuçları ver
+      
+      Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Cevap verirken en başta kendini tanıtmana gerek yok, kısa bir giriş cümlesiyle konuşmaya başla. Yanıtın 300 kelimeyi geçmesin. Arkadaş canlısı ve motive edici ol.
+      ''';
+
+      final content = [Content.text(prompt)];
+      final response = await _model.generateContent(content);
+
+      if (response.text == null) {
+        throw GeminiException(message: 'Gemini API response error');
+      }
+      return response.text!;
+    } catch (e) {
+      throw GeminiException(message: 'Bölgesel yağ yakımı tavsiyesi alınamadı: $e');
     }
   }
 }

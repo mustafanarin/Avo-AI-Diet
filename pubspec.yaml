@@ -14,6 +14,7 @@ dependencies:
   # Animation
   lottie: ^3.2.0
   percent_indicator: ^4.2.4
+  fluttertoast: ^8.2.12
 
 
   # Cache
@@ -29,6 +30,10 @@ dependencies:
   intl: ^0.20.2
   flutter_markdown: ^0.7.6+2
   font_awesome_flutter: ^10.8.0
+  flutter_local_notifications: ^19.1.0
+  timezone: ^0.10.0
+  flutter_svg: ^2.1.0
+  xml: ^6.5.0
 
   # Navigation
   go_router: ^14.6.2
@@ -43,6 +48,7 @@ dependencies:
   # State Managment
   flutter_hooks: ^0.20.5
   flutter_bloc: ^9.0.0
+  device_info_plus: ^11.3.0
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +66,7 @@ flutter:
     - .env
     - assets/png/
     - assets/json/
+    - assets/svg/
 
 
   fonts:

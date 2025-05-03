@@ -1,6 +1,7 @@
 import 'package:avo_ai_diet/product/constants/enum/general/activity_level.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/goal_extension.dart';
 
 final class CalorieCalculatorService {
   static double calculateBMR({
@@ -19,18 +20,13 @@ final class CalorieCalculatorService {
   static double calculateTotalCalories({
     required double bmr,
     required ActivityLevel activityLevel,
-    required String goal,
+    required String goalDisplayName,
   }) {
     var totalCalories = bmr * activityLevel.multiplier;
 
-    switch (goal) {
-      case 'Kilo vermek':
-        totalCalories *= 0.85;
-      case 'Kilo almak':
-        totalCalories *= 1.15;
-      default:
-        break;
-    }
+    final goal = GoalExtension.fromDisplayName(goalDisplayName);
+
+    totalCalories *= goal.multiplier;
 
     return totalCalories;
   }

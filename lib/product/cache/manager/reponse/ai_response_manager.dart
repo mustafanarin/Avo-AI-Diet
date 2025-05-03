@@ -29,7 +29,7 @@ class AiResponseManager implements IAiResponseManager {
     final response = await box.get(
       'response',
       defaultValue: AiResponse(
-        dietPlan: 'Sanırım bir hata oluştu...',
+        dietPlan: 'Sanırım bir hata oluştu, profil sayfasından tekrar deneyiniz.',
         formattedDayMonthYear: '-',
       ),
     );

@@ -47,4 +47,8 @@ extension ActivityLevelExtension on ActivityLevel {
         return ActivityLevel.sedentary;
     }
   }
+
+  static List<String> get allDisplayNames {
+    return ActivityLevel.values.map((level) => level.displayName).toList();
+  }
 }

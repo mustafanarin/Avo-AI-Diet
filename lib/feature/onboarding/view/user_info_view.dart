@@ -1,16 +1,20 @@
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
+import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
 import 'package:avo_ai_diet/feature/onboarding/state/user_info_state.dart';
+import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
+import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/budget_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/goal_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
@@ -23,7 +27,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class UserInfoView extends StatefulWidget {
+final class UserInfoView extends StatefulWidget {
   const UserInfoView({required this.userName, super.key});
   final String userName;
   @override
@@ -43,26 +47,6 @@ class _UserInfoViewState extends State<UserInfoView> {
   String? _activityLevel;
   String? _goal;
   String? _budget;
-
-  final List<String> activityLevels = [
-    'Sedanter (hareketsiz yaşam)',
-    'Hafif aktif (haftada 1-3 gün egzersiz)',
-    'Orta aktif (haftada 3-5 gün egzersiz)',
-    'Çok aktif (haftada 6-7 gün egzersiz)',
-    'Profesyonel sporcu seviyesi',
-  ];
-
-  final List<String> goals = [
-    'Kilo vermek',
-    'Kilo korumak',
-    'Kilo almak',
-  ];
-
-  final List<String> budgets = [
-    'Düşük bütçe',
-    'Orta bütçe',
-    'Yüksek bütçe',
-  ];
 
   @override
   void dispose() {
@@ -115,7 +99,7 @@ class _UserInfoViewState extends State<UserInfoView> {
     return CalorieCalculatorService.calculateTotalCalories(
       bmr: bmr,
       activityLevel: selectedActivity,
-      goal: _goal!,
+      goalDisplayName: _goal!,
     );
   }
 
@@ -138,6 +122,18 @@ class _UserInfoViewState extends State<UserInfoView> {
     await cubit.submitUserInfo(userInfo);
   }
 
+  Future<void> _userInfoCache(BuildContext context) async {
+    final cacheCubit = context.read<UserInfoCacheCubit>();
+    final userInfoCache = UserInfoCacheModel(
+      gender: _gender ?? '',
+      age: _ageController.text,
+      height: _heightController.text,
+      weight: _weightController.text,
+    );
+
+    await cacheCubit.saveUserInfo(userInfoCache);
+  }
+
   void _navigateToHome(
     BuildContext context, {
     required String userName,
@@ -156,8 +152,11 @@ class _UserInfoViewState extends State<UserInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<UserInfoCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<UserInfoCubit>()),
+        BlocProvider(create: (context) => getIt<UserInfoCacheCubit>()),
+      ],
       child: Builder(
         builder: (context) {
           return BlocConsumer<UserInfoCubit, UserInfoState>(
@@ -188,7 +187,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                               tag: HeroLottie.avoLottie.value,
                               child: Lottie.asset(JsonName.avoWalk.path),
                             ),
-                            const Text('Senin için en uygun diyet planını hazırlıyorum :)'),
+                            const Text(ProjectStrings.avoDietLoadingMessage),
                           ],
                         ),
                       ),
@@ -220,6 +219,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                             if (_currentStep < 3) {
                                               setState(() => _currentStep += 1);
                                             } else {
+                                              _userInfoCache(context);
                                               _submitForm(context, cubit);
                                             }
                                           },
@@ -261,7 +261,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 style: context.textTheme().titleMedium,
                               ),
                               content: _ActivityLevelStep(
-                                activityLevels: activityLevels,
+                                activityLevels: ActivityLevelExtension.allDisplayNames,
                                 activityLevel: _activityLevel,
                                 onActivityLevelChanged: (value) => setState(() => _activityLevel = value),
                               ),
@@ -274,7 +274,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 style: context.textTheme().titleMedium,
                               ),
                               content: _CaloriTargetStep(
-                                goals: goals,
+                                goals: GoalExtension.allDisplayNames,
                                 goal: _goal,
                                 onGoalChanged: (value) => setState(() => _goal = value),
                               ),
@@ -287,7 +287,7 @@ class _UserInfoViewState extends State<UserInfoView> {
                                 style: context.textTheme().titleMedium,
                               ),
                               content: _BudgetStep(
-                                budgets: budgets,
+                                budgets: BudgetExtension.allDisplayNames,
                                 budget: _budget,
                                 onBudgetChanged: (value) => setState(() => _budget = value),
                               ),
@@ -467,7 +467,7 @@ class _SelectionItem extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding:EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+          padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
           decoration: BoxDecoration(
             color: isSelected ? ProjectColors.mainAvocado.withOpacity(0.2) : ProjectColors.backgroundCream,
             borderRadius: BorderRadius.circular(8),

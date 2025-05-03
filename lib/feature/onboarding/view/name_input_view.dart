@@ -66,7 +66,7 @@ final class NameInputView extends HookWidget {
     );
   }
 }
-
+// TODO klavye dışına basılınca kapat
 class _AvoMascotLottie extends StatelessWidget {
   const _AvoMascotLottie();
 
