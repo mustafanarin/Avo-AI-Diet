@@ -41,4 +41,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android NDK build files
+android/app/.cxx/
+
+
 .env
