@@ -262,7 +262,7 @@ class _SwitchItemWidget extends StatelessWidget {
 }
 
 class _WaterReminderSwitchItem extends StatelessWidget {
-  const _WaterReminderSwitchItem({super.key});
+  const _WaterReminderSwitchItem();
 
   @override
   Widget build(BuildContext context) {

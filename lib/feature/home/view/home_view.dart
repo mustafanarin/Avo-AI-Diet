@@ -267,7 +267,7 @@ class _ModernDietCard extends HookWidget {
 
 // TODOsearch için buton değiştir,textfield next koy
 class _CalorieFollowIndicator extends StatelessWidget {
-  const _CalorieFollowIndicator({required this.maxCalories, super.key});
+  const _CalorieFollowIndicator({required this.maxCalories});
 
   final double maxCalories;
 

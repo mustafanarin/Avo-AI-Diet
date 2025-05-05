@@ -52,6 +52,12 @@ abstract final class ProjectStrings {
   static const String noResults = 'Sonuç bulunamadı';
   static const String noFood = 'Besin bulunamadı';
   static const String oneHundredGram = '100 gram';
+  static const String birAdet = '1 adet';
+  static const String birDilim = '1 dilim';
+  static const String birBardak = '1 bardak';
+  static const String birKase = '1 kase';
+  static const String birCayKasigi = '1 çay kaşığı';
+  static const String birYemekKasigi = '1 yemek kaşığı';
 
   // Food Detail Page
   static const String foodDetail = 'Besin Detayı';

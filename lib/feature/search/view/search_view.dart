@@ -13,23 +13,47 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
-class SearchView extends StatefulWidget {
+final class SearchView extends StatefulWidget {
   const SearchView({super.key});
 
   @override
   State<SearchView> createState() => _SearchViewState();
 }
 
-class _SearchViewState extends State<SearchView> {
+class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // to track page changes
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  // TODOkeyboard bug
+  // Called when the page becomes visible again
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _focusNode.unfocus();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  // Let's close the keyboard when it becomes visible and is built
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _focusNode.unfocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +61,17 @@ class _SearchViewState extends State<SearchView> {
       create: (context) => getIt<SearchCubit>(),
       child: Builder(
         builder: (context) {
-          return Scaffold(
+          return Scaffold( // TODO resizeToAvoidBottomInset
+            resizeToAvoidBottomInset: false,
             body: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
+              onTap: _focusNode.unfocus,
               behavior: HitTestBehavior.translucent,
               child: CustomScrollView(
                 slivers: [
                   SliverAppBar(
                     expandedHeight: 100,
-                    floating: true, // for scroll
-                    pinned: true, // for title
+                    floating: true,
+                    pinned: true,
                     elevation: 0,
                     backgroundColor: ProjectColors.backgroundCream,
                     centerTitle: false,
@@ -77,6 +100,7 @@ class _SearchViewState extends State<SearchView> {
                       ),
                       child: TextField(
                         controller: _controller,
+                        focusNode: _focusNode,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -97,7 +121,7 @@ class _SearchViewState extends State<SearchView> {
                                       onPressed: () {
                                         _controller.clear();
                                         context.read<SearchCubit>().clearSearch();
-                                        FocusScope.of(context).unfocus();
+                                        _focusNode.unfocus(); // Close keyboard using FocusNode
                                       },
                                       icon: const Icon(Icons.clear),
                                     )
@@ -120,14 +144,22 @@ class _SearchViewState extends State<SearchView> {
                           ),
                         );
                       } else if (state.query.isNotEmpty && state.results.isEmpty) {
-                        return const SliverFillRemaining(
+                        return SliverFillRemaining(
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.search_off_rounded),
-                                SizedBox(height: 16),
-                                Text(ProjectStrings.noResults),
+                                const Spacer(
+                                  flex: 4,
+                                ),
+                                Image.asset(
+                                  'assets/png/searchAvo.png',
+                                  height: 150.h, // TODO
+                                ),
+                                const Text(ProjectStrings.noResults),
+                                const Spacer(
+                                  flex: 6,
+                                ),
                               ],
                             ),
                           ),
@@ -149,7 +181,13 @@ class _SearchViewState extends State<SearchView> {
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
                               final food = state.results[index];
-                              return _FoodCard(food: food);
+                              return _FoodCard(
+                                food: food,
+                                onTap: () {
+                                  _focusNode.unfocus();
+                                  context.push(RouteNames.detail, extra: food);
+                                },
+                              );
                             },
                             childCount: state.results.length,
                           ),
@@ -170,14 +208,16 @@ class _SearchViewState extends State<SearchView> {
 class _FoodCard extends StatelessWidget {
   const _FoodCard({
     required this.food,
+    required this.onTap,
   });
 
   final FoodModel food;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push(RouteNames.detail, extra: food),
+      onTap: onTap,
       child: Card(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
@@ -200,7 +240,7 @@ class _FoodCard extends StatelessWidget {
                 style: context.textTheme().titleMedium,
               ),
               subtitle: Text(
-                ProjectStrings.oneHundredGram,
+                food.unitType == 'gram' ? ProjectStrings.oneHundredGram : '1 ${food.unitType}',
                 style: context.textTheme().bodySmall?.copyWith(
                       color: ProjectColors.grey600,
                     ),
@@ -281,7 +321,7 @@ class _NutritionInfoBox extends StatelessWidget {
           ),
           Text(
             '${value}g',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: context.textTheme().bodySmall?.copyWith(
                   color: color,
                   fontWeight: FontWeight.w600,
                 ),
