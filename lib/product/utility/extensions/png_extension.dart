@@ -5,6 +5,10 @@ extension PngNameExtension on PngName {
     switch (this) {
       case PngName.avo:
         return 'avo';
+      case PngName.noSearchAvo:
+        return 'noSearchAvo';
+      case PngName.noFavoriteAvo:
+        return 'noFavoriteAvo';
     }
   }
 

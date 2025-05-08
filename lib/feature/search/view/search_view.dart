@@ -1,10 +1,12 @@
 import 'package:avo_ai_diet/feature/search/cubit/search_cubit.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/state/search_state.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/utility/extensions/icon_data_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +63,8 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
       create: (context) => getIt<SearchCubit>(),
       child: Builder(
         builder: (context) {
-          return Scaffold( // TODO resizeToAvoidBottomInset
+          return Scaffold(
+            // TODOresizeToAvoidBottomInset
             resizeToAvoidBottomInset: false,
             body: GestureDetector(
               onTap: _focusNode.unfocus,
@@ -150,10 +153,10 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Spacer(
-                                  flex: 4,
+                                  flex: 2,
                                 ),
                                 Image.asset(
-                                  'assets/png/searchAvo.png',
+                                  PngName.noSearchAvo.path,
                                   height: 150.h, // TODO
                                 ),
                                 const Text(ProjectStrings.noResults),

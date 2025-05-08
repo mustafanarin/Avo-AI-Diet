@@ -7,11 +7,8 @@ import 'package:timezone/timezone.dart' as tz;
 
 abstract class INotificationService {
   Future<void> init();
-
   Future<void> scheduleWaterReminder();
-
   Future<void> cancelWaterReminder();
-
   Future<void> showPreviewNotification();
 }
 
@@ -21,7 +18,6 @@ final class NotificationService implements INotificationService {
 
   // Notification id
   static const int _waterReminderNotificationId = 0;
-  static const int _resetNotificationId = 1;
   static const int _previewNotificationId = 100;
 
   @override
@@ -30,21 +26,13 @@ final class NotificationService implements INotificationService {
 
     const initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // notification plugin start
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );
 
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: _onNotificationTap,
     );
-  }
-
-  void _onNotificationTap(NotificationResponse response) {
-    if (response.id == _resetNotificationId) {
-      scheduleWaterReminder();
-    }
   }
 
   @override
@@ -55,81 +43,65 @@ final class NotificationService implements INotificationService {
     if (permissionStatus != true) {
       return;
     }
-    // cancel existing notifications to avoid further notifications
+
+    // Cancel existing notifications
     await cancelWaterReminder();
 
-    final now = DateTime.now();
+    // Schedule random notifications between 12:00-21:00 every day from now on
+    await _scheduleDailyRandomReminder();
+  }
+
+  Future<void> _scheduleDailyRandomReminder() async {
     final random = Random();
 
-    // choose a random time between 12:00 - 21:00
-    final randomHour = 12 + random.nextInt(10);
-    final randomMinute = random.nextInt(60);
+    // Choose a random hour between 12:00 - 21:00
+    final randomHour = 12 + random.nextInt(10); // Between 12 and 21
+    final randomMinute = random.nextInt(60); // Between 0 and 59
 
-    var scheduledDate = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      randomHour,
-      randomMinute,
-    );
-
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-
+    // Schedule a daily recurring notification
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       _waterReminderNotificationId,
       'Su Hatırlatıcısı',
       'Hey, bugün yeteri kadar su içiyor musun? 🥑',
-      tz.TZDateTime.from(scheduledDate, tz.local),
+      _nextInstanceOfTime(randomHour, randomMinute),
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'water_reminder',
           'water_reminder_channel',
+          channelDescription: 'Su içmeyi hatırlatan bildirimler',
           importance: Importance.high,
           priority: Priority.high,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      matchDateTimeComponents:
+          DateTimeComponents.time, // This ensures the notification repeats at the same time every day
     );
-
-    // this notification will not appear, it will work at midnight next day
-    await _scheduleResetNotification();
   }
 
-  // used only to program a new water reminder
-  Future<void> _scheduleResetNotification() async {
-    final now = DateTime.now();
-
-    final midnightTime = DateTime(now.year, now.month, now.day + 1);
-
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-      _resetNotificationId,
-      '',
-      '',
-      tz.TZDateTime.from(midnightTime, tz.local),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'reset_notification',
-          'reset_notification_channel',
-          playSound: false,
-          enableVibration: false,
-          importance: Importance.low,
-          priority: Priority.low,
-          channelShowBadge: false,
-          visibility: NotificationVisibility.secret,
-        ),
-      ),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      payload: 'reset_water_reminder',
+  // Calculate the next occurrence for the specified hour and minute
+  tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
     );
+
+    // If the selected time has passed, schedule for the next day
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    return scheduledDate;
   }
 
   @override
   Future<void> cancelWaterReminder() async {
     await _flutterLocalNotificationsPlugin.cancel(_waterReminderNotificationId);
-
-    await _flutterLocalNotificationsPlugin.cancel(_resetNotificationId);
   }
 
   @override
@@ -141,7 +113,7 @@ final class NotificationService implements INotificationService {
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'water_reminder_channel',
-          'Su Hatırlatıcısı',
+          'Water Reminder',
           channelDescription: 'Su içmeyi hatırlatan bildirimler',
           importance: Importance.high,
           priority: Priority.high,

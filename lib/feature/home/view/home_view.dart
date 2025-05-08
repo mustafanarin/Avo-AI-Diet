@@ -67,25 +67,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _CalorieFollowIndicator(maxCalories: targetCalories),
                       SizedBox(height: 20.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
-                          InkWell(
-                            onTap: () {},
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  size: 18.sp,
-                                  color: ProjectColors.earthBrown,
-                                ),
-                                Text('Ekle', style: context.textTheme().bodySmall),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      Text(ProjectStrings.myDietList, style: context.textTheme().bodyLarge),
                     ],
                   ),
                 ),
@@ -108,11 +90,15 @@ class _ModernDietCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final showShadow = useState(false);
+    final textTheme = context.textTheme();
     return Stack(
       children: [
         NotificationListener<ScrollNotification>(
           onNotification: (scrollNotification) {
-            showShadow.value = scrollNotification.metrics.pixels > 10;
+            final shouldShowShadow = scrollNotification.metrics.pixels > 10;
+            if (showShadow.value != shouldShowShadow) {
+              showShadow.value = shouldShowShadow;
+            }
             return true;
           },
           child: SingleChildScrollView(
@@ -129,7 +115,7 @@ class _ModernDietCard extends HookWidget {
                     padding: AppPadding.mediumAll(),
                     child: Text(
                       data.error ?? 'Diyet planı yüklenemedi.',
-                      style: context.textTheme().bodyMedium?.copyWith(color: ProjectColors.accentCoral),
+                      style: textTheme.bodyMedium?.copyWith(color: ProjectColors.accentCoral),
                     ),
                   );
                 }
@@ -172,39 +158,14 @@ class _ModernDietCard extends HookWidget {
                                 children: [
                                   Text(
                                     ProjectStrings.dietListTitle,
-                                    style: context.textTheme().titleMedium?.copyWith(color: ProjectColors.primary),
+                                    style: textTheme.titleMedium?.copyWith(color: ProjectColors.primary),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        response.formattedDayMonthYear,
-                                        style: context.textTheme().bodySmall?.copyWith(
-                                              fontSize: 13.sp,
-                                              color: ProjectColors.grey,
-                                            ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          // silme işlemi
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.delete_outline,
-                                              size: 18.sp,
-                                              color: ProjectColors.accentCoral,
-                                            ),
-                                            Text(
-                                              'Sil',
-                                              style: context.textTheme().bodySmall?.copyWith(
-                                                    color: ProjectColors.accentCoral,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    response.formattedDayMonthYear,
+                                    style: textTheme.bodySmall?.copyWith(
+                                      fontSize: 13.sp,
+                                      color: ProjectColors.grey,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -217,15 +178,15 @@ class _ModernDietCard extends HookWidget {
                         child: Markdown(
                           data: response.dietPlan,
                           styleSheet: MarkdownStyleSheet(
-                            p: context.textTheme().bodySmall?.copyWith(fontSize: 16.sp),
-                            strong: context.textTheme().bodySmall?.copyWith(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                            em: context.textTheme().bodySmall?.copyWith(
-                                  fontSize: 16.sp,
-                                  fontStyle: FontStyle.italic,
-                                ),
+                            p: textTheme.bodySmall?.copyWith(fontSize: 16.sp),
+                            strong: textTheme.bodySmall?.copyWith(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            em: textTheme.bodySmall?.copyWith(
+                              fontSize: 16.sp,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -273,6 +234,7 @@ class _CalorieFollowIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.textTheme();
     return BlocBuilder<DailyCalorieCubit, DailyCalorieState>(
       builder: (context, state) {
         final currentCalories = state.currentCalories;
@@ -319,24 +281,24 @@ class _CalorieFollowIndicator extends StatelessWidget {
                   radius: 75.r,
                   lineWidth: 15,
                   animation: true,
-                  animateFromLastPercent: true, // TODOanimation false?
+                  animateFromLastPercent: true,
                   percent: percent,
                   center: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         '$currentCalories',
-                        style: context.textTheme().displayMedium?.copyWith(
-                              fontSize: 32.sp,
-                              fontWeight: FontWeight.bold,
-                              color: currentCalories > 0 ? indicatorColor : ProjectColors.grey600,
-                            ),
+                        style: textTheme.displayMedium?.copyWith(
+                          fontSize: 32.sp,
+                          fontWeight: FontWeight.bold,
+                          color: currentCalories > 0 ? indicatorColor : ProjectColors.grey600,
+                        ),
                       ),
                       Text(
                         'kalori',
-                        style: context.textTheme().bodySmall?.copyWith(
-                              color: ProjectColors.grey600,
-                            ),
+                        style: textTheme.bodySmall?.copyWith(
+                          color: ProjectColors.grey600,
+                        ),
                       ),
                     ],
                   ),
@@ -388,15 +350,15 @@ class _CalorieFollowIndicator extends StatelessWidget {
                               children: [
                                 TextSpan(
                                   text: 'Hedef: ',
-                                  style: context.textTheme().bodyMedium?.copyWith(
-                                        color: ProjectColors.grey600,
-                                      ),
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: ProjectColors.grey600,
+                                  ),
                                 ),
                                 TextSpan(
                                   text: '${maxCalories.toInt()} kcal',
-                                  style: context.textTheme().bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             ),
@@ -420,16 +382,16 @@ class _CalorieFollowIndicator extends StatelessWidget {
                               children: [
                                 TextSpan(
                                   text: 'Tüketilen: ',
-                                  style: context.textTheme().bodyMedium?.copyWith(
-                                        color: ProjectColors.grey600,
-                                      ),
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: ProjectColors.grey600,
+                                  ),
                                 ),
                                 TextSpan(
                                   text: '%$percentDisplay',
-                                  style: context.textTheme().bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: indicatorColor,
-                                      ),
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: indicatorColor,
+                                  ),
                                 ),
                               ],
                             ),

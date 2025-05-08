@@ -40,7 +40,7 @@ final class ProjectButton extends StatelessWidget {
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
-      borderRadius: AppRadius.circularSmall(), // TODO eski hali circularMedium
+      borderRadius: AppRadius.circularSmall(), // TODOeski hali circularMedium
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

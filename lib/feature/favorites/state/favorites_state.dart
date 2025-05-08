@@ -1,6 +1,6 @@
 import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 
-class FavoritesState {
+final class FavoritesState {
   FavoritesState({this.favorites, this.messageId, this.savedAt, this.isLoading = false});
 
   final List<FavoriteMessageModel>? favorites;

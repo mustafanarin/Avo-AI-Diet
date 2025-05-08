@@ -2,11 +2,11 @@ import 'package:avo_ai_diet/feature/chat/cubit/chat_cubit.dart';
 import 'package:avo_ai_diet/feature/chat/state/chat_state.dart';
 import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
 import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
+import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
-import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +23,8 @@ class ChatView extends StatefulWidget {
 }
 
 // TODOtoken limiti için 3 5 mesaj geçmiş çifti kullan
-// TODO geminiyi beklerken watsap lottie, textfield satır taşınca aşşağı insin
-// TODO konuşurken kullanıcı bilgilerinide okusun
+// TODOgeminiyi beklerken watsap lottie, textfield satır taşınca aşşağı insin
+// TODOkonuşurken kullanıcı bilgilerinide okusun
 class _ChatViewState extends State<ChatView> {
   final List<_ChatMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();

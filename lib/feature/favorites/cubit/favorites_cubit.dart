@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class FavoritesCubit extends Cubit<FavoritesState> {
+final class FavoritesCubit extends Cubit<FavoritesState> {
   FavoritesCubit(this._manager) : super(FavoritesState()) {
     _initFavorites();
   }

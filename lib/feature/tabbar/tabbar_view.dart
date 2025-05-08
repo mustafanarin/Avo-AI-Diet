@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+
 final class CustomTabBarView extends HookWidget {
   const CustomTabBarView({super.key, this.initialIndex = 0});
   final int initialIndex;
@@ -34,43 +35,41 @@ final class CustomTabBarView extends HookWidget {
           ProfileView(),
         ],
       ),
-      floatingActionButton: showBottomBar 
-        ? Container(
-            height: 65.h,
-            width: 65.w,
-            margin: const EdgeInsets.only(top: 30),
-            child: FloatingActionButton(
-              elevation: 0,
-              backgroundColor: ProjectColors.green,
-              child: const Icon(Icons.eco, color: ProjectColors.white, size: 30),
-              onPressed: () {
-                context.push(RouteNames.chat);
-              },
-            ),
-          )
-        : null, 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: showBottomBar 
-        ? Container(
-            height: 80.h,
-            decoration: BoxDecoration(
-              color: ProjectColors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
+      floatingActionButton: showBottomBar
+          ? Container(
+              height: 65.h,
+              width: 65.w,
+              margin: const EdgeInsets.only(top: 30),
+              child: FloatingActionButton(
+                heroTag: null,
+                elevation: 0,
+                backgroundColor: ProjectColors.green,
+                child: const Icon(Icons.eco, color: ProjectColors.white, size: 30),
+                onPressed: () {
+                  context.push(RouteNames.chat);
+                },
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: ProjectColors.grey.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: showBottomBar
+          ? Container(
+              height: 80.h,
+              decoration: BoxDecoration(
+                color: ProjectColors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
                 ),
-              ],
-            ),
-            child: SafeArea(
-              top: false,
-              maintainBottomViewPadding: true,
+                boxShadow: [
+                  BoxShadow(
+                    color: ProjectColors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
               child: BottomNavigationBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
@@ -80,7 +79,6 @@ final class CustomTabBarView extends HookWidget {
                 selectedItemColor: ProjectColors.green,
                 unselectedItemColor: ProjectColors.grey,
                 selectedFontSize: 12,
-                unselectedFontSize: 12,
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
@@ -110,9 +108,8 @@ final class CustomTabBarView extends HookWidget {
                   pageController.jumpToPage(index);
                 },
               ),
-            ),
-          )
-        : const SizedBox.shrink(),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }

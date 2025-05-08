@@ -1,1 +1,5 @@
-enum PngName { avo }
+enum PngName {
+  avo,
+  noSearchAvo,
+  noFavoriteAvo,
+}

@@ -1,7 +1,8 @@
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// TODO use other pages
+
+// TODOuse other pages
 final class ProjectToastMessage {
   static void show(BuildContext context, String message, {int seconds = 2}) {
     final overlay = Overlay.of(context);
@@ -54,10 +55,8 @@ final class ProjectToastMessage {
     );
 
     overlay.insert(overlayEntry);
-    
+
     // Belirtilen saniye sonra Toast'u kaldır
-    Future.delayed(Duration(seconds: seconds), () {
-      overlayEntry.remove();
-    });
+    Future.delayed(Duration(seconds: seconds), overlayEntry.remove);
   }
 }
