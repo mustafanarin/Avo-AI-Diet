@@ -68,8 +68,6 @@ _i174.GetIt $initGetIt(
       () => appModule.waterReminderManager);
   gh.singleton<_i354.NotificationService>(() => _i354.NotificationService());
   gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
-  gh.factory<_i648.ChatCubit>(
-      () => _i648.ChatCubit(gh<_i709.IGeminiService>()));
   gh.factory<_i927.WaterReminderCubit>(() => _i927.WaterReminderCubit(
         gh<_i354.INotificationService>(),
         gh<_i859.IWaterReminderManager>(),
@@ -78,6 +76,10 @@ _i174.GetIt $initGetIt(
       () => _i456.FavoritesCubit(gh<_i45.IFavoriteMessageManager>()));
   gh.factory<_i688.DailyCalorieCubit>(
       () => _i688.DailyCalorieCubit(gh<_i18.IDailyCalorieManager>()));
+  gh.factory<_i648.ChatCubit>(() => _i648.ChatCubit(
+        gh<_i709.IGeminiService>(),
+        gh<_i833.IUserInfoManager>(),
+      ));
   gh.singleton<_i709.GeminiService>(
       () => _i709.GeminiService(gh<_i976.ISecureStorageService>()));
   gh.factory<_i568.AiDietAdviceCubit>(

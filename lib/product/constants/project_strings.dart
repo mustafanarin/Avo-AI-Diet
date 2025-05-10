@@ -32,7 +32,7 @@ abstract final class ProjectStrings {
   // Home Page
   static const String dietListTitle = 'Günlük Beslenme Planı';
   static const String hello = 'Merhaba';
-  static const String myDietList = 'Diyet Listelerim';
+  static const String myDietList = 'Diyet Listem';
 
   // Chat Page
   static const String askToAvo = "Avo'ya sor";

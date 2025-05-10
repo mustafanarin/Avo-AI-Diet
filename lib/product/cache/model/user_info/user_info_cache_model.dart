@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'user_info_cache_model.g.dart';
 
-
 @HiveType(typeId: 4)
 final class UserInfoCacheModel extends Equatable {
   const UserInfoCacheModel({
@@ -27,6 +26,9 @@ final class UserInfoCacheModel extends Equatable {
     String? age,
     String? height,
     String? weight,
+    String? goal,
+    String? budget,
+    String? activityLevel,
   }) {
     return UserInfoCacheModel(
       gender: gender ?? this.gender,

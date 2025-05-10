@@ -1,1 +1,6 @@
-enum JsonName { avoAnimation, avoWalk, foods }
+enum JsonName {
+  avoAnimation,
+  avoWalk,
+  foods,
+  writing,
+}

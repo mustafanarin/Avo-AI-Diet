@@ -3,44 +3,47 @@ import 'package:avo_ai_diet/feature/chat/state/chat_state.dart';
 import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
 import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
-class ChatView extends StatefulWidget {
+final class ChatView extends StatefulWidget {
   const ChatView({super.key});
 
   @override
   State<ChatView> createState() => _ChatViewState();
 }
 
-// TODOtoken limiti için 3 5 mesaj geçmiş çifti kullan
-// TODOgeminiyi beklerken watsap lottie, textfield satır taşınca aşşağı insin
-// TODOkonuşurken kullanıcı bilgilerinide okusun
 class _ChatViewState extends State<ChatView> {
   final List<_ChatMessage> _messages = [];
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  String _conversationHistory = '';
+  late ChatCubit _chatCubit;
 
   @override
   void initState() {
     super.initState();
-    // for start message
+    _chatCubit = getIt<ChatCubit>();
+    // for starting message
     _messages.add(
       const _ChatMessage(
         text: ProjectStrings.avoHowCanIHelpText,
         isMe: false,
       ),
     );
+    _chatCubit.initialize(ProjectStrings.avoHowCanIHelpText);
   }
 
   Future<void> _handleSubmitted(String text) async {
@@ -50,24 +53,17 @@ class _ChatViewState extends State<ChatView> {
     setState(() {
       _messages
         ..add(_ChatMessage(text: text, isMe: true))
-        ..add(const _ChatMessage(text: '', isMe: false, isLoading: true)); // for loading message
+        ..add(const _ChatMessage(text: '', isMe: false, isLoading: true));
     });
     _scrollToBottom();
 
-    final cubit = getIt<ChatCubit>();
-
     try {
-      // user talk history
-      _conversationHistory += '\nKullanıcı: $text';
+      await _chatCubit.chatWithAi(text);
 
-      await cubit.chatWithAi(text, _conversationHistory);
-
-      // AI talk history
-      _conversationHistory += '\nAvo: ${cubit.state.response}';
       setState(() {
         _messages
-          ..removeWhere((msg) => msg.isLoading) // remove loading message
-          ..add(_ChatMessage(text: cubit.state.response!, isMe: false));
+          ..removeWhere((msg) => msg.isLoading)
+          ..add(_ChatMessage(text: _chatCubit.state.response!, isMe: false));
       });
     } catch (e) {
       setState(() {
@@ -101,6 +97,7 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         scrolledUnderElevation: 10,
         title: Row(
@@ -134,11 +131,18 @@ class _ChatViewState extends State<ChatView> {
                 Expanded(
                   child: Stack(
                     children: [
-                      ListView.separated(
+                      ListView.builder(
                         controller: _scrollController,
                         itemCount: _messages.length,
-                        separatorBuilder: (context, index) => SizedBox(height: 10.h),
-                        itemBuilder: (context, index) => _messages[index],
+                        cacheExtent: 500,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              if (index > 0) SizedBox(height: 10.h),
+                              _messages[index],
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -172,10 +176,16 @@ class _ChatViewState extends State<ChatView> {
             child: TextField(
               controller: _textController,
               onSubmitted: _handleSubmitted,
+              maxLength: 150,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              keyboardType: TextInputType.multiline,
+              minLines: 1,
+              maxLines: 8,
               decoration: InputDecoration(
                 hintText: ProjectStrings.writeMessage,
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8),
+                counterText: '',
               ),
             ),
           ),
@@ -184,7 +194,7 @@ class _ChatViewState extends State<ChatView> {
             child: IconButton(
               icon: const Icon(Icons.send),
               color: ProjectColors.darkGreen,
-              onPressed: () => _handleSubmitted(_textController.text),
+              onPressed: () => _handleSubmitted(_textController.text.trim()),
             ),
           ),
         ],
@@ -243,13 +253,10 @@ class _ChatMessage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isLoading)
-                    SizedBox(
-                      width: 24.w,
-                      height: 24.h,
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: ProjectColors.darkGreen,
-                      ),
+                    Lottie.asset(
+                      JsonName.writing.path,
+                      height: 35.h,
+                      width: 35.w,
                     )
                   else
                     MarkdownBody(

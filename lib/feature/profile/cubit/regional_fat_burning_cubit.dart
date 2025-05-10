@@ -15,20 +15,17 @@ final class RegionalFatBurningCubit extends Cubit<RegionalFatBurningState> {
   final IGeminiService _geminiService;
   final IUserInfoManager _manager;
 
-  // Tavsiye alma işlemi
   Future<void> getAdvice(List<String> selectedRegions) async {
     if (selectedRegions.isEmpty) return;
 
     emit(state.copyWith(isLoading: true));
 
     try {
-      // Kullanıcı bilgilerini al
       final userInfo = await _getUserInfo();
       if (userInfo == null) {
         throw Exception('Kullanıcı bilgileri bulunamadı');
       }
 
-      // Yapay zekadan tavsiye al
       final advice = await _geminiService.getRegionalFatBurningAdvice(
         userInfo,
         selectedRegions,
@@ -63,10 +60,5 @@ final class RegionalFatBurningCubit extends Cubit<RegionalFatBurningState> {
       );
       return null;
     }
-  }
-
-  // Tavsiye sıfırlama
-  void resetAdvice() {
-    emit(RegionalFatBurningState());
   }
 }

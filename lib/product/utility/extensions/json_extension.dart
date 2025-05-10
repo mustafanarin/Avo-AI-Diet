@@ -9,6 +9,8 @@ extension JsonNameExtension on JsonName {
         return 'avoWalk';
       case JsonName.foods:
         return 'foods';
+      case JsonName.writing:
+        return 'writing';
     }
   }
 

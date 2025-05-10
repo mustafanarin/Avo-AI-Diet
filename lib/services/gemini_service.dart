@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 
 abstract class IGeminiService {
   Future<String> getUserDiet(UserInfoModel user);
-  Future<String> aiChat(String text, String conversationHistory);
+  Future<String> aiChat(String text, String conversationHistory, UserInfoCacheModel userInfo);
   Future<String> getRegionalFatBurningAdvice(UserInfoCacheModel userInfo, List<String> selectedRegions);
 }
 
@@ -87,13 +87,19 @@ final class GeminiService implements IGeminiService {
   }
 
   @override
-  Future<String> aiChat(String text, String conversationHistory) async {
+  Future<String> aiChat(String text, String conversationHistory, UserInfoCacheModel userInfo) async {
     try {
       await _initFuture;
 
       final prompt = '''
       Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle 
       arkadaş canlısı bir konuşma şeklin var.
+      
+      Kullanıcı Bilgileri:
+      - Yaş: ${userInfo.age}
+      - Boy: ${userInfo.height}
+      - Kilo: ${userInfo.weight}
+      - Gender: ${userInfo.gender}
 
       Uzmanlık alanların:
       - Yemek tarifleri ve pişirme yöntemleri

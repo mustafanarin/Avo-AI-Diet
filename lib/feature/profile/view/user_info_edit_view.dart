@@ -22,11 +22,11 @@ import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
+import 'package:avo_ai_diet/product/widgets/project_toast_message.dart';
 import 'package:avo_ai_diet/services/calori_calculator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -210,14 +210,7 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
 
                       context.read<AiDietAdviceCubit>().refreshDietPlan();
 
-                      Fluttertoast.showToast(
-                        msg: ProjectStrings.succesUpdateDiet,
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: ProjectColors.green,
-                        textColor: ProjectColors.white,
-                        fontSize: 16.sp,
-                      );
+                      ProjectToastMessage.show(context, ProjectStrings.succesUpdateDiet);
 
                       _navigateToHome(
                         context,
