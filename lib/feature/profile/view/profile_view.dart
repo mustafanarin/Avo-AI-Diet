@@ -135,8 +135,8 @@ class _ProfileItemWidget extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(20.r),
         onTap: onTap,
-        splashColor: ProjectColors.apple.withOpacity(0.2),
-        highlightColor: ProjectColors.apple.withOpacity(0.1),
+        splashColor: ProjectColors.apple.withValues(alpha: 0.2),
+        highlightColor: ProjectColors.apple.withValues(alpha: 0.1),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Row(
@@ -166,7 +166,10 @@ class _ProfileItemWidget extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Text(
                       subtitle,
-                      style: context.textTheme().bodySmall?.copyWith(color: ProjectColors.earthBrown.withOpacity(0.8)),
+                      style: context
+                          .textTheme()
+                          .bodySmall
+                          ?.copyWith(color: ProjectColors.earthBrown.withValues(alpha: 0.8)),
                     ),
                   ],
                 ),
@@ -207,7 +210,7 @@ class _SwitchItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: ProjectColors.black.withOpacity(0.05),
+            color: ProjectColors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -244,7 +247,8 @@ class _SwitchItemWidget extends StatelessWidget {
                 SizedBox(height: 4.h),
                 Text(
                   subtitle,
-                  style: context.textTheme().bodySmall?.copyWith(color: ProjectColors.earthBrown.withOpacity(0.8)),
+                  style:
+                      context.textTheme().bodySmall?.copyWith(color: ProjectColors.earthBrown.withValues(alpha: 0.8)),
                 ),
               ],
             ),

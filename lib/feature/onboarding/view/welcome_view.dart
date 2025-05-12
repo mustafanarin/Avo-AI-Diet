@@ -1,10 +1,8 @@
-import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +27,15 @@ final class WelcomeView extends HookWidget {
     );
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const Spacer(),
-            _AnimationAvoMascotImage(opacity: opacity),
-            const Spacer(flex: 2),
-            _animationContainer(),
-          ],
-        ),
+      body: Column(
+        children: [
+          const Spacer(
+            flex: 3,
+          ),
+          _AnimationAvoMascotImage(opacity: opacity),
+          const Spacer(flex: 2),
+          _animationContainer(),
+        ],
       ),
     );
   }
@@ -77,7 +75,7 @@ final class WelcomeView extends HookWidget {
       borderRadius: AppRadius.topLargeRadius(),
       boxShadow: [
         BoxShadow(
-          color: ProjectColors.black.withOpacity(0.1),
+          color: ProjectColors.black.withValues(alpha: 0.1),
           blurRadius: 10,
           offset: const Offset(0, -5),
         ),
@@ -99,10 +97,17 @@ class _AnimationAvoMascotImage extends StatelessWidget {
       duration: AppDurations.oneSeconds(),
       opacity: opacity.value.toDouble(),
       curve: Curves.easeInOut,
-      child: Image.asset(
-        PngName.avo.path,
-        height: 0.5.sh,
-        width: 1.sw,
+      child: Column(
+        children: [
+          Image.asset(
+            'assets/png/avoom.png',// TODO eski avo sil
+            height: 250.h,
+          ),
+          Image.asset(
+            'assets/png/text.png',
+            height: 100.h,
+          ),
+        ],
       ),
     );
   }
@@ -143,5 +148,5 @@ class _LetsStartButton extends StatelessWidget {
         context.go(RouteNames.nameInput);
       },
     );
-  } // TODOpush pageefect
+  }
 }

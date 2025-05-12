@@ -15,6 +15,7 @@ final class ProjectTextField extends StatelessWidget {
     this.suffixIcon,
     this.maxLines = 1,
     this.maxLength,
+    this.textInputAction = TextInputAction.next,
   });
 
   final TextEditingController controller;
@@ -24,6 +25,7 @@ final class ProjectTextField extends StatelessWidget {
   final String? helperText;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final void Function(String)? onChanged;
   final bool obscureText;
   final Widget? suffixIcon;
@@ -42,6 +44,7 @@ final class ProjectTextField extends StatelessWidget {
       obscureText: obscureText,
       maxLines: maxLines,
       maxLength: maxLength,
+      textInputAction: textInputAction,
       style: Theme.of(context).inputDecorationTheme.suffixStyle,
       decoration: InputDecoration(
         hintText: hintText,

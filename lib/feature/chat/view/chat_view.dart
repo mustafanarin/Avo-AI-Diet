@@ -242,7 +242,7 @@ class _ChatMessage extends StatelessWidget {
                 borderRadius: AppRadius.circularSmall(),
                 boxShadow: [
                   BoxShadow(
-                    color: ProjectColors.black.withOpacity(0.1),
+                    color: ProjectColors.black.withValues(alpha: 0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),

@@ -26,7 +26,7 @@ final class ProjectButton extends StatelessWidget {
         child: InkWell(
           onTap: isEnabled ? onPressed : null,
           borderRadius: AppRadius.circularSmall(),
-          splashColor: ProjectColors.white.withOpacity(0.2),
+          splashColor: ProjectColors.white.withValues(alpha: 0.2),
           child: Center(
             child: Text(
               text,
@@ -40,7 +40,7 @@ final class ProjectButton extends StatelessWidget {
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
-      borderRadius: AppRadius.circularSmall(), // TODOeski hali circularMedium
+      borderRadius: AppRadius.circularSmall(),
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -51,7 +51,7 @@ final class ProjectButton extends StatelessWidget {
       ),
       boxShadow: [
         BoxShadow(
-          color: isEnabled ? ProjectColors.darkGreen.withOpacity(0.3) : ProjectColors.grey.withOpacity(0.3),
+          color: isEnabled ? ProjectColors.darkGreen.withValues(alpha: 0.3) : ProjectColors.grey.withValues(alpha: 0.3),
           offset: const Offset(0, 4),
           blurRadius: 12,
         ),

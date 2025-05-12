@@ -33,32 +33,35 @@ final class NameInputView extends HookWidget {
       [nameController],
     );
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Padding(
-            padding: AppPadding.largeAll(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const _AvoMascotLottie(),
-                SizedBox(height: 32.h),
-                const _TitleText(),
-                SizedBox(height: 16.h),
-                const _DescriptionText(),
-                SizedBox(height: 40.h),
-                ProjectTextField(
-                  controller: nameController,
-                  focusNode: focusNode,
-                  hintText: ProjectStrings.nameInputHintText,
-                ),
-                SizedBox(height: 32.h),
-                _ContinueButton(
-                  isButtonEnabled: isButtonEnabled,
-                  nameController: nameController,
-                ),
-              ],
+    return GestureDetector(
+      onTap: focusNode.unfocus,
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Padding(
+              padding: AppPadding.largeAll(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _AvoMascotLottie(),
+                  SizedBox(height: 32.h),
+                  const _TitleText(),
+                  SizedBox(height: 16.h),
+                  const _DescriptionText(),
+                  SizedBox(height: 40.h),
+                  ProjectTextField(
+                    controller: nameController,
+                    focusNode: focusNode,
+                    hintText: ProjectStrings.nameInputHintText,
+                  ),
+                  SizedBox(height: 32.h),
+                  _ContinueButton(
+                    isButtonEnabled: isButtonEnabled,
+                    nameController: nameController,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -66,7 +69,7 @@ final class NameInputView extends HookWidget {
     );
   }
 }
-// TODO klavye dışına basılınca kapat
+
 class _AvoMascotLottie extends StatelessWidget {
   const _AvoMascotLottie();
 

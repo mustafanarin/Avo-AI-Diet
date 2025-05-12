@@ -45,12 +45,36 @@ final class AppRouter {
         ),
         GoRoute(
           path: RouteNames.nameInput,
-          builder: (context, state) => const NameInputView(),
+          pageBuilder: (context, state) => CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: const NameInputView(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+          ),
         ),
         GoRoute(
           path: RouteNames.userInfo,
-          builder: (context, state) => UserInfoView(
-            userName: state.pathParameters['userName'] ?? '',
+          pageBuilder: (context, state) => CustomTransitionPage<void>(
+            key: state.pageKey,
+            child: UserInfoView(
+              userName: state.pathParameters['userName'] ?? '',
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
           ),
         ),
         GoRoute(

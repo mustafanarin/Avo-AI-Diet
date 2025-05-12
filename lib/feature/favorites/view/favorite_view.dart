@@ -29,7 +29,7 @@ class _FavoriteViewState extends State<FavoriteView> {
               ProjectStrings.myFavorites,
               style: context.textTheme().titleLarge,
             ),
-            if (context.select((FavoritesCubit cubit) => cubit.state.favorites!.isNotEmpty)) ...[
+            if (context.select((FavoritesCubit cubit) => cubit.state.favorites?.isNotEmpty ?? false)) ...[
               const SizedBox(width: 8),
               Image.asset(
                 PngName.noFavoriteAvo.path,
@@ -82,14 +82,14 @@ class _FavoriteViewState extends State<FavoriteView> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              ProjectColors.lightAvocado.withOpacity(0.9),
-                              ProjectColors.accentCoral.withOpacity(0.8),
+                              ProjectColors.lightAvocado.withValues(alpha: 0.9),
+                              ProjectColors.accentCoral.withValues(alpha: 0.8),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: ProjectColors.darkAvocado.withOpacity(0.1),
+                              color: ProjectColors.darkAvocado.withValues(alpha: 0.1),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -165,7 +165,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                               left: 0,
                               right: 0,
                               child: Container(
-                                height: 30, 
+                                height: 30,
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.only(
                                     bottomLeft: Radius.circular(16),
@@ -176,7 +176,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                                     end: Alignment.bottomCenter,
                                     colors: [
                                       Colors.transparent,
-                                      ProjectColors.accentCoral.withOpacity(0.2),
+                                      ProjectColors.accentCoral.withValues(alpha: 0.2),
                                     ],
                                   ),
                                 ),
@@ -226,7 +226,7 @@ void _showFullText(BuildContext context, String text) {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: ProjectColors.darkAvocado.withOpacity(0.2),
+                  color: ProjectColors.darkAvocado.withValues(alpha: 0.2),
                   blurRadius: 15,
                   offset: const Offset(0, 8),
                 ),
@@ -243,8 +243,8 @@ void _showFullText(BuildContext context, String text) {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        ProjectColors.lightAvocado.withOpacity(0.9),
-                        ProjectColors.accentCoral.withOpacity(0.8),
+                        ProjectColors.lightAvocado.withValues(alpha: 0.9),
+                        ProjectColors.accentCoral.withValues(alpha: 0.8),
                       ],
                     ),
                     borderRadius: const BorderRadius.only(
@@ -352,7 +352,7 @@ void _showFullText(BuildContext context, String text) {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  ProjectColors.black.withOpacity(0.15),
+                                  ProjectColors.black.withValues(alpha: 0.15),
                                   Colors.transparent,
                                 ],
                               ),

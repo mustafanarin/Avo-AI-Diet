@@ -125,9 +125,9 @@ class _ModernDietCard extends HookWidget {
                 return Container(
                   margin: AppPadding.customSymmetricMediumSmall(),
                   decoration: BoxDecoration(
-                    color: ProjectColors.white.withOpacity(0.6),
+                    color: ProjectColors.white.withValues(alpha: 0.6),
                     borderRadius: AppRadius.circularSmall(),
-                    border: Border.all(color: ProjectColors.secondary.withOpacity(0.5)),
+                    border: Border.all(color: ProjectColors.secondary.withValues(alpha: 0.5)),
                   ),
                   child: Column(
                     children: [
@@ -142,7 +142,7 @@ class _ModernDietCard extends HookWidget {
                             Container(
                               padding: AppPadding.smallAll(),
                               decoration: BoxDecoration(
-                                color: ProjectColors.primary.withOpacity(0.1),
+                                color: ProjectColors.primary.withValues(alpha: 0.1),
                                 borderRadius: AppRadius.circularxSmall(),
                               ),
                               child: Icon(
@@ -213,7 +213,7 @@ class _ModernDietCard extends HookWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    ProjectColors.black.withOpacity(0.1),
+                    ProjectColors.black.withValues(alpha: 0.1),
                     Colors.transparent,
                   ],
                 ),
@@ -226,7 +226,6 @@ class _ModernDietCard extends HookWidget {
   }
 }
 
-// TODOsearch için buton değiştir,textfield next koy
 class _CalorieFollowIndicator extends StatelessWidget {
   const _CalorieFollowIndicator({required this.maxCalories});
 
@@ -486,7 +485,7 @@ class _MiniAdjustButton extends StatelessWidget {
           width: 40.w,
           height: 24.h,
           decoration: BoxDecoration(
-            color: textColor.withOpacity(0.1),
+            color: textColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(6.r),
           ),
           alignment: Alignment.center,

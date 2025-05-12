@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/profile/cubit/name_edit_cubit.dart';
 import 'package:avo_ai_diet/feature/profile/state/name_edit_state.dart';
@@ -12,11 +10,11 @@ import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
+import 'package:avo_ai_diet/product/widgets/project_toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -43,38 +41,41 @@ final class NameEditView extends HookWidget {
 
     return BlocProvider(
       create: (context) => getIt<NameEditCubit>(),
-      child: Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Padding(
-              padding: AppPadding.customSymmetricMediumSmall(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      context.pop();
-                    },
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                  const _AvoMascotLottie(),
-                  SizedBox(height: 32.h),
-                  const _TitleText(),
-                  SizedBox(height: 16.h),
-                  const _DescriptionText(),
-                  SizedBox(height: 40.h),
-                  ProjectTextField(
-                    controller: nameController,
-                    focusNode: focusNode,
-                    hintText: ProjectStrings.inputNewName,
-                  ),
-                  SizedBox(height: 32.h),
-                  _ContinueButton(
-                    isButtonEnabled: isButtonEnabled,
-                    nameController: nameController,
-                  ),
-                ],
+      child: GestureDetector(
+        onTap: focusNode.unfocus,
+        child: Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Padding(
+                padding: AppPadding.customSymmetricMediumSmall(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    const _AvoMascotLottie(),
+                    SizedBox(height: 32.h),
+                    const _TitleText(),
+                    SizedBox(height: 16.h),
+                    const _DescriptionText(),
+                    SizedBox(height: 40.h),
+                    ProjectTextField(
+                      controller: nameController,
+                      focusNode: focusNode,
+                      hintText: ProjectStrings.inputNewName,
+                    ),
+                    SizedBox(height: 32.h),
+                    _ContinueButton(
+                      isButtonEnabled: isButtonEnabled,
+                      nameController: nameController,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -143,44 +144,53 @@ class _ContinueButton extends StatelessWidget {
         builder: (context, state) {
           return ProjectButton(
             text: state.isLoading ? ProjectStrings.saving : ProjectStrings.save,
-            onPressed: () async {
-              await context.read<NameEditCubit>().updateName(nameController.text.trim());
-              if (state.error == null) {
-                unawaited(
-                  Fluttertoast.showToast(
-                    msg: ProjectStrings.nameSuccessful,
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: ProjectColors.green, // TODOcolor change? and name lenght control add, project widget?
-                    textColor: ProjectColors.white,
-                    fontSize: 16.sp,
-                  ),
-                );
-
-                if (context.mounted) {
-                  await context.read<NameAndCalCubit>().refreshData();
-                }
-
-                if (context.mounted) {
-                  context.pop();
-                }
-              } else {
-                unawaited(
-                  Fluttertoast.showToast(
-                    msg: state.error!,
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: ProjectColors.earthBrown,
-                    textColor: ProjectColors.white,
-                    fontSize: 16.sp,
-                  ),
-                );
-              }
-            },
+            onPressed: isButtonEnabled.value ? () => _handleButtonPress(context, state) : null,
             isEnabled: isButtonEnabled.value,
           );
         },
       ),
+    );
+  }
+
+  Future<void> _handleButtonPress(BuildContext context, NameEditState state) async {
+    final nameEditCubit = context.read<NameEditCubit>();
+    final nameAndCalCubit = context.read<NameAndCalCubit>();
+
+    await nameEditCubit.updateName(nameController.text.trim());
+
+    if (!context.mounted) return;
+
+    final currentState = nameEditCubit.state;
+
+    if (currentState.error == null) {
+      await _handleSuccess(context, nameAndCalCubit);
+    } else {
+      _showErrorMessage(context, currentState.error!);
+    }
+  }
+
+  Future<void> _handleSuccess(BuildContext context, NameAndCalCubit nameAndCalCubit) async {
+    ProjectToastMessage.show(
+      context,
+      ProjectStrings.nameSuccessful,
+      isThereIcon: false,
+    );
+
+    if (context.mounted) {
+      await nameAndCalCubit.refreshData();
+
+      if (context.mounted) {
+        context.pop();
+      }
+    }
+  }
+
+  void _showErrorMessage(BuildContext context, String error) {
+    ProjectToastMessage.show(
+      context,
+      error,
+      isThereIcon: false,
+      backGroundColor: ProjectColors.earthBrown,
     );
   }
 }

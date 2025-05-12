@@ -1,10 +1,16 @@
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
+import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// TODOuse other pages
 final class ProjectToastMessage {
-  static void show(BuildContext context, String message, {int seconds = 2}) {
+  static void show(
+    BuildContext context,
+    String message, {
+    int seconds = 2,
+    bool isThereIcon = true,
+    Color backGroundColor = ProjectColors.greenRYB,
+  }) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -18,11 +24,11 @@ final class ProjectToastMessage {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 decoration: BoxDecoration(
-                  color: ProjectColors.forestGreen,
+                  color: backGroundColor,
                   borderRadius: BorderRadius.circular(25.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ProjectColors.black.withOpacity(0.15),
+                      color: ProjectColors.black.withValues(alpha: 0.15),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -31,19 +37,18 @@ final class ProjectToastMessage {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.local_fire_department,
-                      color: Colors.white,
-                      size: 20.r,
-                    ),
+                    if (isThereIcon)
+                      Icon(
+                        Icons.local_fire_department,
+                        color: ProjectColors.white,
+                        size: 20.r,
+                      )
+                    else
+                      const SizedBox.shrink(),
                     SizedBox(width: 8.w),
                     Text(
                       message,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: context.textTheme().bodySmall?.copyWith(color: ProjectColors.white),
                     ),
                   ],
                 ),
@@ -56,7 +61,7 @@ final class ProjectToastMessage {
 
     overlay.insert(overlayEntry);
 
-    // Belirtilen saniye sonra Toast'u kaldır
+    // Remove Toast after specified seconds
     Future.delayed(Duration(seconds: seconds), overlayEntry.remove);
   }
 }

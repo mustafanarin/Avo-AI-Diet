@@ -469,7 +469,7 @@ class _SelectionItem extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
           decoration: BoxDecoration(
-            color: isSelected ? ProjectColors.mainAvocado.withOpacity(0.2) : ProjectColors.backgroundCream,
+            color: isSelected ? ProjectColors.mainAvocado.withValues(alpha: 0.2) : ProjectColors.backgroundCream,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected ? ProjectColors.mainAvocado : ProjectColors.grey400,

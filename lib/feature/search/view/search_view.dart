@@ -95,7 +95,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: ProjectColors.forestGreen.withOpacity(0.1),
+                            color: ProjectColors.forestGreen.withValues(alpha: 0.1),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -157,7 +157,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                                 ),
                                 Image.asset(
                                   PngName.noSearchAvo.path,
-                                  height: 150.h, // TODO
+                                  height: 150.h,
                                 ),
                                 const Text(ProjectStrings.noResults),
                                 const Spacer(
@@ -230,7 +230,7 @@ class _FoodCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: ProjectColors.successGreen.withOpacity(0.3),
+                  color: ProjectColors.successGreen.withValues(alpha: 0.3),
                 ),
                 child: Icon(
                   food.getIconData(),
@@ -252,7 +252,7 @@ class _FoodCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: ProjectColors.forestGreen.withOpacity(0.1),
+                  color: ProjectColors.forestGreen.withValues(alpha: 0.1),
                 ),
                 child: Text(
                   '${food.calorie} kcal',
@@ -309,7 +309,7 @@ class _NutritionInfoBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(

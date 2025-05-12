@@ -63,7 +63,7 @@ final class CustomTabBarView extends HookWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: ProjectColors.grey.withOpacity(0.2),
+                    color: ProjectColors.grey.withValues(alpha: 0.2),
                     spreadRadius: 1,
                     blurRadius: 10,
                     offset: const Offset(0, -5),

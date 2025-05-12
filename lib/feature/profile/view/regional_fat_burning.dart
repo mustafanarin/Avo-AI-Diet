@@ -339,7 +339,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: ProjectColors.black.withOpacity(0.05),
+                                color: ProjectColors.black.withValues(alpha: 0.05),
                                 blurRadius: 6,
                                 offset: const Offset(0, 2),
                               ),
@@ -415,7 +415,7 @@ class _RegionalFatBurningState extends State<RegionalFatBurning> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: ProjectColors.black.withOpacity(0.05),
+            color: ProjectColors.black.withValues(alpha: 0.05),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -522,12 +522,12 @@ class InteractiveSvgBody extends StatelessWidget {
           width: pointSize,
           height: pointSize,
           decoration: BoxDecoration(
-            color: ProjectColors.green.withOpacity(0.3),
+            color: ProjectColors.green.withValues(alpha: 0.3),
             shape: BoxShape.circle,
             border: Border.all(color: Colors.green.shade600, width: borderWidth),
             boxShadow: [
               BoxShadow(
-                color: ProjectColors.green.withOpacity(0.4),
+                color: ProjectColors.green.withValues(alpha: 0.4),
                 blurRadius: blurRadius,
                 spreadRadius: spreadRadius,
               ),

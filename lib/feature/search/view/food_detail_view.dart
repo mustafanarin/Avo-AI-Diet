@@ -178,7 +178,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                     borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
                       BoxShadow(
-                        color: ProjectColors.black.withOpacity(0.05),
+                        color: ProjectColors.black.withValues(alpha: 0.05),
                         blurRadius: 10.r,
                         offset: Offset(0, 4.h),
                       ),
@@ -188,7 +188,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                     children: [
                       CircleAvatar(
                         radius: 45.r,
-                        backgroundColor: ProjectColors.successGreen.withOpacity(0.3),
+                        backgroundColor: ProjectColors.successGreen.withValues(alpha: 0.3),
                         child: Icon(
                           widget.foodModel.getIconData(),
                           size: 40,
@@ -221,7 +221,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                     borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
                       BoxShadow(
-                        color: ProjectColors.black.withOpacity(0.05),
+                        color: ProjectColors.black.withValues(alpha: 0.05),
                         blurRadius: 10.r,
                         offset: Offset(0, 4.h),
                       ),
@@ -252,9 +252,9 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                               margin: EdgeInsets.symmetric(horizontal: 8.w),
                               padding: EdgeInsets.symmetric(horizontal: 8.w),
                               decoration: BoxDecoration(
-                                color: ProjectColors.successGreen.withOpacity(0.3),
+                                color: ProjectColors.successGreen.withValues(alpha: 0.3),
                                 borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(color: ProjectColors.lightGreen.withOpacity(0.3)),
+                                border: Border.all(color: ProjectColors.lightGreen.withValues(alpha: 0.3)),
                               ),
                               child: TextField(
                                 controller: quantityController,
@@ -345,7 +345,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
                     borderRadius: BorderRadius.circular(20.r),
                     boxShadow: [
                       BoxShadow(
-                        color: ProjectColors.black.withOpacity(0.05),
+                        color: ProjectColors.black.withValues(alpha: 0.05),
                         blurRadius: 10.r,
                         offset: Offset(0, 4.h),
                       ),
@@ -471,7 +471,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: ProjectColors.black.withOpacity(0.05),
+            color: ProjectColors.black.withValues(alpha: 0.05),
             blurRadius: 10.r,
             offset: Offset(0, 4.h),
           ),
@@ -482,7 +482,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
           Container(
             padding: EdgeInsets.all(12.r),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(15.r),
             ),
             child: Icon(
@@ -525,7 +525,7 @@ class _FoodDetailPageState extends State<FoodDetailPage> {
         Container(
           padding: EdgeInsets.all(8.r),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Icon(
