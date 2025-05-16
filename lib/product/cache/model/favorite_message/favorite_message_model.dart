@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'favorite_message_model.g.dart';
 
-// TODOequtable
 @HiveType(typeId: 2)
 final class FavoriteMessageModel extends Equatable {
   const FavoriteMessageModel(this.content, this.savedAt, this.messageId);

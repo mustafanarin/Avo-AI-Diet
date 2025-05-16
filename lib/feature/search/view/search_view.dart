@@ -64,8 +64,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
       child: Builder(
         builder: (context) {
           return Scaffold(
-            // TODOresizeToAvoidBottomInset
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             body: GestureDetector(
               onTap: _focusNode.unfocus,
               behavior: HitTestBehavior.translucent,
@@ -161,7 +160,7 @@ class _SearchViewState extends State<SearchView> with WidgetsBindingObserver {
                                 ),
                                 const Text(ProjectStrings.noResults),
                                 const Spacer(
-                                  flex: 6,
+                                  flex: 4,
                                 ),
                               ],
                             ),

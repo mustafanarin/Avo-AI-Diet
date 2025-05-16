@@ -1,8 +1,10 @@
+import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
+import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:flutter/material.dart';
@@ -100,11 +102,11 @@ class _AnimationAvoMascotImage extends StatelessWidget {
       child: Column(
         children: [
           Image.asset(
-            'assets/png/avoom.png',// TODO eski avo sil
+            PngName.welcomeAvo.path,
             height: 250.h,
           ),
           Image.asset(
-            'assets/png/text.png',
+            PngName.appName.path,
             height: 100.h,
           ),
         ],
@@ -142,11 +144,14 @@ class _LetsStartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProjectButton(
-      text: ProjectStrings.welcomeButton,
-      onPressed: () {
-        context.go(RouteNames.nameInput);
-      },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: ProjectButton(
+        text: ProjectStrings.welcomeButton,
+        onPressed: () {
+          context.go(RouteNames.nameInput);
+        },
+      ),
     );
   }
 }

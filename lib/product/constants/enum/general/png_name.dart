@@ -1,5 +1,6 @@
 enum PngName {
-  avo,
   noSearchAvo,
   noFavoriteAvo,
+  welcomeAvo,
+  appName,
 }

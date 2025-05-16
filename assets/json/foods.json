@@ -7,7 +7,7 @@
       "carbohydrate": 14,
       "fat": 0.2,
       "icon": "FontAwesomeIcons.apple",
-      "unit_type": "gram"
+      "unit_type": "adet"
     },
     {
       "name": "Muz",
@@ -395,6 +395,1140 @@
       "fat": 18.7,
       "icon": "FontAwesomeIcons.bone",
       "unit_type": "gram"
-    }
+    },
+    {
+      "name": "Karpuz",
+      "calorie": 46,
+      "protein": 0.9,
+      "carbohydrate": 11.5,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.lemon",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Lahana",
+      "calorie": 25,
+      "protein": 1.3,
+      "carbohydrate": 5.8,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Biber",
+      "calorie": 30,
+      "protein": 1.0,
+      "carbohydrate": 6.0,
+      "fat": 0.3,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Sarımsak",
+      "calorie": 4,
+      "protein": 0.2,
+      "carbohydrate": 1.0,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.solidCircle",
+      "unit_type": "diş"
+    },
+    {
+      "name": "Soğan",
+      "calorie": 40,
+      "protein": 1.1,
+      "carbohydrate": 9.3,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.solidCircle",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Kakao",
+      "calorie": 12,
+      "protein": 1.1,
+      "carbohydrate": 3.1,
+      "fat": 0.7,
+      "icon": "FontAwesomeIcons.mugSaucer",
+      "unit_type": "çay kaşığı"
+    },
+    {
+      "name": "Bal",
+      "calorie": 64,
+      "protein": 0.1,
+      "carbohydrate": 17.3,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.bottleDroplet",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kahve",
+      "calorie": 2,
+      "protein": 0.1,
+      "carbohydrate": 0.0,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.mugSaucer",
+      "unit_type": "fincan"
+    },
+    {
+      "name": "Çay",
+      "calorie": 1,
+      "protein": 0.0,
+      "carbohydrate": 0.2,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.mugSaucer",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Salatalık",
+      "calorie": 30,
+      "protein": 1.3,
+      "carbohydrate": 6.3,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Zeytin",
+      "calorie": 4,
+      "protein": 0.0,
+      "carbohydrate": 0.2,
+      "fat": 0.4,
+      "icon": "FontAwesomeIcons.solidCircle",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Mısır",
+      "calorie": 125,
+      "protein": 4.7,
+      "carbohydrate": 26.7,
+      "fat": 1.4,
+      "icon": "Icons.grain",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Mantar",
+      "calorie": 22,
+      "protein": 3.1,
+      "carbohydrate": 3.3,
+      "fat": 0.3,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Vişne",
+      "calorie": 50,
+      "protein": 1.0,
+      "carbohydrate": 12.2,
+      "fat": 0.3,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kayısı",
+      "calorie": 17,
+      "protein": 0.5,
+      "carbohydrate": 3.9,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Karabuğday",
+      "calorie": 343,
+      "protein": 13.3,
+      "carbohydrate": 71.5,
+      "fat": 3.4,
+      "icon": "FontAwesomeIcons.wheatAwn",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Lor Peyniri",
+      "calorie": 98,
+      "protein": 11.1,
+      "carbohydrate": 3.4,
+      "fat": 4.3,
+      "icon": "FontAwesomeIcons.cheese",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Salam",
+      "calorie": 45,
+      "protein": 2.5,
+      "carbohydrate": 0.5,
+      "fat": 3.8,
+      "icon": "FontAwesomeIcons.burger",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Yeşil Çay",
+      "calorie": 0,
+      "protein": 0.0,
+      "carbohydrate": 0.0,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.mugSaucer",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Granola",
+      "calorie": 120,
+      "protein": 3.0,
+      "carbohydrate": 18.0,
+      "fat": 6.0,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "yemek kaşığı"
+    },
+     {
+      "name": "Greyfurt",
+      "calorie": 42,
+      "protein": 0.8,
+      "carbohydrate": 10.7,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Nar",
+      "calorie": 83,
+      "protein": 1.7,
+      "carbohydrate": 18.7,
+      "fat": 1.2,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Kuşkonmaz",
+      "calorie": 20,
+      "protein": 2.2,
+      "carbohydrate": 3.9,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Bamya",
+      "calorie": 33,
+      "protein": 1.9,
+      "carbohydrate": 7.0,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Karides",
+      "calorie": 85,
+      "protein": 18.0,
+      "carbohydrate": 0.0,
+      "fat": 1.0,
+      "icon": "FontAwesomeIcons.shrimp",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kalamar",
+      "calorie": 82,
+      "protein": 15.6,
+      "carbohydrate": 3.1,
+      "fat": 1.4,
+      "icon": "FontAwesomeIcons.fish",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Dondurma",
+      "calorie": 207,
+      "protein": 3.5,
+      "carbohydrate": 23.6,
+      "fat": 11.0,
+      "icon": "FontAwesomeIcons.iceCream",
+      "unit_type": "top"
+    },
+    {
+      "name": "Çikolata",
+      "calorie": 535,
+      "protein": 7.8,
+      "carbohydrate": 59.4,
+      "fat": 30.0,
+      "icon": "FontAwesomeIcons.solidSquare",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kuskus",
+      "calorie": 376,
+      "protein": 12.8,
+      "carbohydrate": 77.4,
+      "fat": 0.6,
+      "icon": "FontAwesomeIcons.bowlRice",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Tavuk Ciğeri",
+      "calorie": 172,
+      "protein": 26.5,
+      "carbohydrate": 1.0,
+      "fat": 6.5,
+      "icon": "FontAwesomeIcons.drumstickBite",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kefir",
+      "calorie": 104,
+      "protein": 5.6,
+      "carbohydrate": 4.8,
+      "fat": 6.1,
+      "icon": "FontAwesomeIcons.bottleWater",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Kaşar Peyniri",
+      "calorie": 351,
+      "protein": 26.0,
+      "carbohydrate": 2.5,
+      "fat": 26.4,
+      "icon": "FontAwesomeIcons.cheese",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Soya Sütü",
+      "calorie": 54,
+      "protein": 3.3,
+      "carbohydrate": 4.5,
+      "fat": 2.3,
+      "icon": "FontAwesomeIcons.mugSaucer",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Hurma",
+      "calorie": 23,
+      "protein": 0.2,
+      "carbohydrate": 6.2,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Kırmızı Mercimek",
+      "calorie": 358,
+      "protein": 24.6,
+      "carbohydrate": 63.4,
+      "fat": 1.1,
+      "icon": "Icons.circle_outlined",
+      "unit_type": "gram"
+    },
+    {
+      "name": "İncir",
+      "calorie": 37,
+      "protein": 0.4,
+      "carbohydrate": 9.6,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Labne Peyniri",
+      "calorie": 210,
+      "protein": 6.9,
+      "carbohydrate": 3.0,
+      "fat": 19.0,
+      "icon": "FontAwesomeIcons.cheese",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kımızı Lahana",
+      "calorie": 28,
+      "protein": 1.4,
+      "carbohydrate": 6.6,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Pırasa",
+      "calorie": 61,
+      "protein": 2.2,
+      "carbohydrate": 14.2,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Süzme Yoğurt",
+      "calorie": 133,
+      "protein": 10.2,
+      "carbohydrate": 7.8,
+      "fat": 6.0,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "kase"
+    },
+    {
+      "name": "Börek",
+      "calorie": 262,
+      "protein": 10.5,
+      "carbohydrate": 25.8,
+      "fat": 14.2,
+      "icon": "FontAwesomeIcons.breadSlice",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Ayran",
+      "calorie": 60,
+      "protein": 3.5,
+      "carbohydrate": 4.7,
+      "fat": 2.0,
+      "icon": "FontAwesomeIcons.glassWater",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Mantı",
+      "calorie": 215,
+      "protein": 11.2,
+      "carbohydrate": 34.3,
+      "fat": 5.1,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Midye",
+      "calorie": 86,
+      "protein": 11.9,
+      "carbohydrate": 6.3,
+      "fat": 2.3,
+      "icon": "FontAwesomeIcons.fish",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Fesleğen",
+      "calorie": 2,
+      "protein": 0.2,
+      "carbohydrate": 0.3,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kırmızı Biber",
+      "calorie": 2,
+      "protein": 0.1,
+      "carbohydrate": 0.4,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.pepperHot",
+      "unit_type": "çay kaşığı"
+    },
+    {
+      "name": "Tofu",
+      "calorie": 76,
+      "protein": 8.0,
+      "carbohydrate": 1.9,
+      "fat": 4.8,
+      "icon": "FontAwesomeIcons.cube",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Krep",
+      "calorie": 90,
+      "protein": 3.0,
+      "carbohydrate": 12.0,
+      "fat": 3.5,
+      "icon": "FontAwesomeIcons.circleHalfStroke",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Pide",
+      "calorie": 275,
+      "protein": 12.5,
+      "carbohydrate": 40.0,
+      "fat": 7.5,
+      "icon": "FontAwesomeIcons.breadSlice",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Sorbe",
+      "calorie": 130,
+      "protein": 0.3,
+      "carbohydrate": 32.5,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.iceCream",
+      "unit_type": "top"
+    },
+    {
+      "name": "Hardal",
+      "calorie": 5,
+      "protein": 0.3,
+      "carbohydrate": 0.4,
+      "fat": 0.3,
+      "icon": "FontAwesomeIcons.bottleDroplet",
+      "unit_type": "çay kaşığı"
+    },
+    {
+      "name": "Ejder Meyvesi",
+      "calorie": 60,
+      "protein": 1.2,
+      "carbohydrate": 13.0,
+      "fat": 0.4,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Labneh",
+      "calorie": 100,
+      "protein": 7.0,
+      "carbohydrate": 3.5,
+      "fat": 7.0,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kereviz",
+      "calorie": 16,
+      "protein": 0.7,
+      "carbohydrate": 3.0,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "sap"
+    },
+    {
+      "name": "Nane",
+      "calorie": 2,
+      "protein": 0.1,
+      "carbohydrate": 0.2,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Macun",
+      "calorie": 67,
+      "protein": 0.0,
+      "carbohydrate": 16.8,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.candyCane",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kurutulmuş Domates",
+      "calorie": 25,
+      "protein": 1.3,
+      "carbohydrate": 5.4,
+      "fat": 0.3,
+      "icon": "FontAwesomeIcons.fireFlameSimple",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Enginar",
+      "calorie": 47,
+      "protein": 3.3,
+      "carbohydrate": 10.5,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Beyaz Şarap",
+      "calorie": 82,
+      "protein": 0.1,
+      "carbohydrate": 2.6,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.wineGlass",
+      "unit_type": "kadeh"
+    },
+    {
+      "name": "Fındık Ezmesi",
+      "calorie": 188,
+      "protein": 4.2,
+      "carbohydrate": 6.0,
+      "fat": 16.8,
+      "icon": "FontAwesomeIcons.jar",
+      "unit_type": "yemek kaşığı"
+    },
+     {
+      "name": "Dana Bonfile",
+      "calorie": 217,
+      "protein": 26.1,
+      "carbohydrate": 0.0,
+      "fat": 12.7,
+      "icon": "FontAwesomeIcons.utensils",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Siyah Fasulye",
+      "calorie": 341,
+      "protein": 21.6,
+      "carbohydrate": 62.4,
+      "fat": 1.4,
+      "icon": "Icons.circle_outlined",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Bezelye",
+      "calorie": 81,
+      "protein": 5.4,
+      "carbohydrate": 14.5,
+      "fat": 0.4,
+      "icon": "FontAwesomeIcons.solidCircle",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Tereyağı",
+      "calorie": 102,
+      "protein": 0.1,
+      "carbohydrate": 0.1,
+      "fat": 11.5,
+      "icon": "FontAwesomeIcons.cube",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Keçi Peyniri",
+      "calorie": 103,
+      "protein": 6.0,
+      "carbohydrate": 0.9,
+      "fat": 8.5,
+      "icon": "FontAwesomeIcons.cheese",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kırmızı Şarap",
+      "calorie": 125,
+      "protein": 0.1,
+      "carbohydrate": 3.8,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.wineGlassAlt",
+      "unit_type": "kadeh"
+    },
+    {
+      "name": "Baklava",
+      "calorie": 329,
+      "protein": 5.0,
+      "carbohydrate": 40.2,
+      "fat": 17.2,
+      "icon": "FontAwesomeIcons.diamondTurnRight",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Simit",
+      "calorie": 250,
+      "protein": 9.0,
+      "carbohydrate": 43.0,
+      "fat": 5.0,
+      "icon": "FontAwesomeIcons.ring",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Hindistan Cevizi Yağı",
+      "calorie": 120,
+      "protein": 0.0,
+      "carbohydrate": 0.0,
+      "fat": 14.0,
+      "icon": "FontAwesomeIcons.oilCan",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kroket",
+      "calorie": 158,
+      "protein": 3.3,
+      "carbohydrate": 15.6,
+      "fat": 9.2,
+      "icon": "FontAwesomeIcons.hotdog",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Yaban Mersini",
+      "calorie": 57,
+      "protein": 0.7,
+      "carbohydrate": 14.5,
+      "fat": 0.3,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Ahududu",
+      "calorie": 64,
+      "protein": 1.2,
+      "carbohydrate": 14.7,
+      "fat": 0.8,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Pesto Sos",
+      "calorie": 58,
+      "protein": 1.5,
+      "carbohydrate": 1.1,
+      "fat": 5.7,
+      "icon": "FontAwesomeIcons.jar",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Ahtapot",
+      "calorie": 82,
+      "protein": 17.9,
+      "carbohydrate": 2.0,
+      "fat": 1.0,
+      "icon": "FontAwesomeIcons.spider",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Esmer Pirinç",
+      "calorie": 362,
+      "protein": 7.5,
+      "carbohydrate": 76.2,
+      "fat": 2.7,
+      "icon": "FontAwesomeIcons.bowlRice",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Cheesecake",
+      "calorie": 321,
+      "protein": 6.0,
+      "carbohydrate": 27.0,
+      "fat": 22.0,
+      "icon": "FontAwesomeIcons.cakeCandles",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Çavdar Ekmeği",
+      "calorie": 65,
+      "protein": 2.7,
+      "carbohydrate": 12.0,
+      "fat": 0.9,
+      "icon": "FontAwesomeIcons.breadSlice",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Bira",
+      "calorie": 147,
+      "protein": 1.6,
+      "carbohydrate": 13.0,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.beerMugEmpty",
+      "unit_type": "şişe"
+    },
+    {
+      "name": "Kaju",
+      "calorie": 155,
+      "protein": 5.0,
+      "carbohydrate": 9.0,
+      "fat": 12.0,
+      "icon": "FontAwesomeIcons.c",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Sirke",
+      "calorie": 3,
+      "protein": 0.0,
+      "carbohydrate": 0.1,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.bottleDroplet",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Arpa",
+      "calorie": 354,
+      "protein": 12.5,
+      "carbohydrate": 73.5,
+      "fat": 2.3,
+      "icon": "FontAwesomeIcons.seedling",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Levrek",
+      "calorie": 97,
+      "protein": 19.3,
+      "carbohydrate": 0.0,
+      "fat": 2.0,
+      "icon": "FontAwesomeIcons.fish",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Gravyer Peyniri",
+      "calorie": 413,
+      "protein": 29.8,
+      "carbohydrate": 0.4,
+      "fat": 32.3,
+      "icon": "FontAwesomeIcons.cheese",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Dereotu",
+      "calorie": 1,
+      "protein": 0.1,
+      "carbohydrate": 0.1,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "dal"
+    },
+    {
+      "name": "Susam Yağı",
+      "calorie": 120,
+      "protein": 0.0,
+      "carbohydrate": 0.0,
+      "fat": 13.6,
+      "icon": "FontAwesomeIcons.oilWell",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kadayıf",
+      "calorie": 290,
+      "protein": 4.3,
+      "carbohydrate": 54.0,
+      "fat": 6.5,
+      "icon": "FontAwesomeIcons.wheatAwn",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "İstiridye",
+      "calorie": 69,
+      "protein": 8.1,
+      "carbohydrate": 3.3,
+      "fat": 2.1,
+      "icon": "FontAwesomeIcons.gem",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Lahmacun",
+      "calorie": 206,
+      "protein": 10.5,
+      "carbohydrate": 28.0,
+      "fat": 6.2,
+      "icon": "FontAwesomeIcons.pizzaSlice",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Sushi",
+      "calorie": 48,
+      "protein": 2.2,
+      "carbohydrate": 7.8,
+      "fat": 0.6,
+      "icon": "FontAwesomeIcons.handsBound",
+      "unit_type": "parça"
+    },
+    {
+      "name": "Limonata",
+      "calorie": 120,
+      "protein": 0.2,
+      "carbohydrate": 32.1,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.lemon",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Kabak Çekirdeği",
+      "calorie": 158,
+      "protein": 8.5,
+      "carbohydrate": 4.5,
+      "fat": 13.8,
+      "icon": "FontAwesomeIcons.shapes",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Brokoli Çorbası",
+      "calorie": 80,
+      "protein": 4.5,
+      "carbohydrate": 10.5,
+      "fat": 2.3,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "kase"
+    },
+    {
+      "name": "Reyhan",
+      "calorie": 1,
+      "protein": 0.1,
+      "carbohydrate": 0.1,
+      "fat": 0.0,
+      "icon": "FontAwesomeIcons.leaf",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "İrmik",
+      "calorie": 120,
+      "protein": 3.9,
+      "carbohydrate": 22.9,
+      "fat": 0.6,
+      "icon": "Icons.grain",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Kuskus",
+      "calorie": 176,
+      "protein": 5.9,
+      "carbohydrate": 36.4,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.bowlRice",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Kımız",
+      "calorie": 108,
+      "protein": 2.1,
+      "carbohydrate": 5.0,
+      "fat": 1.9,
+      "icon": "FontAwesomeIcons.horse",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Patlıcan Kebabı",
+      "calorie": 185,
+      "protein": 12.5,
+      "carbohydrate": 8.7,
+      "fat": 11.0,
+      "icon": "FontAwesomeIcons.fireFlameSimple",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Acuka",
+      "calorie": 60,
+      "protein": 2.0,
+      "carbohydrate": 3.5,
+      "fat": 4.5,
+      "icon": "FontAwesomeIcons.pepperHot",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Armut",
+      "calorie": 101,
+      "protein": 0.6,
+      "carbohydrate": 27.0,
+      "fat": 0.2,
+      "icon": "FontAwesomeIcons.appleWhole",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Soya Proteini",
+      "calorie": 175,
+      "protein": 35.0,
+      "carbohydrate": 9.0,
+      "fat": 1.0,
+      "icon": "FontAwesomeIcons.beansThriving",
+      "unit_type": "gram"
+    },
+    {
+      "name": "Tavuk But",
+      "calorie": 209,
+      "protein": 28.3,
+      "carbohydrate": 0.0,
+      "fat": 10.9,
+      "icon": "FontAwesomeIcons.drumstickBite",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Tavuk Kanat",
+      "calorie": 43,
+      "protein": 6.4,
+      "carbohydrate": 0.0,
+      "fat": 1.7,
+      "icon": "FontAwesomeIcons.drumstickBite",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Sucuk",
+      "calorie": 116,
+      "protein": 5.8,
+      "carbohydrate": 0.4,
+      "fat": 10.2,
+      "icon": "FontAwesomeIcons.ringCircle",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Pastırma",
+      "calorie": 75,
+      "protein": 8.2,
+      "carbohydrate": 0.5,
+      "fat": 4.6,
+      "icon": "FontAwesomeIcons.burger",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Yayla Çorbası",
+      "calorie": 112,
+      "protein": 3.8,
+      "carbohydrate": 12.6,
+      "fat": 5.2,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "kase"
+    },
+    {
+      "name": "Pilav",
+      "calorie": 178,
+      "protein": 3.1,
+      "carbohydrate": 37.2,
+      "fat": 1.8,
+      "icon": "FontAwesomeIcons.bowlRice",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Kuru Fasulye",
+      "calorie": 170,
+      "protein": 8.7,
+      "carbohydrate": 20.1,
+      "fat": 6.9,
+      "icon": "Icons.grain",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Sütlaç",
+      "calorie": 143,
+      "protein": 3.5,
+      "carbohydrate": 25.0,
+      "fat": 3.3,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "kase"
+    },
+    {
+      "name": "Kazandibi",
+      "calorie": 195,
+      "protein": 4.2,
+      "carbohydrate": 34.1,
+      "fat": 5.1,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Portakal Suyu",
+      "calorie": 112,
+      "protein": 1.7,
+      "carbohydrate": 25.8,
+      "fat": 0.5,
+      "icon": "FontAwesomeIcons.glassWater",
+      "unit_type": "bardak"
+    },
+    {
+      "name": "Beyaz Ekmek",
+      "calorie": 75,
+      "protein": 2.6,
+      "carbohydrate": 14.1,
+      "fat": 0.8,
+      "icon": "FontAwesomeIcons.breadSlice",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Spagetti",
+      "calorie": 221,
+      "protein": 8.1,
+      "carbohydrate": 43.2,
+      "fat": 1.3,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Mercimek Çorbası",
+      "calorie": 126,
+      "protein": 7.5,
+      "carbohydrate": 18.2,
+      "fat": 3.2,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "kase"
+    },
+    {
+      "name": "Ketçap",
+      "calorie": 15,
+      "protein": 0.4,
+      "carbohydrate": 3.5,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.bottleDroplet",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Mayonez",
+      "calorie": 94,
+      "protein": 0.2,
+      "carbohydrate": 0.6,
+      "fat": 10.2,
+      "icon": "FontAwesomeIcons.bottleDroplet",
+      "unit_type": "yemek kaşığı"
+    },
+    {
+      "name": "Pizza",
+      "calorie": 285,
+      "protein": 12.1,
+      "carbohydrate": 35.7,
+      "fat": 10.4,
+      "icon": "FontAwesomeIcons.pizzaSlice",
+      "unit_type": "dilim"
+    },
+    {
+      "name": "Hamburger",
+      "calorie": 354,
+      "protein": 20.2,
+      "carbohydrate": 29.6,
+      "fat": 17.8,
+      "icon": "FontAwesomeIcons.burger",
+      "unit_type": "adet"
+    },
+    {
+      "name": "Patates Kızartması",
+      "calorie": 312,
+      "protein": 3.4,
+      "carbohydrate": 41.4,
+      "fat": 15.0,
+      "icon": "FontAwesomeIcons.utensils",
+      "unit_type": "porsiyon"
+    },
+    {
+      "name": "Corn Flakes",
+      "calorie": 101,
+      "protein": 2.0,
+      "carbohydrate": 24.0,
+      "fat": 0.1,
+      "icon": "FontAwesomeIcons.bowlFood",
+      "unit_type": "kase"
+    },
+    {
+      "name": "Künefe",
+      "calorie": 355,
+      "protein": 5.7,
+      "carbohydrate": 44.6,
+      "fat": 18.2,
+      "icon": "FontAwesomeIcons.cakeCandles",
+      "unit_type": "porsiyon"
+    },
+    {
+  "name": "Kola",
+  "calorie": 139,
+  "protein": 0.0,
+  "carbohydrate": 35.0,
+  "fat": 0.0,
+  "icon": "FontAwesomeIcons.glassCheers",
+  "unit_type": "bardak"
+    },
+    {
+    "name": "Kola",
+    "calorie": 139,
+    "protein": 0.0,
+    "carbohydrate": 35.0,
+    "fat": 0.0,
+    "icon": "FontAwesomeIcons.glassCheers",
+    "unit_type": "bardak"
+  },
+  {
+    "name": "Diyet Kola",
+    "calorie": 1,
+    "protein": 0.0,
+    "carbohydrate": 0.0,
+    "fat": 0.0,
+    "icon": "FontAwesomeIcons.glassCheers",
+    "unit_type": "bardak"
+  },
+  {
+    "name": "Gazoz",
+    "calorie": 130,
+    "protein": 0.0,
+    "carbohydrate": 33.0,
+    "fat": 0.0,
+    "icon": "FontAwesomeIcons.glassCheers",
+    "unit_type": "bardak"
+  },
+  {
+    "name": "Maden Suyu",
+    "calorie": 0,
+    "protein": 0.0,
+    "carbohydrate": 0.0,
+    "fat": 0.0,
+    "icon": "FontAwesomeIcons.bottleWater",
+    "unit_type": "bardak"
+  },
+  {
+    "name": "Enerji İçeceği",
+    "calorie": 160,
+    "protein": 0.0,
+    "carbohydrate": 40.0,
+    "fat": 0.0,
+    "icon": "FontAwesomeIcons.bolt",
+    "unit_type": "kutu"
+  }
   ]
 }
