@@ -25,7 +25,6 @@ import '../../../feature/profile/cubit/water_reminder_cubit.dart' as _i927;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
 import '../../../services/gemini_service.dart' as _i709;
 import '../../../services/notification_service.dart' as _i354;
-import '../../../services/secure_storage_service.dart' as _i976;
 import '../../cache/manager/daily_calorie/daily_calorie_manager.dart' as _i18;
 import '../../cache/manager/favorites/favorite_message_manager.dart' as _i45;
 import '../../cache/manager/name_and_cal/name_and_cal_manager.dart' as _i490;
@@ -55,8 +54,6 @@ _i174.GetIt $initGetIt(
   gh.singleton<_i490.NameAndCalManager>(() => _i490.NameAndCalManager());
   gh.singleton<_i833.UserInfoManager>(() => _i833.UserInfoManager());
   gh.singleton<_i18.IDailyCalorieManager>(() => appModule.dailyCalorieManager);
-  gh.singleton<_i976.ISecureStorageService>(
-      () => appModule.secureStorageService);
   gh.singleton<_i709.IGeminiService>(() => appModule.geminiService);
   gh.singleton<_i45.IFavoriteMessageManager>(
       () => appModule.favoriteMessageManager);
@@ -66,8 +63,8 @@ _i174.GetIt $initGetIt(
   gh.singleton<_i354.INotificationService>(() => appModule.notificationService);
   gh.singleton<_i859.IWaterReminderManager>(
       () => appModule.waterReminderManager);
+  gh.singleton<_i709.GeminiService>(() => _i709.GeminiService());
   gh.singleton<_i354.NotificationService>(() => _i354.NotificationService());
-  gh.singleton<_i976.SecureStorageService>(() => _i976.SecureStorageService());
   gh.factory<_i927.WaterReminderCubit>(() => _i927.WaterReminderCubit(
         gh<_i354.INotificationService>(),
         gh<_i859.IWaterReminderManager>(),
@@ -80,8 +77,6 @@ _i174.GetIt $initGetIt(
         gh<_i709.IGeminiService>(),
         gh<_i833.IUserInfoManager>(),
       ));
-  gh.singleton<_i709.GeminiService>(
-      () => _i709.GeminiService(gh<_i976.ISecureStorageService>()));
   gh.factory<_i568.AiDietAdviceCubit>(
       () => _i568.AiDietAdviceCubit(gh<_i697.IAiResponseManager>()));
   gh.factory<_i307.NameEditCubit>(

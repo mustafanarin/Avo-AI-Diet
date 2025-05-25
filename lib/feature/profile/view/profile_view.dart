@@ -76,7 +76,7 @@ class ProfileHeader extends StatelessWidget {
           ),
           child: Center(
             child: Icon(
-              Icons.eco, // TODOAPP icon or AVO
+              Icons.eco, // TODOAPP icon or AVO - isim uzunluk kontrol
               size: 70.w,
               color: ProjectColors.white,
             ),

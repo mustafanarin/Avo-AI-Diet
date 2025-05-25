@@ -4,8 +4,11 @@ analyzer:
   exclude:
     - "/*.g.dart"
 
+dart_code_metrics:
+  rules:
+    maximum-line-length: 100
+
 linter:
-  
   rules:
     public_member_api_docs: false
-   
+    lines_longer_than_80_chars: false

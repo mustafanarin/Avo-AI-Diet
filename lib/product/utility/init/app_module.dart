@@ -6,7 +6,6 @@ import 'package:avo_ai_diet/product/cache/manager/user_info/user_info_manager.da
 import 'package:avo_ai_diet/product/cache/manager/water_reminder/water_reminder_manager.dart';
 import 'package:avo_ai_diet/services/gemini_service.dart';
 import 'package:avo_ai_diet/services/notification_service.dart';
-import 'package:avo_ai_diet/services/secure_storage_service.dart';
 import 'package:injectable/injectable.dart';
 
 @module
@@ -14,11 +13,9 @@ abstract class AppModule {
   @singleton
   IDailyCalorieManager get dailyCalorieManager => DailyCalorieManager();
 
-  @singleton
-  ISecureStorageService get secureStorageService => SecureStorageService();
 
   @singleton
-  IGeminiService get geminiService => GeminiService(secureStorageService);
+  IGeminiService get geminiService => GeminiService();
 
   @singleton
   IFavoriteMessageManager get favoriteMessageManager => FavoriteMessageManager();
