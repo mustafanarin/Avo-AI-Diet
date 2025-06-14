@@ -50,8 +50,6 @@ dependencies:
   # Private Key
   flutter_dotenv: ^5.2.1
 
-  # Service
-  google_generative_ai: ^0.4.6
 
   # State Managment
   flutter_hooks: ^0.21.2

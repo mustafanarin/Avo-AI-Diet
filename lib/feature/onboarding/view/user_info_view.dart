@@ -1,3 +1,4 @@
+import 'package:avo_ai_diet/feature/home/cubit/ai_diet_advice_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
@@ -12,6 +13,8 @@ import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/utility/calori_validators.dart';
+import 'package:avo_ai_diet/product/utility/error_handle_mixin.dart';
+import 'package:avo_ai_diet/product/utility/exceptions/gemini_exception.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/budget_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/goal_extension.dart';
@@ -34,7 +37,7 @@ final class UserInfoView extends StatefulWidget {
   State<UserInfoView> createState() => _UserInfoViewState();
 }
 
-class _UserInfoViewState extends State<UserInfoView> {
+class _UserInfoViewState extends State<UserInfoView>  with AiErrorHandlerMixin{
   final _formKey = GlobalKey<FormState>();
   final _validators = CalorieValidators();
   int _currentStep = 0;
@@ -161,14 +164,17 @@ class _UserInfoViewState extends State<UserInfoView> {
         builder: (context) {
           return BlocConsumer<UserInfoCubit, UserInfoState>(
             listener: (context, state) {
+              // error handling with mixin c
               if (state.error != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error!)),
-                );
+                handleAiError(context, GeminiException(message: state.error!));
               }
 
+              // Success handling
               if (state.response != null) {
                 final totalCalories = _calculateTotalCalories();
+
+                context.read<AiDietAdviceCubit>().refreshDietPlan();
+
                 _navigateToHome(
                   context,
                   userName: widget.userName,

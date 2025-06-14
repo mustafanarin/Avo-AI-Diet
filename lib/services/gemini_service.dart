@@ -45,8 +45,8 @@ final class GeminiService implements IGeminiService {
       await _remoteConfig.setDefaults({
         'gemini_model': _defaultModel,
         'temperature': 0.7,
-        'daily_request_limit_per_user': 9,
-      });
+        'daily_request_limit_per_user': 5,
+      });// TODO
 
       await _remoteConfig.fetchAndActivate();
 
@@ -96,17 +96,18 @@ final class GeminiService implements IGeminiService {
 
   // Daily request limit per user
   Future<bool> _canMakeRequest() async {
-    final userLimit = _remoteConfig.getInt('daily_request_limit_per_user');
+    // TODOfinal userLimit = _remoteConfig.getInt('daily_request_limit_per_user'):;
+    const userLimit = 20;
     final today = DateTime.now().toIso8601String().split('T')[0];
     final userKey = 'user_requests_$today';
-
+    // TODOshared preferenc ayrı sınıf
     final prefs = await SharedPreferences.getInstance();
     final userRequestCount = prefs.getInt(userKey) ?? 0;
 
     if (userRequestCount >= userLimit) {
       throw GeminiException(
-        message: 'Günlük AI sorgu limitiniz ($userLimit) aşıldı. Yarın tekrar deneyin.',
-      );
+        message: '🎯 Günlük ücretsiz AI sorgu limitiniz ($userLimit) doldu.\n⏰ 24 saat sonra tekrar deneyebilirsiniz.',
+      ); // TODO24 saat or yarın?
     }
 
     await prefs.setInt(userKey, userRequestCount + 1);
@@ -125,13 +126,15 @@ final class GeminiService implements IGeminiService {
       // User limit check
       await _canMakeRequest();
 
-      final response = await _model.generateContent([Content.text(prompt)]);
+      final response = await _model.generateContent([Content.text(prompt)]).timeout(const Duration(seconds: 30));
 
       if (response.text == null || response.text!.isEmpty) {
         throw GeminiException(message: 'AI yanıt oluşturamadı. Lütfen tekrar deneyin.');
       }
 
       return response.text!;
+    } on GeminiException {
+      rethrow;
     } on FirebaseException catch (e) {
       // Firebase Error
       throw GeminiException(message: _handleFirebaseError(e));
@@ -141,19 +144,24 @@ final class GeminiService implements IGeminiService {
         message: 'İnternet bağlantı sorunu. Lütfen bağlantınızı kontrol edin.',
       );
     } catch (e) {
-      // Limit error
       final errorString = e.toString().toLowerCase();
-      if (errorString.contains('quota') ||
-          errorString.contains('limit') ||
-          errorString.contains('429') ||
-          errorString.contains('resource-exhausted')) {
+
+      // Backend quota errors
+      if (errorString.contains('quota') || errorString.contains('429') || errorString.contains('resource-exhausted')) {
         throw GeminiException(
-          message: 'Günlük AI kapasitemiz doldu. Yarın tekrar deneyin. 🙏',
+          message: '💸 Günlük token limitimiz doldu.\n🔄 Sistem kapasitesi yarın yenilenecek.',
+        );
+      }
+
+      // Timeout error
+      if (errorString.contains('timeout') || errorString.contains('deadline')) {
+        throw GeminiException(
+          message: '⏱️ AI yanıt süresi aşıldı.\n🔄 Lütfen tekrar deneyin.',
         );
       }
 
       throw GeminiException(
-        message: 'AI hizmeti geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.',
+        message: '⚠️ AI hizmeti geçici olarak kullanılamıyor.\n🔄 Lütfen daha sonra tekrar deneyin.',
       );
     }
   }
@@ -164,19 +172,22 @@ final class GeminiService implements IGeminiService {
     switch (e.code) {
       case 'quota-exceeded':
       case 'resource-exhausted':
-        return 'Günlük AI kapasitemiz doldu. Yarın tekrar deneyin. 🙏';
+        return '💸 Günlük token limitimiz doldu.\n🔄 Sistem kapasitesi yarın yenilenecek.';
 
       case 'permission-denied':
-        return 'AI hizmet erişimi reddedildi. Lütfen uygulamayı güncelleyin.';
+        return '🔒 AI hizmet erişimi reddedildi.\n📱 Lütfen uygulamayı güncelleyin.';
 
       case 'unavailable':
-        return 'AI hizmeti geçici olarak kullanılamıyor. Birkaç dakika sonra tekrar deneyin.';
+        return '🛠️ AI hizmeti bakımda.\n⏰ Birkaç dakika sonra tekrar deneyin.';
 
       case 'deadline-exceeded':
-        return 'AI yanıt süresi aşıldı. Lütfen tekrar deneyin.';
+        return '⏱️ AI yanıt süresi aşıldı.\n🔄 Lütfen tekrar deneyin.';
+
+      case 'unauthenticated':
+        return '🔑 Kimlik doğrulama hatası.\n🔄 Uygulamayı yeniden başlatın.';
 
       default:
-        return 'AI hizmeti hatası. Lütfen daha sonra tekrar deneyin.';
+        return '⚠️ AI hizmeti hatası.\n🔄 Lütfen daha sonra tekrar deneyin.';
     }
   }
 

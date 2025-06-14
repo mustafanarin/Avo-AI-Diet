@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final class ProjectToastMessage {
+  // is toast showing?
+  static bool _isShowing = false;
+
   static void show(
     BuildContext context,
     String message, {
@@ -11,10 +14,24 @@ final class ProjectToastMessage {
     bool isThereIcon = true,
     Color backGroundColor = ProjectColors.greenRYB,
   }) {
+    // Context mounted kontrolü
+    if (!_isContextValid(context)) {
+      return;
+    }
+
+    if (_isShowing) {
+      return;
+    }
+
+    // Toast started showing
+    _isShowing = true;
+
     final overlay = Overlay.of(context);
-    final overlayEntry = OverlayEntry(
+    late final OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        bottom: 100.h,
+        bottom: 50.h,
         left: 0,
         right: 0,
         child: SafeArea(
@@ -46,9 +63,15 @@ final class ProjectToastMessage {
                     else
                       const SizedBox.shrink(),
                     SizedBox(width: 8.w),
-                    Text(
-                      message,
-                      style: context.textTheme().bodySmall?.copyWith(color: ProjectColors.white),
+                    Flexible(
+                      child: Text(
+                        message,
+                        style: context.textTheme().bodySmall?.copyWith(
+                              color: ProjectColors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
@@ -59,9 +82,82 @@ final class ProjectToastMessage {
       ),
     );
 
-    overlay.insert(overlayEntry);
+    try {
+      overlay.insert(overlayEntry);
 
-    // Remove Toast after specified seconds
-    Future.delayed(Duration(seconds: seconds), overlayEntry.remove);
+      // Remove toast after duration
+      Future.delayed(Duration(seconds: seconds), () {
+        _safeRemoveOverlay(overlayEntry);
+      });
+    } catch (e) {
+      // Overlay insert failed
+      debugPrint('ProjectToast: Failed to insert overlay - $e');
+      // reset
+      _isShowing = false;
+    }
+  }
+
+  // Context validity check
+  static bool _isContextValid(BuildContext context) {
+    try {
+      return context.mounted && Overlay.maybeOf(context) != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Safe overlay removal
+  static void _safeRemoveOverlay(OverlayEntry overlayEntry) {
+    try {
+      overlayEntry.remove();
+    } catch (e) {
+      debugPrint('ProjectToast: Safe removal failed - $e');
+    } finally {
+      // 🆕 Toast removed
+      _isShowing = false;
+    }
+  }
+
+  // Convenience methods
+  static void showSuccess(BuildContext context, String message) {
+    if (!_isContextValid(context)) return;
+
+    show(
+      context,
+      message,
+    );
+  }
+
+  static void showError(BuildContext context, String message) {
+    if (!_isContextValid(context)) return;
+
+    show(
+      context,
+      message,
+      seconds: 4,
+      backGroundColor: ProjectColors.accentCoral,
+    );
+  }
+
+  static void showWarning(BuildContext context, String message) {
+    if (!_isContextValid(context)) return;
+
+    show(
+      context,
+      message,
+      seconds: 3,
+      backGroundColor: ProjectColors.sandyBrown,
+    );
+  }
+
+  static void showInfo(BuildContext context, String message) {
+    if (!_isContextValid(context)) return;
+
+    show(
+      context,
+      message,
+      seconds: 3,
+      backGroundColor: ProjectColors.primary,
+    );
   }
 }
