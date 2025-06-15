@@ -13,18 +13,37 @@ final class AiDietAdviceCubit extends Cubit<AiDietAdviceState> {
 
   Future<void> _loadDietPlan() async {
     emit(state.copyWith(isLoading: true));
+
     try {
       final response = await _manager.getDietPlan();
-      emit(state.copyWith(response: response, isLoading: false));
+
+      if (response == null) {
+        emit(
+          state.copyWith(
+            isLoading: false,
+            error: 'Diyet planı yüklenirken bir hata oluştu. Lütfen profil sayfasından yeni bir plan oluşturun.',
+          ),
+        );
+        return;
+      }
+
+      emit(
+        state.copyWith(
+          response: response,
+          isLoading: false,
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(
-          error: 'Maalesef diyetinizi yüklerken bir sorun oluştu, profil sayfasından tekrar diyet oluşturunuz.',
           isLoading: false,
+          error: 'Diyet planı yüklenirken bir hata oluştu. Lütfen profil sayfasından yeni bir plan oluşturun.',
         ),
       );
     }
   }
 
-  void refreshDietPlan() => _loadDietPlan();
+  Future<void> refreshDietPlan() async {
+    await _loadDietPlan();
+  }
 }

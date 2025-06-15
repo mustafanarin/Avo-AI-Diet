@@ -7,17 +7,24 @@ import 'package:avo_ai_diet/feature/onboarding/state/name_and_cal_state.dart';
 import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
+import 'package:avo_ai_diet/product/constants/route_names.dart';
+import 'package:avo_ai_diet/product/utility/error_handle_mixin.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
+import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
+import 'package:avo_ai_diet/product/widgets/project_button.dart';
+import 'package:avo_ai_diet/product/widgets/project_toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -30,7 +37,7 @@ final class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with AiErrorHandlerMixin {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NameAndCalCubit, NameAndCalState>(
@@ -90,7 +97,7 @@ class _ModernDietCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final showShadow = useState(false);
-    final textTheme = context.textTheme();
+
     return Stack(
       children: [
         NotificationListener<ScrollNotification>(
@@ -102,103 +109,40 @@ class _ModernDietCard extends HookWidget {
             return true;
           },
           child: SingleChildScrollView(
-            child: BlocSelector<AiDietAdviceCubit, AiDietAdviceState,
-                ({AiResponse? response, bool isLoading, String? error})>(
-              selector: (state) => (response: state.response, isLoading: state.isLoading, error: state.error),
-              builder: (context, data) {
-                if (data.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: BlocConsumer<AiDietAdviceCubit, AiDietAdviceState>(
+              listener: (context, state) {
+                if (state.error != null) {
+                  ProjectToastMessage.showError(context, state.error!);
+                }
+              },
+              builder: (context, state) {
+                // Loading State
+                if (state.isLoading) {
+                  return _LoadingWidget();
                 }
 
-                if (data.response == null) {
-                  return Padding(
-                    padding: AppPadding.mediumAll(),
-                    child: Text(
-                      data.error ?? 'Diyet planı yüklenemedi.',
-                      style: textTheme.bodyMedium?.copyWith(color: ProjectColors.accentCoral),
-                    ),
+                // Error State
+                if (state.error != null) {
+                  return _ErrorDietWidget(
+                    errorMessage: state.error!,
+                    onCreateNew: () => _navigateToProfile(context),
                   );
                 }
 
-                final response = data.response!;
+                // Success State
+                if (state.response != null) {
+                  return _SuccessDietCard(response: state.response!);
+                }
 
-                return Container(
-                  margin: AppPadding.customSymmetricMediumSmall(),
-                  decoration: BoxDecoration(
-                    color: ProjectColors.white.withValues(alpha: 0.6),
-                    borderRadius: AppRadius.circularSmall(),
-                    border: Border.all(color: ProjectColors.secondary.withValues(alpha: 0.5)),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: AppPadding.customSymmetricMediumNormal(),
-                        decoration: BoxDecoration(
-                          color: ProjectColors.backgroundCream,
-                          borderRadius: AppRadius.onlyTopSmall(),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: AppPadding.smallAll(),
-                              decoration: BoxDecoration(
-                                color: ProjectColors.primary.withValues(alpha: 0.1),
-                                borderRadius: AppRadius.circularxSmall(),
-                              ),
-                              child: Icon(
-                                Icons.restaurant_rounded,
-                                color: ProjectColors.primary,
-                                size: 18.r,
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    ProjectStrings.dietListTitle,
-                                    style: textTheme.titleMedium?.copyWith(color: ProjectColors.primary),
-                                  ),
-                                  Text(
-                                    response.formattedDayMonthYear,
-                                    style: textTheme.bodySmall?.copyWith(
-                                      fontSize: 13.sp,
-                                      color: ProjectColors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Markdown(
-                          data: response.dietPlan,
-                          styleSheet: MarkdownStyleSheet(
-                            p: textTheme.bodySmall?.copyWith(fontSize: 16.sp),
-                            strong: textTheme.bodySmall?.copyWith(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            em: textTheme.bodySmall?.copyWith(
-                              fontSize: 16.sp,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                // Fallback
+                return _LoadingWidget();
               },
             ),
           ),
         ),
+
+        // Shadow effect
         Positioned(
           top: 0,
           left: 0,
@@ -224,8 +168,203 @@ class _ModernDietCard extends HookWidget {
       ],
     );
   }
+
+  void _navigateToProfile(BuildContext context) {
+    context.push(RouteNames.userInfoEdit);
+  }
 }
 
+// Error Widget
+class _ErrorDietWidget extends StatelessWidget {
+  const _ErrorDietWidget({
+    required this.errorMessage,
+    required this.onCreateNew,
+  });
+
+  final String errorMessage;
+  final VoidCallback onCreateNew;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 400.h,
+      padding: AppPadding.mediumAll(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Error icon with Avo
+          Image.asset(
+            PngName.noSearchAvo.path,
+            height: 150.h,
+          ),
+
+          SizedBox(height: 24.h),
+
+          Text(
+            '🥑 Diyet planı yüklenemedi',
+            style: context.textTheme().headlineSmall?.copyWith(
+                  color: ProjectColors.sandyBrown,
+                  fontWeight: FontWeight.bold,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            errorMessage,
+            style: context.textTheme().bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+
+          SizedBox(height: 32.h),
+
+          SizedBox(
+            width: 300.w,
+            child: ProjectButton(text: '✚ Yeni Diyet Planı Oluştur', onPressed: onCreateNew),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Loading Widget
+class _LoadingWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 400.h,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Avo loading animation
+          Lottie.asset(
+            JsonName.avoWalk.path,
+            height: 120.h,
+            fit: BoxFit.cover,
+          ),
+          SizedBox(height: 24.h),
+
+          SizedBox(
+            width: 40.w,
+            height: 40.h,
+            child: const CircularProgressIndicator(
+              color: ProjectColors.primary,
+              strokeWidth: 3,
+            ),
+          ),
+
+          SizedBox(height: 16.h),
+
+          Text(
+            'Avo diyet planınızı kontrol ediyor...',
+            style: context.textTheme().bodyMedium?.copyWith(
+                  color: ProjectColors.grey600,
+                ),
+            textAlign: TextAlign.center,
+          ),
+
+          SizedBox(height: 8.h),
+
+          Text(
+            'Bu işlem birkaç saniye sürebilir',
+            style: context.textTheme().bodySmall?.copyWith(
+                  color: ProjectColors.grey500,
+                  fontStyle: FontStyle.italic,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+// Success Widget(User Diet List)
+class _SuccessDietCard extends StatelessWidget {
+  const _SuccessDietCard({required this.response});
+
+  final AiResponse response;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = context.textTheme();
+
+    return Container(
+      margin: AppPadding.customSymmetricMediumSmall(),
+      decoration: BoxDecoration(
+        color: ProjectColors.white.withValues(alpha: 0.6),
+        borderRadius: AppRadius.circularSmall(),
+        border: Border.all(color: ProjectColors.secondary.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: AppPadding.customSymmetricMediumNormal(),
+            decoration: BoxDecoration(
+              color: ProjectColors.backgroundCream,
+              borderRadius: AppRadius.onlyTopSmall(),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: AppPadding.smallAll(),
+                  decoration: BoxDecoration(
+                    color: ProjectColors.primary.withValues(alpha: 0.1),
+                    borderRadius: AppRadius.circularxSmall(),
+                  ),
+                  child: Icon(
+                    Icons.restaurant_rounded,
+                    color: ProjectColors.primary,
+                    size: 18.r,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ProjectStrings.dietListTitle,
+                        style: textTheme.titleMedium?.copyWith(color: ProjectColors.primary),
+                      ),
+                      Text(
+                        response.formattedDayMonthYear,
+                        style: textTheme.bodySmall?.copyWith(
+                          fontSize: 13.sp,
+                          color: ProjectColors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Markdown(
+              data: response.dietPlan,
+              styleSheet: MarkdownStyleSheet(
+                p: textTheme.bodySmall?.copyWith(fontSize: 16.sp),
+                strong: textTheme.bodySmall?.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                em: textTheme.bodySmall?.copyWith(
+                  fontSize: 16.sp,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Calorie Follow Indicator
 class _CalorieFollowIndicator extends StatelessWidget {
   const _CalorieFollowIndicator({required this.maxCalories});
 
