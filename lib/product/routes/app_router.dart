@@ -17,11 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final class AppRouter {
-  // static final GlobalKey<NavigatorState> _rootNavigatorKey =
-  // GlobalKey<NavigatorState>();
-
   static final GoRouter router = GoRouter(
-    // navigatorKey: _rootNavigatorKey,
     routes: _routes,
     initialLocation: RouteNames.welcome,
     errorBuilder: (context, state) => const _ErrorPage(),
@@ -30,13 +26,35 @@ final class AppRouter {
   static List<RouteBase> get _routes => [
         GoRoute(
           path: RouteNames.tabbar,
-          builder: (context, state) => const CustomTabBarView(),
+          pageBuilder: (context, state) => CustomTransitionPage<void>(
+            key: state.pageKey,
+            transitionDuration: const Duration(milliseconds: 1200),
+            reverseTransitionDuration: const Duration(milliseconds: 1200),
+            child: const CustomTabBarView(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
         ),
         GoRoute(
           path: RouteNames.tabbarWithIndex,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final tabIndex = int.tryParse(state.pathParameters['tabIndex'] ?? '0') ?? 0;
-            return CustomTabBarView(initialIndex: tabIndex);
+            return CustomTransitionPage<void>(
+              key: state.pageKey,
+              transitionDuration: const Duration(milliseconds: 1200),
+              reverseTransitionDuration: const Duration(milliseconds: 1200),
+              child: CustomTabBarView(initialIndex: tabIndex),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            );
           },
         ),
         GoRoute(
@@ -98,7 +116,18 @@ final class AppRouter {
         ),
         GoRoute(
           path: RouteNames.userInfoEdit,
-          builder: (context, state) => const UserInfoEditView(),
+          pageBuilder: (context, state) => CustomTransitionPage<void>(
+            key: state.pageKey,
+            transitionDuration: const Duration(milliseconds: 1200),
+            reverseTransitionDuration: const Duration(milliseconds: 1200),
+            child: const UserInfoEditView(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
         ),
         GoRoute(
           path: RouteNames.regionalFat,
@@ -108,11 +137,6 @@ final class AppRouter {
           ),
         ),
       ];
-
-  //  For navigation in non-context areas
-  // static void navigateToHome() {
-  //   _rootNavigatorKey.currentState?.pushNamed('/home');
-  // }
 }
 
 class _ErrorPage extends StatelessWidget {
@@ -121,7 +145,9 @@ class _ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: const BackButton(),
+      ),
       body: const Center(
         child: Text('Sayfa bulunamadı!'),
       ),

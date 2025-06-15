@@ -37,7 +37,7 @@ final class UserInfoView extends StatefulWidget {
   State<UserInfoView> createState() => _UserInfoViewState();
 }
 
-class _UserInfoViewState extends State<UserInfoView>  with AiErrorHandlerMixin{
+class _UserInfoViewState extends State<UserInfoView> with AiErrorHandlerMixin {
   final _formKey = GlobalKey<FormState>();
   final _validators = CalorieValidators();
   int _currentStep = 0;
@@ -164,22 +164,27 @@ class _UserInfoViewState extends State<UserInfoView>  with AiErrorHandlerMixin{
         builder: (context) {
           return BlocConsumer<UserInfoCubit, UserInfoState>(
             listener: (context, state) {
-              // error handling with mixin c
+              // Error handling with mixin
               if (state.error != null) {
                 handleAiError(context, GeminiException(message: state.error!));
               }
 
-              // Success handling
-              if (state.response != null) {
+              // Navigation handling
+              if (state.isNavigating && state.response != null) {
                 final totalCalories = _calculateTotalCalories();
 
                 context.read<AiDietAdviceCubit>().refreshDietPlan();
 
-                _navigateToHome(
-                  context,
-                  userName: widget.userName,
-                  targetCal: totalCalories,
-                );
+                // Delay for hero animation to appear
+                Future.delayed(const Duration(milliseconds: 1500), () {
+                  if (mounted) {
+                    _navigateToHome(
+                      context,
+                      userName: widget.userName,
+                      targetCal: totalCalories,
+                    );
+                  }
+                });
               }
             },
             builder: (context, state) {
@@ -188,12 +193,34 @@ class _UserInfoViewState extends State<UserInfoView>  with AiErrorHandlerMixin{
                   ? Scaffold(
                       body: Center(
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Hero(
                               tag: HeroLottie.avoLottie.value,
-                              child: Lottie.asset(JsonName.avoWalk.path),
+                              child: Lottie.asset(
+                                JsonName.avoWalk.path,
+                                height: 300.h,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            const Text(ProjectStrings.avoDietLoadingMessage),
+
+                            // Enhanced loading message
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 600),
+                              child: Column(
+                                key: ValueKey(state.isNavigating),
+                                children: [
+                                  Text(
+                                    state.isNavigating ? 'Hazır ✅' : ProjectStrings.avoDietLoadingMessage,
+                                    style: context.textTheme().bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 100.h),
                           ],
                         ),
                       ),

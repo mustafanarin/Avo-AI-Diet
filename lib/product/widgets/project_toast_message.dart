@@ -31,7 +31,7 @@ final class ProjectToastMessage {
 
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        bottom: 50.h,
+        bottom: 100.h,
         left: 0,
         right: 0,
         child: SafeArea(

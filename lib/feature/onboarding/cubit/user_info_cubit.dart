@@ -17,14 +17,10 @@ final class UserInfoCubit extends Cubit<UserInfoState> {
   final IGeminiService _service;
   final IAiResponseManager _manager;
 
-  // Simple process control
-  bool _isProcessing = false;
-
   Future<void> submitUserInfo(UserInfoModel userInfo) async {
-    if (_isProcessing) return;
+    if (state.isLoading) return;
 
-    try { 
-      _isProcessing = true;
+    try {
       emit(state.copyWith(isLoading: true));
 
       final response = await _service.getUserDiet(userInfo);
@@ -37,13 +33,17 @@ final class UserInfoCubit extends Cubit<UserInfoState> {
         ),
       );
 
-      emit(state.copyWith(response: response, isLoading: false));
+      emit(
+        state.copyWith(
+          response: response,
+          isLoading: true,
+          isNavigating: true,
+        ),
+      );
     } on GeminiException catch (e) {
       emit(state.copyWith(isLoading: false, error: e.message));
     } on Exception catch (e) {
       emit(state.copyWith(isLoading: false, error: 'Beklenmedik bir hata oluştu. Lütfen tekrar deneyin.'));
-    } finally {
-      _isProcessing = false;
     }
   }
 }

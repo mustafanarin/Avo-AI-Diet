@@ -205,18 +205,23 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
                       );
                     }
 
-                    if (state.response != null) {
+                    // Navigation handling
+                    if (state.isNavigating && state.response != null) {
                       final totalCalories = _calculateTotalCalories();
 
                       context.read<AiDietAdviceCubit>().refreshDietPlan();
 
-                      ProjectToastMessage.show(context, ProjectStrings.succesUpdateDiet);
 
-                      _navigateToHome(
-                        context,
-                        userName: '',
-                        targetCal: totalCalories,
-                      );
+                      // Delay for hero animation to appear
+                      Future.delayed(const Duration(milliseconds: 1500), () {
+                        if (mounted) {
+                          _navigateToHome(
+                            context,
+                            userName: '',
+                            targetCal: totalCalories,
+                          );
+                        }
+                      });
                     }
                   },
                   builder: (context, state) {
@@ -225,12 +230,34 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
                         ? Scaffold(
                             body: Center(
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Hero(
                                     tag: HeroLottie.avoLottie.value,
-                                    child: Lottie.asset(JsonName.avoWalk.path),
+                                    child: Lottie.asset(
+                                      JsonName.avoWalk.path,
+                                      height: 300.h,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                  const Text(ProjectStrings.avoDietLoadingMessage),
+
+                                  // Enhanced loading message
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 600),
+                                    child: Column(
+                                      key: ValueKey(state.isNavigating),
+                                      children: [
+                                        Text(
+                                          state.isNavigating ? 'Hazır ✅' : ProjectStrings.avoDietLoadingMessage,
+                                          style: context.textTheme().bodyLarge?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 100.h),
                                 ],
                               ),
                             ),

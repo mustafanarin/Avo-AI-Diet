@@ -81,7 +81,7 @@ abstract final class ProjectStrings {
   static const String reminderSupTitle = 'Her gün 12:00 - 21:00 arasında su içme hatırlatmaları alın';
   static const String changeName = 'Adınızı Değiştirin';
   static const String changeNameSupTitle = 'Uygulama içindeki adınızı güncelleyin';
-  static const String bodyInformation = 'Fiziksel Bilgileriniz';
+  static const String bodyInformation = 'Yeni Diyet Listesi';
   static const String bodyInformationSupTitle = 'Boy, kilo ve hedeflerinizi güncelleyin';
   static const String regionalFatBurning = 'Bölgesel Yağ Yakımı';
   static const String fatBurningSupTitle = 'Yapay zeka ile kişiselleştirilmiş tavsiyeler';
@@ -94,9 +94,6 @@ abstract final class ProjectStrings {
   static const String saving = 'Kaydediliyor...';
   static const String save = 'Kaydet';
   static const String nameSuccessful = 'İsminiz başarıyla güncellendi!';
-
-  // User Info Edit Page
-  static const String succesUpdateDiet = 'Diyetin başarıyla güncellendi!';
 
   // Regional fat burning
   static const String adviceGetting = 'Tavsiye Alınıyor...';
