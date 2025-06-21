@@ -28,6 +28,6 @@ final class CalorieCalculatorService {
 
     totalCalories *= goal.multiplier;
 
-    return totalCalories;
+    return totalCalories.roundToDouble();
   }
 }

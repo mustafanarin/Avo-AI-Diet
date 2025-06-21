@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
 import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
+import 'package:avo_ai_diet/product/constants/prompt_repository.dart';
 import 'package:avo_ai_diet/product/utility/exceptions/gemini_exception.dart';
+import 'package:avo_ai_diet/services/rate_limit_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IGeminiService {
   Future<String> getUserDiet(UserInfoModel user);
@@ -19,70 +20,81 @@ abstract class IGeminiService {
 
 @singleton
 final class GeminiService implements IGeminiService {
-  GeminiService();
+  GeminiService(this._promptRepository, this._rateLimitService);
+  final IPromptRepository _promptRepository;
+  final IRateLimitService _rateLimitService;
 
   late final GenerativeModel _model;
   late final FirebaseRemoteConfig _remoteConfig;
-  final String _defaultModel = 'gemini-2.0-flash-lite';
+
+  static const String _defaultModel = 'gemini-2.0-flash-lite';
+  static const int _defaultDailyRequestLimit = 15;
+  static const Duration _requestTimeout = Duration(seconds: 30);
 
   late final Future<void> _initFuture = _initialize();
 
   Future<void> _initialize() async {
     try {
-      // Start firebase app check
-      await FirebaseAppCheck.instance.activate();
-
-      // Start remote config
-      _remoteConfig = FirebaseRemoteConfig.instance;
-      await _remoteConfig.setConfigSettings(
-        RemoteConfigSettings(
-          fetchTimeout: const Duration(minutes: 1),
-          minimumFetchInterval: const Duration(hours: 1),
-        ),
-      );
-
-      // Default remote config values
-      await _remoteConfig.setDefaults({
-        'gemini_model': _defaultModel,
-        'temperature': 0.7,
-        'daily_request_limit_per_user': 5,
-      });// TODO
-
-      await _remoteConfig.fetchAndActivate();
-
-      final modelName = _remoteConfig.getString('gemini_model');
-
-      _model = FirebaseAI.googleAI().generativeModel(
-        model: modelName.isEmpty ? _defaultModel : modelName,
-        generationConfig: GenerationConfig(
-          temperature: _remoteConfig.getDouble('temperature'), //for creativity
-        ),
-        safetySettings: [
-          SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.medium, null),
-          SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.medium, null),
-          SafetySetting(HarmCategory.harassment, HarmBlockThreshold.medium, null),
-          SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.high, null),
-        ],
-      );
+      await _initializeFirebase();
+      await _setupRemoteConfig();
+      _setupGeminiModel();
     } catch (e) {
       print('🚨 Firebase initialization hatası: $e');
-
-      _remoteConfig = FirebaseRemoteConfig.instance;
-
-      _model = FirebaseAI.googleAI().generativeModel(
-        model: _defaultModel,
-        generationConfig: GenerationConfig(temperature: 0.7),
-        safetySettings: [
-          SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.medium, null),
-          SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.medium, null),
-          SafetySetting(HarmCategory.harassment, HarmBlockThreshold.medium, null),
-          SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.high, null),
-        ],
-      );
+      _setupFallbackModel();
     }
   }
 
-  // Internet check
+  Future<void> _initializeFirebase() async {
+    await FirebaseAppCheck.instance.activate();
+  }
+
+  Future<void> _setupRemoteConfig() async {
+    _remoteConfig = FirebaseRemoteConfig.instance;
+    await _remoteConfig.setConfigSettings(
+      RemoteConfigSettings(
+        fetchTimeout: const Duration(minutes: 1),
+        minimumFetchInterval: const Duration(hours: 1),
+      ),
+    );
+
+    await _remoteConfig.setDefaults({
+      'gemini_model': _defaultModel,
+      'temperature': 0.7,
+      'daily_request_limit_per_user': _defaultDailyRequestLimit,
+    });
+
+    await _remoteConfig.fetchAndActivate();
+  }
+
+  void _setupGeminiModel() {
+    final modelName = _remoteConfig.getString('gemini_model');
+    final temperature = _remoteConfig.getDouble('temperature');
+
+    _model = FirebaseAI.googleAI().generativeModel(
+      model: modelName.isEmpty ? _defaultModel : modelName,
+      generationConfig: GenerationConfig(temperature: temperature),
+      safetySettings: _getSafetySettings(),
+    );
+  }
+
+  void _setupFallbackModel() {
+    _remoteConfig = FirebaseRemoteConfig.instance;
+    _model = FirebaseAI.googleAI().generativeModel(
+      model: _defaultModel,
+      generationConfig: GenerationConfig(temperature: 0.7),
+      safetySettings: _getSafetySettings(),
+    );
+  }
+
+  List<SafetySetting> _getSafetySettings() {
+    return [
+      SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.medium, null),
+      SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.medium, null),
+      SafetySetting(HarmCategory.harassment, HarmBlockThreshold.medium, null),
+      SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.high, null),
+    ];
+  }
+
   @override
   Future<bool> isInternetAvailable() async {
     try {
@@ -94,39 +106,36 @@ final class GeminiService implements IGeminiService {
     }
   }
 
-  // Daily request limit per user
-  Future<bool> _canMakeRequest() async {
-    // TODOfinal userLimit = _remoteConfig.getInt('daily_request_limit_per_user'):;
-    const userLimit = 20;
-    final today = DateTime.now().toIso8601String().split('T')[0];
-    final userKey = 'user_requests_$today';
-    // TODOshared preferenc ayrı sınıf
-    final prefs = await SharedPreferences.getInstance();
-    final userRequestCount = prefs.getInt(userKey) ?? 0;
+  // rate limit check
+  Future<void> _checkRateLimit() async {
+    final userLimit = _getDailyRequestLimit();
 
-    if (userRequestCount >= userLimit) {
-      throw GeminiException(
-        message: '🎯 Günlük ücretsiz AI sorgu limitiniz ($userLimit) doldu.\n⏰ 24 saat sonra tekrar deneyebilirsiniz.',
-      ); // TODO24 saat or yarın?
-    }
-
-    await prefs.setInt(userKey, userRequestCount + 1);
-    return true;
+    await _rateLimitService.checkAndIncrementRequestLimit(dailyLimit: userLimit);
   }
 
+  int _getDailyRequestLimit() {
+    try {
+      return _remoteConfig.getInt('daily_request_limit_per_user');
+    } catch (e) {
+      print('Remote config error, using default limit: $e');
+      return _defaultDailyRequestLimit;
+    }
+  }
+
+  // focused Gemini request method
   Future<String> _makeGeminiRequest(String prompt) async {
-    // Internet check
+    // Pre-flight checks
     if (!await isInternetAvailable()) {
       throw GeminiException(
         message: 'İnternet bağlantınızı kontrol edin. AI özelliklerini kullanmak için internet gereklidir.',
       );
     }
 
-    try {
-      // User limit check
-      await _canMakeRequest();
+    // Rate limit check - delegated to specialized service
+    await _checkRateLimit();
 
-      final response = await _model.generateContent([Content.text(prompt)]).timeout(const Duration(seconds: 30));
+    try {
+      final response = await _model.generateContent([Content.text(prompt)]).timeout(_requestTimeout);
 
       if (response.text == null || response.text!.isEmpty) {
         throw GeminiException(message: 'AI yanıt oluşturamadı. Lütfen tekrar deneyin.');
@@ -136,160 +145,64 @@ final class GeminiService implements IGeminiService {
     } on GeminiException {
       rethrow;
     } on FirebaseException catch (e) {
-      // Firebase Error
       throw GeminiException(message: _handleFirebaseError(e));
-    } on SocketException catch (e) {
-      // Internet error
+    } on SocketException {
       throw GeminiException(
         message: 'İnternet bağlantı sorunu. Lütfen bağlantınızı kontrol edin.',
       );
     } catch (e) {
-      final errorString = e.toString().toLowerCase();
-
-      // Backend quota errors
-      if (errorString.contains('quota') || errorString.contains('429') || errorString.contains('resource-exhausted')) {
-        throw GeminiException(
-          message: '💸 Günlük token limitimiz doldu.\n🔄 Sistem kapasitesi yarın yenilenecek.',
-        );
-      }
-
-      // Timeout error
-      if (errorString.contains('timeout') || errorString.contains('deadline')) {
-        throw GeminiException(
-          message: '⏱️ AI yanıt süresi aşıldı.\n🔄 Lütfen tekrar deneyin.',
-        );
-      }
-
-      throw GeminiException(
-        message: '⚠️ AI hizmeti geçici olarak kullanılamıyor.\n🔄 Lütfen daha sonra tekrar deneyin.',
-      );
+      throw GeminiException(message: _handleGenericError(e));
     }
   }
 
   String _handleFirebaseError(FirebaseException e) {
     print('🚨 Firebase Error: ${e.code} - ${e.message}');
 
-    switch (e.code) {
-      case 'quota-exceeded':
-      case 'resource-exhausted':
-        return '💸 Günlük token limitimiz doldu.\n🔄 Sistem kapasitesi yarın yenilenecek.';
+    final errorMessages = {
+      'quota-exceeded': '💸 Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.',
+      'resource-exhausted': '💸 Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.',
+      'permission-denied': '🔒 AI hizmet erişimi reddedildi.\n Lütfen uygulamayı güncelleyin.',
+      'unavailable': '🛠️ AI hizmeti bakımda.\n Birkaç dakika sonra tekrar deneyin.',
+      'deadline-exceeded': '⏱️ AI yanıt süresi aşıldı.\n Lütfen tekrar deneyin.',
+      'unauthenticated': '🔑 Kimlik doğrulama hatası.\n Uygulamayı yeniden başlatın.',
+    };
 
-      case 'permission-denied':
-        return '🔒 AI hizmet erişimi reddedildi.\n📱 Lütfen uygulamayı güncelleyin.';
-
-      case 'unavailable':
-        return '🛠️ AI hizmeti bakımda.\n⏰ Birkaç dakika sonra tekrar deneyin.';
-
-      case 'deadline-exceeded':
-        return '⏱️ AI yanıt süresi aşıldı.\n🔄 Lütfen tekrar deneyin.';
-
-      case 'unauthenticated':
-        return '🔑 Kimlik doğrulama hatası.\n🔄 Uygulamayı yeniden başlatın.';
-
-      default:
-        return '⚠️ AI hizmeti hatası.\n🔄 Lütfen daha sonra tekrar deneyin.';
-    }
+    return errorMessages[e.code] ?? '⚠️ AI hizmeti hatası.\n Lütfen daha sonra tekrar deneyin.';
   }
 
+  String _handleGenericError(dynamic e) {
+    final errorString = e.toString().toLowerCase();
+
+    if (errorString.contains('quota') || errorString.contains('429') || errorString.contains('resource-exhausted')) {
+      return '💸 Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.';
+    }
+
+    if (errorString.contains('timeout') || errorString.contains('deadline')) {
+      return '⏱️ AI yanıt süresi aşıldı.\n Lütfen tekrar deneyin.';
+    }
+
+    return '⚠️ AI hizmeti geçici olarak kullanılamıyor.\n Lütfen daha sonra tekrar deneyin.';
+  }
+
+  // AI requests
   @override
   Future<String> getUserDiet(UserInfoModel user) async {
     await _initFuture;
-
-    final prompt = '''
-Sen beslenme uzmanı bir diyetisyensin ve Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle arkadaş canlısı bir konuşma şeklin var. Kullanıcı sana Avo olarak hitap ediyor.
-
-Kullanıcının fiziksel özellikleri ve hedefleri:
-Boy: ${user.height} cm
-Kilo: ${user.weight} kg
-Yaş: ${user.age}
-Cinsiyet: ${user.gender}
-Aktivite seviyesi: ${user.activityLevel}
-Hedef: ${user.target}
-Diyet Bütçesi: ${user.budget}
-
-Kullanıcının günlük kalori ihtiyacı ${user.targetCalories} kalori olarak hesaplanmıştır. 
-Lütfen bu kalori miktarına uygun bir günlük diyet listesi oluştur. Hazırlayacağın diyet listesi bu kalorinin en fazla 50 aşağısında veya 50 yukarısında olabilir!
-
-Lütfen sadece bir günlük diyet listesi oluştur. Liste aşağıdaki formatta olmalı ve her öğünün yaklaşık kalori değerini parantez içinde belirt:
-
-- Kahvaltı: [detaylar] (yaklaşık ... kalori)
-- Öğle: [detaylar] (yaklaşık ... kalori)
-- Akşam: [detaylar] (yaklaşık ... kalori)
-- Ara öğünler: [detaylar ve toplam kalori değeri]
-
-Listeyi oluşturduktan sonra tüm gün toplam kalori değerini belirt ve aşağıdaki 3 notu eklemeyi unutma:
-- Günde en az 2 litre sıvı tüketmeniz gerekli.
-- Bu sadece bir örnek listedir, kendi zevklerinize göre değişiklikler yapabilirsiniz. Ancak değişiklik yaparken kalori dengesine dikkat edin.
-- Sağlıklı bir beslenme planı oluşturmak için bir diyetisyene danışmanız her zaman en iyisidir.
-''';
-
+    final prompt = _promptRepository.getDietPrompt(user);
     return _makeGeminiRequest(prompt);
   }
 
   @override
   Future<String> aiChat(String text, String conversationHistory, UserInfoCacheModel userInfo) async {
     await _initFuture;
-
-    final prompt = '''
-Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle arkadaş canlısı bir konuşma şeklin var.
-
-Kullanıcı Bilgileri:
-- Yaş: ${userInfo.age}
-- Boy: ${userInfo.height}
-- Kilo: ${userInfo.weight}
-- Cinsiyet: ${userInfo.gender}
-
-Uzmanlık alanların:
-- Yemek tarifleri ve pişirme yöntemleri
-- Besinlerin değerleri ve faydaları 
-- Dengeli beslenme önerileri
-- Sağlıklı yaşam tavsiyeleri
-- Besinlerin yaklaşık kalori değerleri
-
-Önceki konuşma:
-$conversationHistory
-
-Kullanıcının mesajı: $text
-
-Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Doğrudan bir avokado maskotu olarak yanıt ver.
-
-Not1: Yalnızca uzmanlık alanlarında yanıt ver. Farklı konularda "Üzgünüm, yalnızca beslenme ve sağlıklı yaşam konularında yardımcı olabilirim." şeklinde yanıt ver.
-
-Not2: SADECE kullanıcı açıkça teşekkür ettiğinde "Rica ederim! Size başka hangi konuda yardımcı olabilirim?" şeklinde yanıt ver. Kullanıcı teşekkür etmediyse, yanıtını "Rica ederim!" veya benzer ifadelerle bitirme.
-''';
-
+    final prompt = _promptRepository.getChatPrompt(text, conversationHistory, userInfo);
     return _makeGeminiRequest(prompt);
   }
 
   @override
   Future<String> getRegionalFatBurningAdvice(UserInfoCacheModel userInfo, List<String> selectedRegions) async {
     await _initFuture;
-
-    final regionText = selectedRegions.join(', ');
-
-    final prompt = '''
-Sen Avo adında, sağlıklı beslenme konusunda uzman bir dijital asistansın. Karşındakiyle arkadaş canlısı bir konuşma şeklin var.
-
-Sağlıklı beslenme uzmanı bir diyetisyen olarak, vücudun belirli bölgelerinde yağ yakmak isteyen bir kişiye tavsiye ver.
-
-Kullanıcının fiziksel özellikleri:
-- Boy: ${userInfo.height} cm
-- Kilo: ${userInfo.weight} kg
-- Yaş: ${userInfo.age}
-- Cinsiyet: ${userInfo.gender}
-
-Kişi şu bölgelerde yağ yakmak istiyor: $regionText
-
-Seçilen bölgeler için:
-1. Bölgesel yağ yakımının bilimsel olarak sınırlı olduğunu nazikçe açıkla
-2. Ancak yine de genel yağ yakımı ve şu bölgeleri hedefleyen egzersiz tavsiyeleri ver: $regionText
-3. Maksimum 3 adet etkili egzersiz öner
-4. Bu bölgelerde yağ yakmayı destekleyecek beslenme tavsiyelerini 3 madde halinde ver
-5. Bu bölgelerdeki kas tonunu artırmak için ipuçları ver
-
-Yanıtını direkt Avo olarak ver. Asla "Kullanıcı:" veya "Ben Avo:" veya "Avo:" gibi etiketler kullanma. Cevap verirken en başta kendini tanıtmana gerek yok, kısa bir giriş cümlesiyle konuşmaya başla. Yanıtın 300 kelimeyi geçmesin. Arkadaş canlısı ve motive edici ol.
-''';
-
+    final prompt = _promptRepository.getRegionalFatBurningPrompt(userInfo, selectedRegions);
     return _makeGeminiRequest(prompt);
   }
 }

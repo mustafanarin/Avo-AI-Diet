@@ -30,7 +30,6 @@ final class CustomTabBarView extends HookWidget {
         children: const [
           HomeView(),
           SearchView(),
-          SizedBox.shrink(),
           FavoriteView(),
           ProfileView(),
         ],
@@ -39,7 +38,7 @@ final class CustomTabBarView extends HookWidget {
           ? Container(
               height: 65.h,
               width: 65.w,
-              margin: const EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top: 15.h),
               child: FloatingActionButton(
                 heroTag: null,
                 elevation: 0,
@@ -54,7 +53,6 @@ final class CustomTabBarView extends HookWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: showBottomBar
           ? Container(
-              height: 80.h,
               decoration: BoxDecoration(
                 color: ProjectColors.white,
                 borderRadius: const BorderRadius.only(
@@ -70,46 +68,86 @@ final class CustomTabBarView extends HookWidget {
                   ),
                 ],
               ),
-              child: BottomNavigationBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                type: BottomNavigationBarType.fixed,
-                showSelectedLabels: true,
-                showUnselectedLabels: true,
-                selectedItemColor: ProjectColors.green,
-                unselectedItemColor: ProjectColors.grey,
-                selectedFontSize: 12,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    label: ProjectStrings.home,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.search_outlined),
-                    label: ProjectStrings.search,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: SizedBox.shrink(),
-                    label: '',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.favorite_outline),
-                    label: ProjectStrings.favorites,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline),
-                    label: ProjectStrings.profile,
-                  ),
-                ],
-                currentIndex: selectedIndex.value,
-                onTap: (index) {
-                  if (index == 2) return;
-                  selectedIndex.value = index;
-                  pageController.jumpToPage(index);
-                },
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
+                ),
+                child: BottomNavigationBar(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  type: BottomNavigationBarType.fixed,
+                  showSelectedLabels: true,
+                  showUnselectedLabels: true,
+                  selectedItemColor: ProjectColors.green,
+                  unselectedItemColor: ProjectColors.grey,
+                  selectedFontSize: 12.sp,
+                  unselectedFontSize: 12.sp,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home_outlined, size: 22),
+                      label: ProjectStrings.home,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.search_outlined, size: 22),
+                      label: ProjectStrings.search,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: SizedBox.shrink(),
+                      label: '',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.favorite_outline, size: 22),
+                      label: ProjectStrings.favorites,
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person_outline, size: 22),
+                      label: ProjectStrings.profile,
+                    ),
+                  ],
+                  currentIndex: _getBottomNavIndex(selectedIndex.value),
+                  onTap: (index) {
+                    if (index == 2) return;
+                    final pageIndex = _getPageIndex(index);
+                    selectedIndex.value = pageIndex;
+                    pageController.jumpToPage(pageIndex);
+                  },
+                ),
               ),
             )
           : const SizedBox.shrink(),
     );
+  }
+
+  // Changes the PageView index to the BottomNavigationBar index
+  int _getBottomNavIndex(int pageIndex) {
+    switch (pageIndex) {
+      case 0:
+        return 0; // Home
+      case 1:
+        return 1; // Search
+      case 2:
+        return 3; // Favorites
+      case 3:
+        return 4; // Profile
+      default:
+        return 0;
+    }
+  }
+
+  // Changes the BottomNavigationBar index to the PageView index
+  int _getPageIndex(int bottomNavIndex) {
+    switch (bottomNavIndex) {
+      case 0:
+        return 0; // Home
+      case 1:
+        return 1; // Search
+      case 3:
+        return 2; // Favorites
+      case 4:
+        return 3; // Profile
+      default:
+        return 0;
+    }
   }
 }

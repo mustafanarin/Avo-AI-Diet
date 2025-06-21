@@ -1,13 +1,11 @@
 import 'package:avo_ai_diet/product/cache/model/favorite_message/favorite_message_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class IFavoriteMessageManager {
   Future<void> toggleFavorite(FavoriteMessageModel model);
   Future<List<FavoriteMessageModel>?> getFavorites();
 }
 
-@injectable
 final class FavoriteMessageManager implements IFavoriteMessageManager {
   LazyBox<FavoriteMessageModel>? _box;
 

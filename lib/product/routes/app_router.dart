@@ -114,20 +114,9 @@ final class AppRouter {
           path: RouteNames.nameEdit,
           builder: (context, state) => const NameEditView(),
         ),
-        GoRoute(
+       GoRoute(
           path: RouteNames.userInfoEdit,
-          pageBuilder: (context, state) => CustomTransitionPage<void>(
-            key: state.pageKey,
-            transitionDuration: const Duration(milliseconds: 1200),
-            reverseTransitionDuration: const Duration(milliseconds: 1200),
-            child: const UserInfoEditView(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
-          ),
+          builder: (context, state) => const UserInfoEditView(),
         ),
         GoRoute(
           path: RouteNames.regionalFat,

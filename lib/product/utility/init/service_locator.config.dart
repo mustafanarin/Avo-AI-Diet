@@ -25,6 +25,7 @@ import '../../../feature/profile/cubit/water_reminder_cubit.dart' as _i927;
 import '../../../feature/search/cubit/search_cubit.dart' as _i104;
 import '../../../services/gemini_service.dart' as _i709;
 import '../../../services/notification_service.dart' as _i354;
+import '../../../services/rate_limit_service.dart' as _i395;
 import '../../cache/manager/daily_calorie/daily_calorie_manager.dart' as _i18;
 import '../../cache/manager/favorites/favorite_message_manager.dart' as _i45;
 import '../../cache/manager/name_and_cal/name_and_cal_manager.dart' as _i490;
@@ -32,6 +33,7 @@ import '../../cache/manager/reponse/ai_response_manager.dart' as _i697;
 import '../../cache/manager/user_info/user_info_manager.dart' as _i833;
 import '../../cache/manager/water_reminder/water_reminder_manager.dart'
     as _i859;
+import '../../constants/prompt_repository.dart' as _i151;
 import 'app_module.dart' as _i460;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -46,14 +48,10 @@ _i174.GetIt $initGetIt(
     environmentFilter,
   );
   final appModule = _$AppModule();
-  gh.factory<_i45.FavoriteMessageManager>(() => _i45.FavoriteMessageManager());
   gh.factory<_i104.SearchCubit>(() => _i104.SearchCubit());
-  gh.singleton<_i859.WaterReminderManager>(() => _i859.WaterReminderManager());
-  gh.singleton<_i697.AiResponseManager>(() => _i697.AiResponseManager());
-  gh.singleton<_i18.DailyCalorieManager>(() => _i18.DailyCalorieManager());
-  gh.singleton<_i490.NameAndCalManager>(() => _i490.NameAndCalManager());
-  gh.singleton<_i833.UserInfoManager>(() => _i833.UserInfoManager());
   gh.singleton<_i18.IDailyCalorieManager>(() => appModule.dailyCalorieManager);
+  gh.singleton<_i151.IPromptRepository>(() => appModule.promptRepository);
+  gh.singleton<_i395.IRateLimitService>(() => appModule.rateLimitService);
   gh.singleton<_i709.IGeminiService>(() => appModule.geminiService);
   gh.singleton<_i45.IFavoriteMessageManager>(
       () => appModule.favoriteMessageManager);
@@ -63,8 +61,11 @@ _i174.GetIt $initGetIt(
   gh.singleton<_i354.INotificationService>(() => appModule.notificationService);
   gh.singleton<_i859.IWaterReminderManager>(
       () => appModule.waterReminderManager);
-  gh.singleton<_i709.GeminiService>(() => _i709.GeminiService());
-  gh.singleton<_i354.NotificationService>(() => _i354.NotificationService());
+  gh.singleton<_i395.RateLimitService>(() => _i395.RateLimitService());
+  gh.singleton<_i709.GeminiService>(() => _i709.GeminiService(
+        gh<_i151.IPromptRepository>(),
+        gh<_i395.IRateLimitService>(),
+      ));
   gh.factory<_i927.WaterReminderCubit>(() => _i927.WaterReminderCubit(
         gh<_i354.INotificationService>(),
         gh<_i859.IWaterReminderManager>(),

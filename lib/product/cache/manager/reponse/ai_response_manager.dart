@@ -1,14 +1,11 @@
 import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class IAiResponseManager {
   Future<void> saveDietPlan(AiResponse response);
   Future<AiResponse?> getDietPlan();
 }
 
-
-@singleton
 class AiResponseManager implements IAiResponseManager {
   LazyBox<AiResponse>? _box;
 

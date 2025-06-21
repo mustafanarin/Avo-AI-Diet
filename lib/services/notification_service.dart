@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:injectable/injectable.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -12,7 +11,6 @@ abstract class INotificationService {
   Future<void> showPreviewNotification();
 }
 
-@singleton
 final class NotificationService implements INotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -26,8 +24,13 @@ final class NotificationService implements INotificationService {
 
     const initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
+    // iOS ayarları eklendi
+    const initializationSettingsIOS = DarwinInitializationSettings();
+
+    // iOS ayarları initializationSettings'e eklendi
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS, // Bu satır eksikti
     );
 
     await _flutterLocalNotificationsPlugin.initialize(
@@ -37,10 +40,27 @@ final class NotificationService implements INotificationService {
 
   @override
   Future<void> scheduleWaterReminder() async {
-    final permissionStatus = await _flutterLocalNotificationsPlugin
+    // iOS için permission isteği eklendi
+    var permissionGranted = false;
+
+    // Android permission kontrolü
+    final androidPermission = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
-    if (permissionStatus != true) {
+
+    // iOS permission kontrolü
+    final iosPermission = await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    // Her iki platform için de izin kontrolü
+    permissionGranted = (androidPermission ?? false) || (iosPermission ?? false);
+
+    if (!permissionGranted) {
       return;
     }
 
@@ -72,10 +92,14 @@ final class NotificationService implements INotificationService {
           importance: Importance.high,
           priority: Priority.high,
         ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      matchDateTimeComponents:
-          DateTimeComponents.time, // This ensures the notification repeats at the same time every day
+      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
@@ -117,6 +141,12 @@ final class NotificationService implements INotificationService {
           channelDescription: 'Su içmeyi hatırlatan bildirimler',
           importance: Importance.high,
           priority: Priority.high,
+        ),
+        // iOS ayarları eklendi
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
         ),
       ),
     );

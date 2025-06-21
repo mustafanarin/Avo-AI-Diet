@@ -1,6 +1,5 @@
 import 'package:avo_ai_diet/product/cache/model/water_reminder/water_reminder_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class IWaterReminderManager {
   Future<void> saveWaterReminderState(bool isEnabled);
@@ -8,7 +7,6 @@ abstract class IWaterReminderManager {
   Future<bool> getWaterReminderState();
 }
 
-@singleton
 final class WaterReminderManager implements IWaterReminderManager {
   LazyBox<WaterReminderModel>? _box;
 

@@ -1,13 +1,11 @@
 import 'package:avo_ai_diet/product/cache/model/daily_calorie/daily_calorie_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class IDailyCalorieManager {
   Future<void> saveCalorieData(DailyCalorieModel model);
   Future<DailyCalorieModel> getCalorieData();
 }
 
-@singleton
 final class DailyCalorieManager implements IDailyCalorieManager {
   Box<DailyCalorieModel>? _box;
 

@@ -1,12 +1,11 @@
 import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class IUserInfoManager {
   Future<void> saveUserInfo(UserInfoCacheModel model);
   Future<UserInfoCacheModel?> getUserInfo();
 }
-@singleton
+
 class UserInfoManager implements IUserInfoManager {
   LazyBox<UserInfoCacheModel>? _box;
   UserInfoCacheModel? _cachedUserInfo;

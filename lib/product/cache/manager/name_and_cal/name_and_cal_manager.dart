@@ -1,14 +1,12 @@
 import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:hive/hive.dart';
-import 'package:injectable/injectable.dart';
 
 abstract class INameAndCalManager {
   Future<void> saveNameCalori(NameAndCalModel model);
   Future<NameAndCalModel?> getNameCalori();
 }
 
-@singleton
-final class NameAndCalManager implements INameAndCalManager{
+final class NameAndCalManager implements INameAndCalManager {
   Box<NameAndCalModel>? _box;
 
   Future<Box<NameAndCalModel>> _getBox() async {
@@ -31,6 +29,4 @@ final class NameAndCalManager implements INameAndCalManager{
     );
     return response;
   }
-
-
 }
