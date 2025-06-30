@@ -8,12 +8,13 @@ import 'package:avo_ai_diet/product/cache/model/response/ai_response.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_radius.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/utility/error_handle_mixin.dart';
+import 'package:avo_ai_diet/product/utility/mixin/error_handle_mixin.dart';
 import 'package:avo_ai_diet/product/utility/extensions/json_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart';
@@ -149,7 +150,7 @@ class _ModernDietCard extends HookWidget {
           right: 0,
           child: AnimatedOpacity(
             opacity: showShadow.value ? 1 : 0,
-            duration: const Duration(milliseconds: 200),
+            duration: AppDurations.smallMilliseconds(),
             child: Container(
               height: 20,
               decoration: BoxDecoration(

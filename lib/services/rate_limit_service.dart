@@ -51,7 +51,7 @@ class RateLimitService implements IRateLimitService {
 
     if (!canMakeRequest) {
       throw GeminiException(
-        message: '🎯 Günlük ücretsiz AI sorgu limitiniz ($dailyLimit) doldu.\n Yarın tekrar deneyiniz.',
+        message: 'Günlük ücretsiz AI sorgu limitiniz ($dailyLimit) doldu.\n Yarın tekrar deneyiniz.',
       );
     }
 

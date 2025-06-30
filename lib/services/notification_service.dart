@@ -1,8 +1,11 @@
 import 'dart:math';
 
+import 'package:avo_ai_diet/product/constants/water_notification_constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:injectable/injectable.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
+// WaterNotificationConstants import'unu buraya ekleyin
 
 abstract class INotificationService {
   Future<void> init();
@@ -11,12 +14,9 @@ abstract class INotificationService {
   Future<void> showPreviewNotification();
 }
 
+@singleton
 final class NotificationService implements INotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  // Her gün için farklı ID'ler (7 gün = 7 farklı bildirim)
-  static const List<int> _weeklyNotificationIds = [1001, 1002, 1003, 1004, 1005, 1006, 1007];
-  static const int _previewNotificationId = 100;
 
   @override
   Future<void> init() async {
@@ -36,7 +36,7 @@ final class NotificationService implements INotificationService {
 
   @override
   Future<void> scheduleWaterReminder() async {
-    // Permission kontrolü
+    // Permission check
     var permissionGranted = false;
 
     final androidPermission = await _flutterLocalNotificationsPlugin
@@ -57,10 +57,10 @@ final class NotificationService implements INotificationService {
       return;
     }
 
-    // Mevcut bildirimleri iptal et
+    // Cancel current notifications
     await cancelWaterReminder();
 
-    // 7 gün boyunca farklı random saatlerde bildirimler programla
+    // Schedule notifications at different random times for 7 days
     await _scheduleWeeklyRandomReminders();
   }
 
@@ -68,10 +68,10 @@ final class NotificationService implements INotificationService {
     final random = Random();
     final now = tz.TZDateTime.now(tz.local);
 
-    // Her gün için farklı random saat hesapla
-    for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
-      final randomHour = 12 + random.nextInt(10); // 12-21 arası
-      final randomMinute = random.nextInt(60); // 0-59 arası
+    // Calculate different random hours for each day
+    for (var dayOffset = 0; dayOffset < 7; dayOffset++) {
+      final randomHour = 12 + random.nextInt(10); // Between 12-21
+      final randomMinute = random.nextInt(60); // Between 0-59
 
       final targetDate = now.add(Duration(days: dayOffset));
       final scheduledDate = tz.TZDateTime(
@@ -83,27 +83,14 @@ final class NotificationService implements INotificationService {
         randomMinute,
       );
 
-      // Sadece gelecekteki zamanları programla
+      // Only program future times
       if (scheduledDate.isAfter(now)) {
         await _flutterLocalNotificationsPlugin.zonedSchedule(
-          _weeklyNotificationIds[dayOffset],
-          'Su Hatırlatıcısı 💧',
-          _getRandomWaterMessage(),
+          WaterNotificationConstants.weeklyNotificationIds[dayOffset],
+          WaterNotificationConstants.title,
+          WaterNotificationConstants.getRandomMessage(),
           scheduledDate,
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'water_reminder',
-              'water_reminder_channel',
-              channelDescription: 'Su içmeyi hatırlatan bildirimler',
-              importance: Importance.high,
-              priority: Priority.high,
-            ),
-            iOS: DarwinNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
-            ),
-          ),
+          _getNotificationDetails(),
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
           matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
         );
@@ -111,28 +98,27 @@ final class NotificationService implements INotificationService {
     }
   }
 
-  String _getRandomWaterMessage() {
-    final messages = [
-      'Hey, bugün yeteri kadar su içiyor musun? 🥑',
-      'Su içme zamanı! Vücudun sana teşekkür edecek 💧',
-      'Hidrat kalmayı unutma! 🌊',
-      'Bir bardak su içmek için mükemmel zaman ✨',
-      'Su içmeyi unutma, enerjin için önemli! ⚡',
-      'Sağlıklı yaşam suyla başlar 🌿',
-      'Vücudunun %70\'i su, eksiltme! 💦',
-      'Su iç, kendini iyi hisset! 🌟',
-      'Metabolizman için su şart! 🔥',
-      'Cildin için su iç! ✨',
-    ];
-    
-    final random = Random();
-    return messages[random.nextInt(messages.length)];
+  NotificationDetails _getNotificationDetails() {
+    return const NotificationDetails(
+      android: AndroidNotificationDetails(
+        WaterNotificationConstants.channelId,
+        WaterNotificationConstants.channelName,
+        channelDescription: WaterNotificationConstants.channelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
   }
 
   @override
   Future<void> cancelWaterReminder() async {
-    // Tüm haftalık bildirimleri iptal et
-    for (final id in _weeklyNotificationIds) {
+    // Cancel all weekly notifications
+    for (final id in WaterNotificationConstants.weeklyNotificationIds) {
       await _flutterLocalNotificationsPlugin.cancel(id);
     }
   }
@@ -140,23 +126,10 @@ final class NotificationService implements INotificationService {
   @override
   Future<void> showPreviewNotification() async {
     await _flutterLocalNotificationsPlugin.show(
-      _previewNotificationId,
-      'Su Hatırlatıcısı 💧',
-      _getRandomWaterMessage(),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'water_reminder_channel',
-          'Water Reminder',
-          channelDescription: 'Su içmeyi hatırlatan bildirimler',
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
+      WaterNotificationConstants.previewNotificationId,
+      WaterNotificationConstants.title,
+      WaterNotificationConstants.getRandomMessage(),
+      _getNotificationDetails(),
     );
   }
 }

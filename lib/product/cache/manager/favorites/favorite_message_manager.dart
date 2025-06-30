@@ -8,9 +8,10 @@ abstract class IFavoriteMessageManager {
 
 final class FavoriteMessageManager implements IFavoriteMessageManager {
   LazyBox<FavoriteMessageModel>? _box;
+  static const String _favMessages = 'favoriteMessages';
 
   Future<LazyBox<FavoriteMessageModel>?> _getBox() async {
-    _box ??= await Hive.openLazyBox<FavoriteMessageModel>('favoriteMessages');
+    _box ??= await Hive.openLazyBox<FavoriteMessageModel>(_favMessages);
     return _box!;
   }
 

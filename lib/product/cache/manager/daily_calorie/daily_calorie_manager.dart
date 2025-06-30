@@ -7,17 +7,20 @@ abstract class IDailyCalorieManager {
 }
 
 final class DailyCalorieManager implements IDailyCalorieManager {
+  static const String _boxName = 'dailyCalories';
+  static const String _currentDayKey = 'currentDay';
+
   Box<DailyCalorieModel>? _box;
 
   Future<Box<DailyCalorieModel>> _getBox() async {
-    _box ??= await Hive.openBox<DailyCalorieModel>('dailyCalories');
+    _box ??= await Hive.openBox<DailyCalorieModel>(_boxName);
     return _box!;
   }
 
   @override
   Future<void> saveCalorieData(DailyCalorieModel model) async {
     final box = await _getBox();
-    await box.put('currentDay', model);
+    await box.put(_currentDayKey, model);
   }
 
   @override
@@ -26,7 +29,7 @@ final class DailyCalorieManager implements IDailyCalorieManager {
     final now = DateTime.now();
     final today = '${now.year}-${now.month}-${now.day}';
 
-    final response = box.get('currentDay', defaultValue: DailyCalorieModel(lastResetDate: today));
+    final response = box.get(_currentDayKey, defaultValue: DailyCalorieModel(lastResetDate: today));
 
     if (response?.lastResetDate != today) {
       final newModel = DailyCalorieModel(lastResetDate: today);

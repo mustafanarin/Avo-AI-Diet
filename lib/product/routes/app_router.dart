@@ -10,26 +10,46 @@ import 'package:avo_ai_diet/feature/profile/view/user_info_edit_view.dart';
 import 'package:avo_ai_diet/feature/search/model/food_model.dart';
 import 'package:avo_ai_diet/feature/search/view/food_detail_view.dart';
 import 'package:avo_ai_diet/feature/tabbar/tabbar_view.dart';
+import 'package:avo_ai_diet/product/cache/manager/name_and_cal/name_and_cal_manager.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
+// AppDurations import'unu buraya ekleyin
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final class AppRouter {
-  static final GoRouter router = GoRouter(
-    routes: _routes,
-    initialLocation: RouteNames.welcome,
-    errorBuilder: (context, state) => const _ErrorPage(),
-  );
+  static String? _initialLocation;
+
+  static GoRouter get router => GoRouter(
+        routes: _routes,
+        initialLocation: _initialLocation ?? RouteNames.welcome,
+        errorBuilder: (context, state) => const _ErrorPage(),
+      );
+
+  static Future<void> setInitialLocation() async {
+    try {
+      final nameManager = getIt<INameAndCalManager>();
+      final isRegistered = await nameManager.isUserRegistered();
+
+      if (isRegistered) {
+        _initialLocation = RouteNames.tabbar;
+      } else {
+        _initialLocation = RouteNames.welcome;
+      }
+    } catch (e) {
+      _initialLocation = RouteNames.welcome;
+    }
+  }
 
   static List<RouteBase> get _routes => [
         GoRoute(
           path: RouteNames.tabbar,
           pageBuilder: (context, state) => CustomTransitionPage<void>(
             key: state.pageKey,
-            transitionDuration: const Duration(milliseconds: 1200),
-            reverseTransitionDuration: const Duration(milliseconds: 1200),
+            transitionDuration: AppDurations.transitionMilliseconds(),
+            reverseTransitionDuration: AppDurations.transitionMilliseconds(),
             child: const CustomTabBarView(),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(
@@ -45,8 +65,8 @@ final class AppRouter {
             final tabIndex = int.tryParse(state.pathParameters['tabIndex'] ?? '0') ?? 0;
             return CustomTransitionPage<void>(
               key: state.pageKey,
-              transitionDuration: const Duration(milliseconds: 1200),
-              reverseTransitionDuration: const Duration(milliseconds: 1200),
+              transitionDuration: AppDurations.transitionMilliseconds(),
+              reverseTransitionDuration: AppDurations.transitionMilliseconds(),
               child: CustomTabBarView(initialIndex: tabIndex),
               transitionsBuilder: (context, animation, secondaryAnimation, child) {
                 return FadeTransition(
@@ -114,7 +134,7 @@ final class AppRouter {
           path: RouteNames.nameEdit,
           builder: (context, state) => const NameEditView(),
         ),
-       GoRoute(
+        GoRoute(
           path: RouteNames.userInfoEdit,
           builder: (context, state) => const UserInfoEditView(),
         ),

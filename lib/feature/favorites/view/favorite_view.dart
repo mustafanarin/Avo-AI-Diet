@@ -1,6 +1,7 @@
 import 'package:avo_ai_diet/feature/favorites/cubit/favorites_cubit.dart';
 import 'package:avo_ai_diet/feature/favorites/state/favorites_state.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/png_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/utility/extensions/png_extension.dart';
@@ -344,7 +345,7 @@ void _showFullText(BuildContext context, String text) {
                         right: 0,
                         child: AnimatedOpacity(
                           opacity: showTopShadow.value ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
+                          duration: AppDurations.smallMilliseconds(),
                           child: Container(
                             height: 24,
                             decoration: BoxDecoration(

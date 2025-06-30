@@ -37,9 +37,9 @@ $_avoPersonality
 Kullanıcının fiziksel özellikleri ve hedefleri:
 ${_getUserPhysicalInfo(user)}
 
-${_getCalorieRequirement(user)}
+${_getImprovedCalorieRequirement(user)}
 
-${_getDietListFormat()}
+${_getDetailedDietListFormat(user)}
 
 $_dietNotes
 ''';
@@ -103,21 +103,60 @@ Kullanıcı Bilgileri:
 - Cinsiyet: ${userInfo.gender}''';
   }
 
-  String _getCalorieRequirement(UserInfoModel user) {
+  // Geliştirilmiş kalori gereksinimleri metodu
+  String _getImprovedCalorieRequirement(UserInfoModel user) {
+    final targetCalories = user.targetCalories;
+    final minCalories = targetCalories - 50;
+    final maxCalories = targetCalories + 50;
+    
     return '''
-Kullanıcının günlük kalori ihtiyacı ${user.targetCalories} kalori olarak hesaplanmıştır. 
-Lütfen bu kalori miktarına uygun bir günlük diyet listesi oluştur. 
-Hazırlayacağın diyet listesi bu kalorinin en fazla 50 aşağısında veya 50 yukarısında olabilir!''';
+🎯 ÖNEMLİ KALORI HEDEFİ 🎯
+Kullanıcının günlük kalori hedefi: ${targetCalories} kalori
+
+MUTLAKA bu kurallara uy:
+1. Toplam günlük kalori ${minCalories}-${maxCalories} kalori arasında OLMALI
+2. Her öğünün kalori değerini hesaplarken TOPLAMININ ${targetCalories} kaloriye yakın olmasını sağla
+3. Öğünleri planlarken şu dağılımı kullan:
+   - Kahvaltı: %25-30 (${(targetCalories * 0.25).round()}-${(targetCalories * 0.30).round()} kalori)
+   - Öğle: %30-35 (${(targetCalories * 0.30).round()}-${(targetCalories * 0.35).round()} kalori)
+   - Akşam: %25-30 (${(targetCalories * 0.25).round()}-${(targetCalories * 0.30).round()} kalori)
+   - Ara öğünler: %10-15 (${(targetCalories * 0.10).round()}-${(targetCalories * 0.15).round()} kalori)
+
+4. Her öğünde kalori miktarını net olarak belirt ve sonunda TOPLAM kaloriyi kontrol et!''';
   }
 
-  String _getDietListFormat() {
+  // Daha detaylı diyet listesi formatı
+  String _getDetailedDietListFormat(UserInfoModel user) {
+    final targetCalories = user.targetCalories;
+    
     return '''
-Lütfen sadece bir günlük diyet listesi oluştur. Liste aşağıdaki formatta olmalı ve her öğünün yaklaşık kalori değerini parantez içinde belirt:
+GÜNLÜK DİYET LİSTESİ FORMAT (HEDEF: ${targetCalories} KALORİ):
 
-- Kahvaltı: [detaylar] (yaklaşık ... kalori)
-- Öğle: [detaylar] (yaklaşık ... kalori)
-- Akşam: [detaylar] (yaklaşık ... kalori)
-- Ara öğünler: [detaylar ve toplam kalori değeri]''';
+Kahvaltı: [yemek detayları] (${(targetCalories * 0.275).round()} kalori civarı)
+- [spesifik yemek 1] - [portion] - [kalori]
+- [spesifik yemek 2] - [portion] - [kalori]
+- [içecek] - [kalori]
+Kahvaltı Toplam: [exact kalori sayısı] kalori
+
+Ara Öğün 1: [detay] ([kalori] kalori)
+
+Öğle: [yemek detayları] (${(targetCalories * 0.325).round()} kalori civarı)
+- [ana yemek] - [portion] - [kalori]
+- [salata/garnitür] - [portion] - [kalori]
+- [içecek] - [kalori]
+Öğle Toplam: [exact kalori sayısı] kalori
+
+Ara Öğün 2: [detay] ([kalori] kalori)
+
+Akşam: [yemek detayları] (${(targetCalories * 0.275).round()} kalori civarı)
+- [ana yemek] - [portion] - [kalori]
+- [yan yemek] - [portion] - [kalori]
+- [içecek] - [kalori]
+Akşam Toplam: [exact kalori sayısı] kalori
+
+🔥 GÜNLÜK TOPLAM KALORİ: [Tüm öğünlerin toplamı] kalori
+
+⚠️ Bu toplam ${targetCalories - 50}-${targetCalories + 50} kalori arasında OLMALIDIR!''';
   }
 
   String _getChatRules() {

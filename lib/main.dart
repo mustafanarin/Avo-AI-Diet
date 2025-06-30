@@ -4,21 +4,17 @@ import 'package:avo_ai_diet/feature/home/cubit/daily_calorie_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/name_and_cal_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cache_cubit.dart';
 import 'package:avo_ai_diet/feature/onboarding/cubit/user_info_cubit.dart';
-import 'package:avo_ai_diet/firebase_options.dart';
+import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/routes/app_router.dart';
 import 'package:avo_ai_diet/product/theme/app_theme.dart';
 import 'package:avo_ai_diet/product/utility/init/app_initialize.dart';
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   await AppInitialize.init();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   runApp(const MyApp());
 }
 
@@ -42,7 +38,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.getLightTheme,
-            title: 'Avo AI Diyet',
+            title: ProjectStrings.appName,
             routerConfig: AppRouter.router,
           );
         },

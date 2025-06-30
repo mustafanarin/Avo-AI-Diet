@@ -7,24 +7,27 @@ abstract class IAiResponseManager {
 }
 
 class AiResponseManager implements IAiResponseManager {
+  static const String _boxName = 'diet_plan';
+  static const String _responseKey = 'response';
+
   LazyBox<AiResponse>? _box;
 
   Future<LazyBox<AiResponse>> _getBox() async {
-    _box ??= await Hive.openLazyBox<AiResponse>('diet_plan');
+    _box ??= await Hive.openLazyBox<AiResponse>(_boxName);
     return _box!;
   }
 
   @override
   Future<void> saveDietPlan(AiResponse response) async {
     final box = await _getBox();
-    await box.put('response', response);
+    await box.put(_responseKey, response);
   }
 
   @override
   Future<AiResponse?> getDietPlan() async {
     final box = await _getBox();
     final response = await box.get(
-      'response',
+      _responseKey,
       defaultValue: AiResponse(
         dietPlan: 'Sanırım bir hata oluştu, profil sayfasından tekrar deneyiniz.',
         formattedDayMonthYear: '-',

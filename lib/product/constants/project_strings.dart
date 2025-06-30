@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart' show immutable;
 
 @immutable
 abstract final class ProjectStrings {
+  static const String appName = 'Avo AI Diyet';
+
   // Welcome Page
   static const String welcomeTitle = 'Sağlıklı Yaşama Merhaba!';
   static const String welcomeDescription =

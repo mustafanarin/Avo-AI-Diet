@@ -1,5 +1,5 @@
 name: avo_ai_diet
-description: "A new Flutter project."
+description: "Personal diet app with AI."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -14,7 +14,6 @@ dependencies:
   # Animation
   lottie: ^3.3.1
   percent_indicator: ^4.2.5
-  fluttertoast: ^8.2.12
 
 
   # Cache
@@ -35,6 +34,7 @@ dependencies:
   flutter_svg: ^2.1.0
   xml: ^6.5.0
   connectivity_plus: ^6.1.4
+  device_info_plus: ^11.4.0
 
 
   # Firebase
@@ -47,16 +47,10 @@ dependencies:
   # Navigation
   go_router: ^15.1.1
 
-  # Private Key
-  flutter_dotenv: ^5.2.1
-
-
   # State Managment
   flutter_hooks: ^0.21.2
   flutter_bloc: ^9.1.1
-  device_info_plus: ^11.4.0
-
- 
+  
 
 dev_dependencies:
   flutter_test:

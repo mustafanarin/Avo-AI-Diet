@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:avo_ai_diet/feature/onboarding/model/user_info_model.dart';
 import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/prompt_repository.dart';
 import 'package:avo_ai_diet/product/utility/exceptions/gemini_exception.dart';
 import 'package:avo_ai_diet/services/rate_limit_service.dart';
+// AppDurations import'unu buraya ekleyin
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -29,7 +31,6 @@ final class GeminiService implements IGeminiService {
 
   static const String _defaultModel = 'gemini-2.0-flash-lite';
   static const int _defaultDailyRequestLimit = 15;
-  static const Duration _requestTimeout = Duration(seconds: 30);
 
   late final Future<void> _initFuture = _initialize();
 
@@ -52,8 +53,8 @@ final class GeminiService implements IGeminiService {
     _remoteConfig = FirebaseRemoteConfig.instance;
     await _remoteConfig.setConfigSettings(
       RemoteConfigSettings(
-        fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: const Duration(hours: 1),
+        fetchTimeout: AppDurations.fetchTimeout(),
+        minimumFetchInterval: AppDurations.minimumFetchInterval(),
       ),
     );
 
@@ -135,7 +136,7 @@ final class GeminiService implements IGeminiService {
     await _checkRateLimit();
 
     try {
-      final response = await _model.generateContent([Content.text(prompt)]).timeout(_requestTimeout);
+      final response = await _model.generateContent([Content.text(prompt)]).timeout(AppDurations.requestTimeout());
 
       if (response.text == null || response.text!.isEmpty) {
         throw GeminiException(message: 'AI yanıt oluşturamadı. Lütfen tekrar deneyin.');
@@ -159,12 +160,12 @@ final class GeminiService implements IGeminiService {
     print('🚨 Firebase Error: ${e.code} - ${e.message}');
 
     final errorMessages = {
-      'quota-exceeded': '💸 Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.',
-      'resource-exhausted': '💸 Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.',
-      'permission-denied': '🔒 AI hizmet erişimi reddedildi.\n Lütfen uygulamayı güncelleyin.',
-      'unavailable': '🛠️ AI hizmeti bakımda.\n Birkaç dakika sonra tekrar deneyin.',
-      'deadline-exceeded': '⏱️ AI yanıt süresi aşıldı.\n Lütfen tekrar deneyin.',
-      'unauthenticated': '🔑 Kimlik doğrulama hatası.\n Uygulamayı yeniden başlatın.',
+      'quota-exceeded': 'Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.',
+      'resource-exhausted': 'Günlük token limitimiz doldu.\n Sistem kapasitesi yarın yenilenecek.',
+      'permission-denied': 'AI hizmet erişimi reddedildi.\n Lütfen uygulamayı güncelleyin.',
+      'unavailable': 'AI hizmeti bakımda.\n Birkaç dakika sonra tekrar deneyin.',
+      'deadline-exceeded': 'AI yanıt süresi aşıldı.\n Lütfen tekrar deneyin.',
+      'unauthenticated': 'Kimlik doğrulama hatası.\n Uygulamayı yeniden başlatın.',
     };
 
     return errorMessages[e.code] ?? '⚠️ AI hizmeti hatası.\n Lütfen daha sonra tekrar deneyin.';

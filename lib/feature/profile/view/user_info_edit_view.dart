@@ -9,11 +9,12 @@ import 'package:avo_ai_diet/product/cache/model/name_calori/name_and_cal.dart';
 import 'package:avo_ai_diet/product/cache/model/user_info/user_info_cache_model.dart';
 import 'package:avo_ai_diet/product/constants/enum/custom/hero_lottie_enum.dart';
 import 'package:avo_ai_diet/product/constants/enum/general/json_name.dart';
+import 'package:avo_ai_diet/product/constants/enum/project_settings/app_durations.dart';
 import 'package:avo_ai_diet/product/constants/enum/project_settings/app_padding.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';
-import 'package:avo_ai_diet/product/utility/calori_validators.dart';
+import 'package:avo_ai_diet/product/utility/validator/calori_validators.dart';
 import 'package:avo_ai_diet/product/utility/extensions/activity_level_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/budget_extension.dart';
 import 'package:avo_ai_diet/product/utility/extensions/goal_extension.dart';
@@ -22,7 +23,6 @@ import 'package:avo_ai_diet/product/utility/extensions/text_theme_extension.dart
 import 'package:avo_ai_diet/product/utility/init/service_locator.dart';
 import 'package:avo_ai_diet/product/widgets/project_button.dart';
 import 'package:avo_ai_diet/product/widgets/project_textfield.dart';
-import 'package:avo_ai_diet/product/widgets/project_toast_message.dart';
 import 'package:avo_ai_diet/services/calori_calculator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -211,9 +211,8 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
 
                       context.read<AiDietAdviceCubit>().refreshDietPlan();
 
-
                       // Delay for hero animation to appear
-                      Future.delayed(const Duration(milliseconds: 1500), () {
+                      Future.delayed(AppDurations.xLargeMilliseconds(), () {
                         if (mounted) {
                           _navigateToHome(
                             context,
@@ -243,7 +242,7 @@ class _UserInfoEditViewState extends State<UserInfoEditView> {
 
                                   // Enhanced loading message
                                   AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 600),
+                                    duration: AppDurations.mediumMilliseconds(),
                                     child: Column(
                                       key: ValueKey(state.isNavigating),
                                       children: [

@@ -7,18 +7,21 @@ abstract class IUserInfoManager {
 }
 
 class UserInfoManager implements IUserInfoManager {
+  static const String _boxName = 'user_info_box';
+  static const String _userInfoKey = 'user_info';
+
   LazyBox<UserInfoCacheModel>? _box;
   UserInfoCacheModel? _cachedUserInfo;
 
   Future<LazyBox<UserInfoCacheModel>> _getBox() async {
-    _box ??= await Hive.openLazyBox<UserInfoCacheModel>('user_info_box');
+    _box ??= await Hive.openLazyBox<UserInfoCacheModel>(_boxName);
     return _box!;
   }
 
   @override
   Future<void> saveUserInfo(UserInfoCacheModel model) async {
     final box = await _getBox();
-    await box.put('user_info', model);
+    await box.put(_userInfoKey, model);
     _cachedUserInfo = model;
   }
 
@@ -30,7 +33,7 @@ class UserInfoManager implements IUserInfoManager {
 
     final box = await _getBox();
     final response = await box.get(
-      'user_info',
+      _userInfoKey,
       defaultValue: const UserInfoCacheModel(
         age: '',
         gender: '',
