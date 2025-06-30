@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="avo_ai_diet"
+        android:label="Avo AI Diyet"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         

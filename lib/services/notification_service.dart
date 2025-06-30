@@ -14,41 +14,35 @@ abstract class INotificationService {
 final class NotificationService implements INotificationService {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  // Notification id
-  static const int _waterReminderNotificationId = 0;
+  // Her gün için farklı ID'ler (7 gün = 7 farklı bildirim)
+  static const List<int> _weeklyNotificationIds = [1001, 1002, 1003, 1004, 1005, 1006, 1007];
   static const int _previewNotificationId = 100;
 
   @override
   Future<void> init() async {
     tz_data.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Europe/Istanbul'));
 
     const initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    // iOS ayarları eklendi
     const initializationSettingsIOS = DarwinInitializationSettings();
 
-    // iOS ayarları initializationSettings'e eklendi
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS, // Bu satır eksikti
+      iOS: initializationSettingsIOS,
     );
 
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-    );
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   @override
   Future<void> scheduleWaterReminder() async {
-    // iOS için permission isteği eklendi
+    // Permission kontrolü
     var permissionGranted = false;
 
-    // Android permission kontrolü
     final androidPermission = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
-    // iOS permission kontrolü
     final iosPermission = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
@@ -57,83 +51,98 @@ final class NotificationService implements INotificationService {
           sound: true,
         );
 
-    // Her iki platform için de izin kontrolü
     permissionGranted = (androidPermission ?? false) || (iosPermission ?? false);
 
     if (!permissionGranted) {
       return;
     }
 
-    // Cancel existing notifications
+    // Mevcut bildirimleri iptal et
     await cancelWaterReminder();
 
-    // Schedule random notifications between 12:00-21:00 every day from now on
-    await _scheduleDailyRandomReminder();
+    // 7 gün boyunca farklı random saatlerde bildirimler programla
+    await _scheduleWeeklyRandomReminders();
   }
 
-  Future<void> _scheduleDailyRandomReminder() async {
+  Future<void> _scheduleWeeklyRandomReminders() async {
     final random = Random();
+    final now = tz.TZDateTime.now(tz.local);
 
-    // Choose a random hour between 12:00 - 21:00
-    final randomHour = 12 + random.nextInt(10); // Between 12 and 21
-    final randomMinute = random.nextInt(60); // Between 0 and 59
+    // Her gün için farklı random saat hesapla
+    for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
+      final randomHour = 12 + random.nextInt(10); // 12-21 arası
+      final randomMinute = random.nextInt(60); // 0-59 arası
 
-    // Schedule a daily recurring notification
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-      _waterReminderNotificationId,
-      'Su Hatırlatıcısı',
-      'Hey, bugün yeteri kadar su içiyor musun? 🥑',
-      _nextInstanceOfTime(randomHour, randomMinute),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'water_reminder',
-          'water_reminder_channel',
-          channelDescription: 'Su içmeyi hatırlatan bildirimler',
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
+      final targetDate = now.add(Duration(days: dayOffset));
+      final scheduledDate = tz.TZDateTime(
+        tz.local,
+        targetDate.year,
+        targetDate.month,
+        targetDate.day,
+        randomHour,
+        randomMinute,
+      );
+
+      // Sadece gelecekteki zamanları programla
+      if (scheduledDate.isAfter(now)) {
+        await _flutterLocalNotificationsPlugin.zonedSchedule(
+          _weeklyNotificationIds[dayOffset],
+          'Su Hatırlatıcısı 💧',
+          _getRandomWaterMessage(),
+          scheduledDate,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'water_reminder',
+              'water_reminder_channel',
+              channelDescription: 'Su içmeyi hatırlatan bildirimler',
+              importance: Importance.high,
+              priority: Priority.high,
+            ),
+            iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+            ),
+          ),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        );
+      }
+    }
   }
 
-  // Calculate the next occurrence for the specified hour and minute
-  tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduledDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
-
-    // If the selected time has passed, schedule for the next day
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-
-    return scheduledDate;
+  String _getRandomWaterMessage() {
+    final messages = [
+      'Hey, bugün yeteri kadar su içiyor musun? 🥑',
+      'Su içme zamanı! Vücudun sana teşekkür edecek 💧',
+      'Hidrat kalmayı unutma! 🌊',
+      'Bir bardak su içmek için mükemmel zaman ✨',
+      'Su içmeyi unutma, enerjin için önemli! ⚡',
+      'Sağlıklı yaşam suyla başlar 🌿',
+      'Vücudunun %70\'i su, eksiltme! 💦',
+      'Su iç, kendini iyi hisset! 🌟',
+      'Metabolizman için su şart! 🔥',
+      'Cildin için su iç! ✨',
+    ];
+    
+    final random = Random();
+    return messages[random.nextInt(messages.length)];
   }
 
   @override
   Future<void> cancelWaterReminder() async {
-    await _flutterLocalNotificationsPlugin.cancel(_waterReminderNotificationId);
+    // Tüm haftalık bildirimleri iptal et
+    for (final id in _weeklyNotificationIds) {
+      await _flutterLocalNotificationsPlugin.cancel(id);
+    }
   }
 
   @override
   Future<void> showPreviewNotification() async {
     await _flutterLocalNotificationsPlugin.show(
       _previewNotificationId,
-      'Su Hatırlatıcısı',
-      'Hey, bugün yeteri kadar su içiyor musun? 🥑',
+      'Su Hatırlatıcısı 💧',
+      _getRandomWaterMessage(),
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'water_reminder_channel',
@@ -142,7 +151,6 @@ final class NotificationService implements INotificationService {
           importance: Importance.high,
           priority: Priority.high,
         ),
-        // iOS ayarları eklendi
         iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,

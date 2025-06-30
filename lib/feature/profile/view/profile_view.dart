@@ -272,45 +272,14 @@ class _WaterReminderSwitchItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WaterReminderCubit, WaterReminderState>(
       builder: (context, state) {
-        return Column(
-          children: [
-            _SwitchItemWidget(
-              title: ProjectStrings.waterReminder,
-              subtitle: ProjectStrings.reminderSupTitle,
-              icon: Icons.water_drop_outlined,
-              value: state.isEnabled,
-              onChanged: (value) {
-                context.read<WaterReminderCubit>().toggleWaterReminder(value);
-              },
-            ),
-
-            // TODObildirim önizleme
-            // if (state.isEnabled)
-            //   Padding(
-            //     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            //     child: ElevatedButton(
-            //       onPressed: () {
-            //         // Önizleme bildirimini göster
-            //         context.read<WaterReminderCubit>().showPreviewNotification();
-            //       },
-            //       style: ElevatedButton.styleFrom(
-            //         backgroundColor: ProjectColors.apple,
-            //         foregroundColor: Colors.white,
-            //         shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(15.r),
-            //         ),
-            //         padding: EdgeInsets.symmetric(vertical: 12.h),
-            //       ),
-            //       child: Text(
-            //         'Bildirim Önizlemesi',
-            //         style: TextStyle(
-            //           fontSize: 16.sp,
-            //           fontWeight: FontWeight.w600,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-          ],
+        return _SwitchItemWidget(
+          title: ProjectStrings.waterReminder,
+          subtitle: ProjectStrings.reminderSupTitle,
+          icon: Icons.water_drop_outlined,
+          value: state.isEnabled,
+          onChanged: (value) {
+            context.read<WaterReminderCubit>().toggleWaterReminder(value);
+          },
         );
       },
     );

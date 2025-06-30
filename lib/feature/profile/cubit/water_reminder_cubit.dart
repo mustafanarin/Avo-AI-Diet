@@ -15,13 +15,11 @@ final class WaterReminderCubit extends Cubit<WaterReminderState> {
 
   Future<void> _loadSettings() async {
     final isEnabled = await _reminderManager.getWaterReminderState();
-
     emit(state.copyWith(isEnabled: isEnabled));
   }
 
   Future<void> toggleWaterReminder(bool isEnabled) async {
     emit(state.copyWith(isEnabled: isEnabled));
-
     await _reminderManager.saveWaterReminderState(isEnabled);
 
     if (isEnabled) {
@@ -31,7 +29,6 @@ final class WaterReminderCubit extends Cubit<WaterReminderState> {
     }
   }
 
-  // TODOtest
   Future<void> showPreviewNotification() async {
     await _notificationService.showPreviewNotification();
   }
