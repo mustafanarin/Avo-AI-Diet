@@ -1,7 +1,7 @@
 import 'package:avo_ai_diet/feature/favorites/view/favorite_view.dart';
 import 'package:avo_ai_diet/feature/home/view/home_view.dart';
-import 'package:avo_ai_diet/feature/profile/view/profile_view.dart';
-import 'package:avo_ai_diet/feature/search/view/search_view.dart';
+import 'package:avo_ai_diet/feature/profile/view/profile/profile_view.dart';
+import 'package:avo_ai_diet/feature/search/view/food_search/search_view.dart';
 import 'package:avo_ai_diet/product/constants/project_colors.dart';
 import 'package:avo_ai_diet/product/constants/project_strings.dart';
 import 'package:avo_ai_diet/product/constants/route_names.dart';

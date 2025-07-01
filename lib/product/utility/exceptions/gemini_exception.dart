@@ -5,6 +5,6 @@ final class GeminiException implements Exception {
 
   @override
   String toString() {
-    return 'Gemini Exception: $message';
+    return message;
   }
 }
