@@ -47,9 +47,6 @@ app.*.map.json
 # Android NDK build files
 android/app/.cxx/
 
-
-.env
-
 # Firebase
 firebase.json
 android/app/google-services.json

@@ -5,7 +5,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
-// WaterNotificationConstants import'unu buraya ekleyin
 
 abstract class INotificationService {
   Future<void> init();
@@ -68,13 +67,13 @@ final class NotificationService implements INotificationService {
     final random = Random();
     final now = tz.TZDateTime.now(tz.local);
 
-    // Calculate different random hours for each day
-    for (var dayOffset = 0; dayOffset < 7; dayOffset++) {
-      final randomHour = 12 + random.nextInt(10); // Between 12-21
-      final randomMinute = random.nextInt(60); // Between 0-59
+    for (var dayOffset = 0; dayOffset < 365; dayOffset++) {
+      // Calculate new random time for each day
+      final randomHour = 12 + random.nextInt(10); // 12-21 
+      final randomMinute = random.nextInt(60); // 0-59
 
-      final targetDate = now.add(Duration(days: dayOffset));
-      final scheduledDate = tz.TZDateTime(
+      var targetDate = now.add(Duration(days: dayOffset));
+      var scheduledDate = tz.TZDateTime(
         tz.local,
         targetDate.year,
         targetDate.month,
@@ -83,16 +82,28 @@ final class NotificationService implements INotificationService {
         randomMinute,
       );
 
-      // Only program future times
+      // If the time calculated for today has passed, postpone it until tomorrow
+      if (dayOffset == 0 && scheduledDate.isBefore(now)) {
+        targetDate = now.add(const Duration(days: 1));
+        scheduledDate = tz.TZDateTime(
+          tz.local,
+          targetDate.year,
+          targetDate.month,
+          targetDate.day,
+          randomHour,
+          randomMinute,
+        );
+      }
+
+      // Only time future times
       if (scheduledDate.isAfter(now)) {
         await _flutterLocalNotificationsPlugin.zonedSchedule(
-          WaterNotificationConstants.weeklyNotificationIds[dayOffset],
+          1000 + dayOffset, 
           WaterNotificationConstants.title,
           WaterNotificationConstants.getRandomMessage(),
           scheduledDate,
           _getNotificationDetails(),
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
         );
       }
     }
@@ -117,9 +128,12 @@ final class NotificationService implements INotificationService {
 
   @override
   Future<void> cancelWaterReminder() async {
-    // Cancel all weekly notifications
     for (final id in WaterNotificationConstants.weeklyNotificationIds) {
       await _flutterLocalNotificationsPlugin.cancel(id);
+    }
+
+    for (var i = 0; i < 365; i++) {
+      await _flutterLocalNotificationsPlugin.cancel(1000 + i);
     }
   }
 
