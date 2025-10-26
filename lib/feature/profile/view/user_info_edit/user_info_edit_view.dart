@@ -35,13 +35,7 @@ final class UserInfoEditView extends StatefulWidget {
 }
 
 class _UserInfoEditViewState extends State<UserInfoEditView> with UserInfoEditMixin {
-  @override
-  void dispose() {
-    ageController.dispose();
-    heightController.dispose();
-    weightController.dispose();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

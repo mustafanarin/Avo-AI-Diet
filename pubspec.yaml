@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.4
+  sdk: ^3.9.0
 
 dependencies:
   flutter:
@@ -56,7 +56,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   very_good_analysis: ^7.0.0
-  build_runner: ^2.4.15  
+  build_runner: ^2.4.13  
   injectable_generator: ^2.6.2
   hive_generator: ^2.0.1
 
