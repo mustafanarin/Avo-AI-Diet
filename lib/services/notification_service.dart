@@ -11,6 +11,8 @@ abstract class INotificationService {
   Future<void> scheduleWaterReminder();
   Future<void> cancelWaterReminder();
   Future<void> showPreviewNotification();
+  Future<void> cancelAllNotifications();
+  Future<void> syncNotificationState(bool isEnabled);
 }
 
 @singleton
@@ -128,13 +130,8 @@ final class NotificationService implements INotificationService {
 
   @override
   Future<void> cancelWaterReminder() async {
-    for (final id in WaterNotificationConstants.weeklyNotificationIds) {
-      await _flutterLocalNotificationsPlugin.cancel(id);
-    }
-
-    for (var i = 0; i < 365; i++) {
-      await _flutterLocalNotificationsPlugin.cancel(1000 + i);
-    }
+    // Cancel all notifications to ensure no old notifications remain
+    await _flutterLocalNotificationsPlugin.cancelAll();
   }
 
   @override
@@ -145,5 +142,19 @@ final class NotificationService implements INotificationService {
       WaterNotificationConstants.getRandomMessage(),
       _getNotificationDetails(),
     );
+  }
+
+  @override
+  Future<void> cancelAllNotifications() async {
+    await _flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  @override
+  Future<void> syncNotificationState(bool isEnabled) async {
+    if (isEnabled) {
+      await scheduleWaterReminder();
+    } else {
+      await cancelWaterReminder();
+    }
   }
 }

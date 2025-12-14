@@ -16,6 +16,9 @@ final class WaterReminderCubit extends Cubit<WaterReminderState> {
   Future<void> _loadSettings() async {
     final isEnabled = await _reminderManager.getWaterReminderState();
     emit(state.copyWith(isEnabled: isEnabled));
+
+    // Sync notification state on app startup
+    await _notificationService.syncNotificationState(isEnabled);
   }
 
   Future<void> toggleWaterReminder(bool isEnabled) async {
